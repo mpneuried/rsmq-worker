@@ -5,11 +5,7 @@ rsmq-worker
 [![Build Status](https://david-dm.org/mpneuried/rsmq-worker.png)](https://david-dm.org/mpneuried/rsmq-worker)
 [![NPM version](https://badge.fury.io/js/rsmq-worker.png)](http://badge.fury.io/js/rsmq-worker)
 
-Module description
-
-*Written in coffee-script*
-
-**INFO: all examples are written in coffee-script**
+RSMQ helper to simply implement a worker around the message queue.
 
 ## Install
 
@@ -20,17 +16,96 @@ Module description
 ## Initialize
 
 ```
-  // TODO init code
+  new RSMQWorker( queuename, options );
+
 ```
 
-**Options** 
+**Config** 
 
-- **foo** : *( `String` required )* TODO option description
-- **bar** : *( `Number` optional: default = `123` )* TODO option description
+- **queuename**: *( `String` required )* The queuename to pull the messages
+- **options** *( `Object` optional )* The configuration object
+	- **options.intervall**: *( `Number[]` optional; default = `[ 0, 1, 5, 10 ]` )* An Array of increasing wait times in seconds
+	- **options.maxReceiveCount**: *( `Number` optional; default = `10` )* Receive count until a message will be exceeded
+	- **options.autostart**: *( `Boolean` optional; default = `false` )* Autostart the worker on init
+	- **options.rsmq**: *( `RedisSMQ` optional; default = `null` )* A allready existing rsmq instance to use instead of creating a new client
+	- **options.redis**: *( `RedisClient` optional; default = `null` )* A allready existing redis client instance to use if no `rsmq` instance has been defiend 
+	- **options.redisPrefix**: *( `String` optional; default = `""` )* The redis Prefix for rsmq if  no `rsmq` instance has been defiend 
+	- **options.host**: *( `String` optional; default = `"localhost"` )* Host to connect to redis if no `rsmq` or `redis` instance has been defiend 
+	- **options.host**: *( `Number` optional; default = `6379` )* Port to connect to redis if no `rsmq` or `redis` instance has been defiend 
+	- **options.options**: *( `Object` optional; default = `{}` )* Options to connect to redis if no `rsmq` or `redis` instance has been defiend 
 
-## Todos
+**Example:**
 
- * implement test cases to check for correct template generation.
+```
+  var RSMQWorker = require( "rsmq-worker" );
+  var worker = new RSMQWorker( "myqueue" );
+
+  worker.on( "message", function( msg, next, id ){
+  	// process your message
+  	next()
+  });
+
+  worker.start();
+```
+
+## Methods
+
+### `.start()`
+
+If you haven't defined the config `autostart` to `true` you have to call the `.start()` method.
+
+**Return**
+
+*( Self )*: The instance itself for chaining.
+
+### `.del( id )`
+
+Helper function to simply delete a message after it has been processed.
+
+**Arguments**
+
+* `id` : *( `String` required )*: The rsmq message id.
+
+**Return**
+
+*( Self )*: The instance itself for chaining.
+
+### `.stop()`
+
+Stop the receive interval.
+
+**Return**
+
+*( Self )*: The instance itself for chaining.
+
+### `.send( msg [, delay ] )`
+
+Helper function to simply send a message in the configured queue.
+
+**Arguments**
+
+* `filename` : *( `String` required )*: The rsmq message. In best practice it's a stringified JSON with additional data.
+* `delay` : *( `Number` optional; default = `0` )*: The message delay to hide this message for the next `x` seconds.
+
+**Return**
+
+*( Self )*: The instance itself for chaining.
+
+## Events
+
+### `message`
+
+### `ready`
+
+### `data`
+
+### `deleted`
+
+### `exceeded`
+
+## Todos/Ideas
+
+> Currently no feature ideas
 
 ## Release History
 |Version|Date|Description|

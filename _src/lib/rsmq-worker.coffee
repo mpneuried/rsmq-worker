@@ -170,7 +170,7 @@ class rsmqWorker extends require( "mpbasic" )()
 			@intervall()
 			return
 		@on "ready", @intervall
-		return
+		return @
 
 
 	send: ( msg, delay = 0 )=>
@@ -179,7 +179,7 @@ class rsmqWorker extends require( "mpbasic" )()
 		else
 			@debug "store message during redis offline time", msg, delay
 			@offlineQueue.push( msg: msg, delay: delay )
-		return
+		return @
 
 	_send: ( msg, delay )=>
 		@queue.sendMessage { qname: @queuename, message: msg, delay: delay }, ( err, resp )=>
@@ -233,7 +233,7 @@ class rsmqWorker extends require( "mpbasic" )()
 			@debug "delete queue message", resp
 			@emit( "deleted", id )
 			return
-		return
+		return @
 
 	check: ( msg )=>
 		if msg.rc >= @config.maxReceiveCount
@@ -270,7 +270,7 @@ class rsmqWorker extends require( "mpbasic" )()
 
 	stop: =>
 		clearTimeout( @timeout ) if @timeout?
-		return
+		return @
 
 #export this class
 module.exports = rsmqWorker

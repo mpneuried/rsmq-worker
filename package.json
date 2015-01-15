@@ -1,7 +1,7 @@
 {
   "name": "rsmq-worker",
   "version": "0.0.1",
-  "description": "Module description",
+  "description": "RSMQ helper to simply implement a worker around the message queue",
   "keywords": [],
   "homepage": "https://github.com/mpneuried/rsmq-worker",
   "bugs": "https://github.com/mpneuried/rsmq-worker/issues",
