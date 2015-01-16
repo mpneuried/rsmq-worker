@@ -223,6 +223,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.1.0|2015-1-16|First working and documented version|
 |0.0.1|2015-1-14|Initial commit|
 
 ## The MIT License (MIT)
