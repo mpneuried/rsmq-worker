@@ -23,6 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "async": "0.9.x",
     "lodash": "2.4.x",
     "mpbasic": "0.0.x",
     "rsmq": "0.3.x"
