@@ -219,10 +219,12 @@ This is an advanced example showing some features in action.
 ## Todos/Ideas
 
 - TEST scripts ;-)
+- Code method docs
 
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.1.1|2015-1-??|Added test scripts and optimized repo file list|
 |0.1.0|2015-1-16|First working and documented version|
 |0.0.1|2015-1-14|Initial commit|
 

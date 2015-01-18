@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>utils.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "_src/test/utils.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#utils">Utils</a>
+      </div>
+      <div class="heading h3">
+        <a href="#exports%3A%20object">Exports: Object</a>
+      </div>
+      <div class="heading h2">
+        <a href="#randomstring">randomString</a>
+      </div>
+      <div class="heading h2">
+        <a href="#randrange">randRange</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="utils">
+  <h1>
+    <a href="#utils" name="utils" class="pilcrow">&#182;</a>
+    Utils
+  </h1>
+</div>
+
+
+
+<div class="pilwrap" id="exports%3A%20object">
+  <h3>
+    <a href="#exports%3A%20object" name="exports%3A%20object" class="pilcrow">&#182;</a>
+    Exports: <em>Object</em>
+  </h3>
+</div>
+
+
+<p>A collection of helper functions</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-6" id="line-6">6</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>export the functions</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-8" id="line-8">8</a>  
+<a class="line-num" href="#line-9" id="line-9">9</a>  <span class="nv">module.exports = </span>
+<a class="line-num" href="#line-10" id="line-10">10</a>  
+<a class="line-num" href="#line-11" id="line-11">11</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="randomstring">
+  <h2>
+    <a href="#randomstring" name="randomstring" class="pilcrow">&#182;</a>
+    randomString
+  </h2>
+</div>
+
+  </div>
+  <div class="body"><p><code>utils.randomString( string_length, speciallevel )</code></p>
+
+<p>Generate a random string</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">string_length</span>
+      <span class="dox_type">Number</span>
+      <span>string length to generate </span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">speciallevel</span>
+      <span class="dox_type">Number</span>
+      <span>Level of complexity.
+0 = only letters upper and lowercase, 52 possible chars;
+1 = 0 + Numbers, 62 possible chars;
+2 = 1 + "_-@:.", 67 possible chars;
+3 = 2 + may speacial chars, 135 possible chars;</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The gerated string </span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-25" id="line-25">25</a>  
+<a class="line-num" href="#line-26" id="line-26">26</a>    <span class="nv">randomString: </span><span class="nf">( string_length = 5, specialLevel = 0 ) -&gt;</span>
+<a class="line-num" href="#line-27" id="line-27">27</a>      <span class="nv">chars = </span><span class="s">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&quot;</span>
+<a class="line-num" href="#line-28" id="line-28">28</a>      <span class="nx">chars</span> <span class="o">+=</span> <span class="s">&quot;0123456789&quot;</span> <span class="k">if</span> <span class="nx">specialLevel</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+<a class="line-num" href="#line-29" id="line-29">29</a>      <span class="nx">chars</span> <span class="o">+=</span> <span class="s">&quot;_-@:.&quot;</span> <span class="k">if</span> <span class="nx">specialLevel</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+<a class="line-num" href="#line-30" id="line-30">30</a>      <span class="nx">chars</span> <span class="o">+=</span> <span class="s">&quot;!\&quot;§$%&amp;/()=?*&#39;_:;,.-</span><span class="err">#</span><span class="s">+¬”</span><span class="err">#</span><span class="s">£ﬁ^\\˜·¯˙˚«∑€®†Ω¨⁄øπ•‘æœ@∆ºª©ƒ∂‚å–…∞µ~∫√ç≈¥&quot;</span> <span class="k">if</span> <span class="nx">specialLevel</span> <span class="o">&gt;=</span> <span class="mi">3</span>
+<a class="line-num" href="#line-31" id="line-31">31</a>  
+<a class="line-num" href="#line-32" id="line-32">32</a>      <span class="nv">randomstring = </span><span class="s">&quot;&quot;</span>
+<a class="line-num" href="#line-33" id="line-33">33</a>      <span class="nv">i = </span><span class="mi">0</span>
+<a class="line-num" href="#line-34" id="line-34">34</a>      
+<a class="line-num" href="#line-35" id="line-35">35</a>      <span class="k">while</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">string_length</span>
+<a class="line-num" href="#line-36" id="line-36">36</a>        <span class="nv">rnum = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">chars</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+<a class="line-num" href="#line-37" id="line-37">37</a>        <span class="nx">randomstring</span> <span class="o">+=</span> <span class="nx">chars</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">rnum</span><span class="p">,</span> <span class="nx">rnum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<a class="line-num" href="#line-38" id="line-38">38</a>        <span class="nx">i</span><span class="o">++</span>
+<a class="line-num" href="#line-39" id="line-39">39</a>      <span class="nx">randomstring</span>
+<a class="line-num" href="#line-40" id="line-40">40</a>  
+<a class="line-num" href="#line-41" id="line-41">41</a>  
+<a class="line-num" href="#line-42" id="line-42">42</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="randrange">
+  <h2>
+    <a href="#randrange" name="randrange" class="pilcrow">&#182;</a>
+    randRange
+  </h2>
+</div>
+
+  </div>
+  <div class="body"><p><code>utils.randRange( lowVal, highVal )</code></p>
+
+<p>Create a random number bewtween two values</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">lowVal</span>
+      <span class="dox_type">Number</span>
+      <span>Min number </span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">highVal</span>
+      <span class="dox_type">Number</span>
+      <span>Max number </span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Number</span>
+      <span>A random number </span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-52" id="line-52">52</a>  
+<a class="line-num" href="#line-53" id="line-53">53</a>    <span class="nv">randRange: </span><span class="nf">( lowVal, highVal )-&gt;</span>
+<a class="line-num" href="#line-54" id="line-54">54</a>      <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="p">(</span><span class="nx">highVal</span><span class="o">-</span><span class="nx">lowVal</span><span class="o">+</span><span class="mi">1</span> <span class="p">))</span><span class="o">+</span><span class="nx">lowVal</span>
+<a class="line-num" href="#line-55" id="line-55">55</a>  </pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

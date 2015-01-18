@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>main.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "_src/test/main.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>main.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-1" id="line-1">1</a>  <span class="nv">should = </span><span class="nx">require</span><span class="p">(</span> <span class="s">&#39;should&#39;</span> <span class="p">)</span>
+<a class="line-num" href="#line-2" id="line-2">2</a>  <span class="nv">utils = </span><span class="nx">require</span><span class="p">(</span> <span class="s">&#39;./utils&#39;</span> <span class="p">)</span>
+<a class="line-num" href="#line-3" id="line-3">3</a>  
+<a class="line-num" href="#line-4" id="line-4">4</a>  <span class="nv">_queuename = </span><span class="nx">utils</span><span class="p">.</span><span class="nx">randomString</span><span class="p">(</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span> <span class="p">)</span>
+<a class="line-num" href="#line-5" id="line-5">5</a>  <span class="nv">worker = </span><span class="kc">null</span>
+<a class="line-num" href="#line-6" id="line-6">6</a>  
+<a class="line-num" href="#line-7" id="line-7">7</a>  <span class="nx">describe</span> <span class="s">&quot;----- rsmq-worker TESTS -----&quot;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+<a class="line-num" href="#line-8" id="line-8">8</a>  
+<a class="line-num" href="#line-9" id="line-9">9</a>    <span class="nx">before</span> <span class="nf">( done )-&gt;</span>
+<a class="line-num" href="#line-10" id="line-10">10</a>  
+<a class="line-num" href="#line-11" id="line-11">11</a>      <span class="nv">RSMQWorker = </span><span class="nx">require</span><span class="p">(</span> <span class="s">&quot;../.&quot;</span> <span class="p">)</span>
+<a class="line-num" href="#line-12" id="line-12">12</a>      <span class="nv">worker = </span><span class="k">new</span> <span class="nx">RSMQWorker</span><span class="p">(</span> <span class="nx">_queuename</span><span class="p">,</span> <span class="p">{</span> <span class="nv">interval: </span><span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
+<a class="line-num" href="#line-13" id="line-13">13</a>  
+<a class="line-num" href="#line-14" id="line-14">14</a>      <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span> <span class="s">&quot;ready&quot;</span><span class="p">,</span> <span class="o">=&gt;</span>
+<a class="line-num" href="#line-15" id="line-15">15</a>        <span class="nx">done</span><span class="p">()</span>
+<a class="line-num" href="#line-16" id="line-16">16</a>        <span class="k">return</span>
+<a class="line-num" href="#line-17" id="line-17">17</a>  
+<a class="line-num" href="#line-18" id="line-18">18</a>      <span class="nx">worker</span><span class="p">.</span><span class="nx">start</span><span class="p">()</span>
+<a class="line-num" href="#line-19" id="line-19">19</a>  
+<a class="line-num" href="#line-20" id="line-20">20</a>      <span class="k">return</span>
+<a class="line-num" href="#line-21" id="line-21">21</a>  
+<a class="line-num" href="#line-22" id="line-22">22</a>    <span class="nx">after</span> <span class="nf">( done )-&gt;</span>
+<a class="line-num" href="#line-23" id="line-23">23</a>  
+<a class="line-num" href="#line-24" id="line-24">24</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>TODO teardown</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-24" id="line-24">24</a>  
+<a class="line-num" href="#line-25" id="line-25">25</a>      <span class="nx">done</span><span class="p">()</span>
+<a class="line-num" href="#line-26" id="line-26">26</a>      <span class="k">return</span>
+<a class="line-num" href="#line-27" id="line-27">27</a>  
+<a class="line-num" href="#line-28" id="line-28">28</a>    <span class="nx">describe</span> <span class="s">&#39;Main Tests&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+<a class="line-num" href="#line-29" id="line-29">29</a>  
+<a class="line-num" href="#line-30" id="line-30">30</a>  
+<a class="line-num" href="#line-31" id="line-31">31</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Implement tests cases here</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-30" id="line-30">30</a>  
+<a class="line-num" href="#line-31" id="line-31">31</a>      <span class="nx">it</span> <span class="s">&quot;first test&quot;</span><span class="p">,</span> <span class="nf">( done )-&gt;</span>
+<a class="line-num" href="#line-32" id="line-32">32</a>        <span class="nv">_examplemsg = </span><span class="nx">utils</span><span class="p">.</span><span class="nx">randomString</span><span class="p">(</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">randRange</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">99</span> <span class="p">),</span> <span class="mi">3</span> <span class="p">)</span>
+<a class="line-num" href="#line-33" id="line-33">33</a>        
+<a class="line-num" href="#line-34" id="line-34">34</a>        <span class="nv">_testFn = </span><span class="nf">( msg, next, id )=&gt;</span>
+<a class="line-num" href="#line-35" id="line-35">35</a>  
+<a class="line-num" href="#line-36" id="line-36">36</a>          <span class="nx">should</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">_examplemsg</span> <span class="p">)</span>
+<a class="line-num" href="#line-37" id="line-37">37</a>          <span class="nx">next</span><span class="p">()</span>
+<a class="line-num" href="#line-38" id="line-38">38</a>          
+<a class="line-num" href="#line-39" id="line-39">39</a>          <span class="nx">worker</span><span class="p">.</span><span class="nx">removeListener</span><span class="p">(</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">_testFn</span> <span class="p">)</span>
+<a class="line-num" href="#line-40" id="line-40">40</a>          <span class="nx">done</span><span class="p">()</span>
+<a class="line-num" href="#line-41" id="line-41">41</a>          <span class="k">return</span>
+<a class="line-num" href="#line-42" id="line-42">42</a>  
+<a class="line-num" href="#line-43" id="line-43">43</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">_testFn</span> <span class="p">)</span>
+<a class="line-num" href="#line-44" id="line-44">44</a>        
+<a class="line-num" href="#line-45" id="line-45">45</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">_examplemsg</span> <span class="p">)</span>
+<a class="line-num" href="#line-46" id="line-46">46</a>        <span class="k">return</span>
+<a class="line-num" href="#line-47" id="line-47">47</a>  
+<a class="line-num" href="#line-48" id="line-48">48</a>      <span class="k">return</span>
+<a class="line-num" href="#line-49" id="line-49">49</a>    <span class="k">return</span>
+<a class="line-num" href="#line-50" id="line-50">50</a>  </pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

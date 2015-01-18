@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>README.md</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "README.md", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#rsmq-worker">rsmq-worker</a>
+      </div>
+      <div class="heading h2">
+        <a href="#install">Install</a>
+      </div>
+      <div class="heading h2">
+        <a href="#initialize">Initialize</a>
+      </div>
+      <div class="heading h2">
+        <a href="#raw%20message%20format">Raw message format</a>
+      </div>
+      <div class="heading h2">
+        <a href="#methods">Methods</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.start()">.start()</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.del(%20id%20)">.del( id )</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.stop()">.stop()</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.send(%20msg%20%5B%2C%20delay%20%5D%20)">.send( msg [, delay ] )</a>
+      </div>
+      <div class="heading h2">
+        <a href="#events">Events</a>
+      </div>
+      <div class="heading h3">
+        <a href="#message">message</a>
+      </div>
+      <div class="heading h3">
+        <a href="#ready">ready</a>
+      </div>
+      <div class="heading h3">
+        <a href="#data">data</a>
+      </div>
+      <div class="heading h3">
+        <a href="#deleted">deleted</a>
+      </div>
+      <div class="heading h3">
+        <a href="#exceeded">exceeded</a>
+      </div>
+      <div class="heading h2">
+        <a href="#advanced%20example">Advanced example</a>
+      </div>
+      <div class="heading h2">
+        <a href="#todos%2Fideas">Todos/Ideas</a>
+      </div>
+      <div class="heading h2">
+        <a href="#release%20history">Release History</a>
+      </div>
+      <div class="heading h2">
+        <a href="#the%20mit%20license%20(mit)">The MIT License (MIT)</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="docs markdown">
+<div class="pilwrap" id="rsmq-worker">
+  <h1>
+    <a href="#rsmq-worker" name="rsmq-worker" class="pilcrow">&#182;</a>
+    rsmq-worker
+  </h1>
+</div>
+
+
+<p><a href="http://travis-ci.org/mpneuried/rsmq-worker"><img src="https://secure.travis-ci.org/mpneuried/rsmq-worker.png?branch=master" alt="Build Status" title="" /></a>
+<a href="https://david-dm.org/mpneuried/rsmq-worker"><img src="https://david-dm.org/mpneuried/rsmq-worker.png" alt="Build Status" title="" /></a>
+<a href="http://badge.fury.io/js/rsmq-worker"><img src="https://badge.fury.io/js/rsmq-worker.png" alt="NPM version" title="" /></a></p>
+
+<p>RSMQ helper to simply implement a worker around the message queue.</p>
+
+
+<div class="pilwrap" id="install">
+  <h2>
+    <a href="#install" name="install" class="pilcrow">&#182;</a>
+    Install
+  </h2>
+</div>
+
+
+
+<div class="highlight"><pre><code>  npm install rsmq-worker
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="initialize">
+  <h2>
+    <a href="#initialize" name="initialize" class="pilcrow">&#182;</a>
+    Initialize
+  </h2>
+</div>
+
+
+
+<div class="highlight"><pre><code>  <span class="k">new</span> <span class="nx">RSMQWorker</span><span class="p">(</span> <span class="nx">queuename</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+</code></pre></div>
+
+
+
+<p><strong>Config</strong> </p>
+
+<ul>
+<li><strong>queuename</strong>: <em>( <code>String</code> required )</em> The queuename to pull the messages</li>
+<li><strong>options</strong> <em>( <code>Object</code> optional )</em> The configuration object
+<ul><li><strong>options.interval</strong>: <em>( <code>Number[]</code> optional; default = <code>[ 0, 1, 5, 10 ]</code> )</em> An Array of increasing wait times in seconds</li>
+<li><strong>options.maxReceiveCount</strong>: <em>( <code>Number</code> optional; default = <code>10</code> )</em> Receive count until a message will be exceeded</li>
+<li><strong>options.invisibletime</strong>: <em>( <code>Number</code> optional; default = <code>30</code> )</em> A time in seconds to hide a message after it has been received.</li>
+<li><strong>options.autostart</strong>: <em>( <code>Boolean</code> optional; default = <code>false</code> )</em> Autostart the worker on init</li>
+<li><strong>options.customExceedCheck</strong>: <em>( <code>Function</code> optional; )</em> A custom function, with the raw message <em>(see message format)</em> as argument to build a custom exceed check. If you return a <code>true</code> the message will not exceed. On return <code>false</code> the regular check for <code>maxReceiveCount</code> will be used.</li>
+<li><strong>options.rsmq</strong>: <em>( <code>RedisSMQ</code> optional; default = <code>null</code> )</em> A allready existing rsmq instance to use instead of creating a new client</li>
+<li><strong>options.redis</strong>: <em>( <code>RedisClient</code> optional; default = <code>null</code> )</em> A allready existing redis client instance to use if no <code>rsmq</code> instance has been defiend </li>
+<li><strong>options.redisPrefix</strong>: <em>( <code>String</code> optional; default = <code>""</code> )</em> The redis Prefix for rsmq if  no <code>rsmq</code> instance has been defiend </li>
+<li><strong>options.host</strong>: <em>( <code>String</code> optional; default = <code>"localhost"</code> )</em> Host to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defiend </li>
+<li><strong>options.host</strong>: <em>( <code>Number</code> optional; default = <code>6379</code> )</em> Port to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defiend </li>
+<li><strong>options.options</strong>: <em>( <code>Object</code> optional; default = <code>{}</code> )</em> Options to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defiend </li></ul></li>
+</ul>
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code>  <span class="kd">var</span> <span class="nx">RSMQWorker</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s2">&quot;rsmq-worker&quot;</span> <span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">worker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RSMQWorker</span><span class="p">(</span> <span class="s2">&quot;myqueue&quot;</span> <span class="p">);</span>
+
+  <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">id</span> <span class="p">){</span>
+      <span class="c1">// process your message</span>
+      <span class="nx">next</span><span class="p">()</span>
+  <span class="p">});</span>
+
+  <span class="nx">worker</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="raw%20message%20format">
+  <h2>
+    <a href="#raw%20message%20format" name="raw%20message%20format" class="pilcrow">&#182;</a>
+    Raw message format
+  </h2>
+</div>
+
+
+<p>A message ( e.g. received by the event <code>data</code> or <code>customExceedCheck</code> ) contains the following keys:</p>
+
+<ul>
+<li><strong>msg.message</strong> : <em>( <code>String</code> )</em> The queue message content. You can use complex content by using a stringfied JSON.</li>
+<li><strong>msg.id</strong> : <em>( <code>String</code> )</em> The rsmq internal messag id</li>
+<li><strong>msg.sent</strong> : <em>( <code>Number</code> )</em> Timestamp of when this message was sent / created.</li>
+<li><strong>msg.fr</strong> : <em>( <code>Number</code> )</em> Timestamp of when this message was first received.</li>
+<li><strong>msg.rc</strong> : <em>( <code>Number</code> )</em> Number of times this message was received.</li>
+</ul>
+
+
+<div class="pilwrap" id="methods">
+  <h2>
+    <a href="#methods" name="methods" class="pilcrow">&#182;</a>
+    Methods
+  </h2>
+</div>
+
+
+
+<div class="pilwrap" id=".start()">
+  <h3>
+    <a href="#.start()" name=".start()" class="pilcrow">&#182;</a>
+    <code>.start()</code>
+  </h3>
+</div>
+
+
+<p>If you haven't defined the config <code>autostart</code> to <code>true</code> you have to call the <code>.start()</code> method.</p>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Self )</em>: The instance itself for chaining.</p>
+
+
+<div class="pilwrap" id=".del(%20id%20)">
+  <h3>
+    <a href="#.del(%20id%20)" name=".del(%20id%20)" class="pilcrow">&#182;</a>
+    <code>.del( id )</code>
+  </h3>
+</div>
+
+
+<p>Helper function to simply delete a message after it has been processed.</p>
+
+<p><strong>Arguments</strong></p>
+
+<ul>
+<li><code>id</code> : <em>( <code>String</code> required )</em>: The rsmq message id.</li>
+</ul>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Self )</em>: The instance itself for chaining.</p>
+
+
+<div class="pilwrap" id=".stop()">
+  <h3>
+    <a href="#.stop()" name=".stop()" class="pilcrow">&#182;</a>
+    <code>.stop()</code>
+  </h3>
+</div>
+
+
+<p>Stop the receive interval.</p>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Self )</em>: The instance itself for chaining.</p>
+
+
+<div class="pilwrap" id=".send(%20msg%20%5B%2C%20delay%20%5D%20)">
+  <h3>
+    <a href="#.send(%20msg%20%5B%2C%20delay%20%5D%20)" name=".send(%20msg%20%5B%2C%20delay%20%5D%20)" class="pilcrow">&#182;</a>
+    <code>.send( msg [, delay ] )</code>
+  </h3>
+</div>
+
+
+<p>Helper function to simply send a message in the configured queue.</p>
+
+<p><strong>Arguments</strong></p>
+
+<ul>
+<li><code>filename</code> : <em>( <code>String</code> required )</em>: The rsmq message. In best practice it's a stringified JSON with additional data.</li>
+<li><code>delay</code> : <em>( <code>Number</code> optional; default = <code>0</code> )</em>: The message delay to hide this message for the next <code>x</code> seconds.</li>
+</ul>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Self )</em>: The instance itself for chaining.</p>
+
+
+<div class="pilwrap" id="events">
+  <h2>
+    <a href="#events" name="events" class="pilcrow">&#182;</a>
+    Events
+  </h2>
+</div>
+
+
+
+<div class="pilwrap" id="message">
+  <h3>
+    <a href="#message" name="message" class="pilcrow">&#182;</a>
+    <code>message</code>
+  </h3>
+</div>
+
+
+<p>Main event to catch and process a message.
+If you do not set a handler for this Event nothing wohld be happen.</p>
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">message</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">msgid</span> <span class="p">){</span>
+    <span class="c1">// process message ... </span>
+    <span class="nx">next</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>message</strong> : <em>( <code>String</code> )</em> The queue message content to process. You can use complex content by using a stringfied JSON.</li>
+<li><strong>next</strong> : <em>( <code>Function</code> )</em> A function you have to call when your message has been prcessed. <br />
+<strong>Arguments</strong> 
+<ul><li><code>delete</code>: <em>( <code>Boolean</code> optional; default = true )</em> It's possible to prevent the worker from autodelete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config <code>options.customExceedCheck</code></li></ul></li>
+<li><strong>msgid</strong> : <em>( <code>String</code> )</em> The message id. This is useful if you want to delete a message manually.</li>
+</ul>
+
+
+<div class="pilwrap" id="ready">
+  <h3>
+    <a href="#ready" name="ready" class="pilcrow">&#182;</a>
+    <code>ready</code>
+  </h3>
+</div>
+
+
+<p>Fired until the worker is connected to rsmq/redis and has been initialized with the given queuename.</p>
+
+
+<div class="pilwrap" id="data">
+  <h3>
+    <a href="#data" name="data" class="pilcrow">&#182;</a>
+    <code>data</code>
+  </h3>
+</div>
+
+
+<p>The raw event when a message has been received.</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>msg</strong> : <em>( <code>String</code> )</em> The raw rsmq message. ( See section Raw message format )</li>
+</ul>
+
+
+<div class="pilwrap" id="deleted">
+  <h3>
+    <a href="#deleted" name="deleted" class="pilcrow">&#182;</a>
+    <code>deleted</code>
+  </h3>
+</div>
+
+
+<p>Fired after a message has been deleted.</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>id</strong> : <em>( <code>String</code> )</em> The rsmq message id</li>
+</ul>
+
+
+<div class="pilwrap" id="exceeded">
+  <h3>
+    <a href="#exceeded" name="exceeded" class="pilcrow">&#182;</a>
+    <code>exceeded</code>
+  </h3>
+</div>
+
+
+<p>Fired after a message has been exceeded and immediately will be deleted.</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>msg</strong> : <em>( <code>String</code> )</em> The raw rsmq message. ( See section Raw message format )</li>
+</ul>
+
+
+<div class="pilwrap" id="advanced%20example">
+  <h2>
+    <a href="#advanced%20example" name="advanced%20example" class="pilcrow">&#182;</a>
+    Advanced example
+  </h2>
+</div>
+
+
+<p>This is an advanced example showing some features in action.</p>
+
+
+<div class="highlight"><pre><code>    <span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s2">&quot;fs&quot;</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">RSMQWorker</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s2">&quot;rsmq-worker&quot;</span> <span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">fnCheck</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">){</span>
+        <span class="c1">// check function to not exceed the message if the content is `createmessages`</span>
+        <span class="k">if</span><span class="p">(</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">message</span> <span class="o">===</span> <span class="s2">&quot;createmessages&quot;</span> <span class="p">){</span>
+            <span class="k">return</span> <span class="kc">true</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="kc">false</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">worker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RSMQWorker</span><span class="p">(</span> <span class="s2">&quot;myqueue&quot;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="nx">interval</span><span class="o">:</span> <span class="p">[</span> <span class="p">.</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">],</span>                <span class="c1">// wait 100ms between every receive and step up to 1,3 on empty receives</span>
+        <span class="nx">invisibletime</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>                       <span class="c1">// hide received message for 5 sec</span>
+        <span class="nx">maxReceiveCount</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>                 <span class="c1">// only receive a message 2 times until delete</span>
+        <span class="nx">autostart</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>                        <span class="c1">// start worker on init</span>
+        <span class="nx">customExceedCheck</span><span class="o">:</span> <span class="nx">fnCheck</span>  <span class="c1">// set the custom exceed check</span>
+    <span class="p">});</span>
+
+    <span class="c1">//</span>
+    <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">message</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">id</span> <span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="nx">message</span> <span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span> <span class="nx">message</span> <span class="o">===</span> <span class="s2">&quot;createmessages&quot;</span> <span class="p">){</span>
+            <span class="nx">next</span><span class="p">(</span> <span class="kc">false</span> <span class="p">)</span>
+            <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;writefile&quot;</span><span class="p">,</span> <span class="nx">filename</span><span class="o">:</span> <span class="s2">&quot;./test.txt&quot;</span><span class="p">,</span> <span class="nx">txt</span><span class="o">:</span> <span class="s2">&quot;Foo Bar&quot;</span> <span class="p">}</span> <span class="p">)</span> <span class="p">);</span>
+            <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;deletefile&quot;</span><span class="p">,</span> <span class="nx">filename</span><span class="o">:</span> <span class="s2">&quot;./test.txt&quot;</span> <span class="p">}</span> <span class="p">)</span> <span class="p">);</span>
+            <span class="k">return</span>  
+        <span class="p">}</span>
+
+        <span class="kd">var</span> <span class="nx">_data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">message</span> <span class="p">)</span>
+        <span class="k">switch</span><span class="p">(</span> <span class="nx">_data</span><span class="p">.</span><span class="nx">type</span> <span class="p">){</span>
+            <span class="k">case</span> <span class="s2">&quot;writefile&quot;</span><span class="o">:</span> 
+                <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span> <span class="nx">_data</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span> <span class="nx">_data</span><span class="p">.</span><span class="nx">txt</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
+                    <span class="k">if</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
+                        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">err</span> <span class="p">)</span>
+                    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+                        <span class="nx">next</span><span class="p">()</span>
+                    <span class="p">}</span>
+                <span class="p">});</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s2">&quot;deletefile&quot;</span><span class="o">:</span> 
+                <span class="nx">fs</span><span class="p">.</span><span class="nx">unlink</span><span class="p">(</span> <span class="nx">_data</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
+                    <span class="k">if</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
+                        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">err</span> <span class="p">)</span>
+                    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+                        <span class="nx">next</span><span class="p">()</span>
+                    <span class="p">}</span>
+                <span class="p">});</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="p">});</span>
+
+    <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="s2">&quot;createmessages&quot;</span> <span class="p">);</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="todos%2Fideas">
+  <h2>
+    <a href="#todos%2Fideas" name="todos%2Fideas" class="pilcrow">&#182;</a>
+    Todos/Ideas
+  </h2>
+</div>
+
+
+<ul>
+<li>TEST scripts ;-)</li>
+</ul>
+
+
+<div class="pilwrap" id="release%20history">
+  <h2>
+    <a href="#release%20history" name="release%20history" class="pilcrow">&#182;</a>
+    Release History
+  </h2>
+</div>
+
+
+<p>|Version|Date|Description|
+|:--:|:--:|:--|
+|0.1.0|2015-1-16|First working and documented version|
+|0.0.1|2015-1-14|Initial commit|</p>
+
+
+<div class="pilwrap" id="the%20mit%20license%20(mit)">
+  <h2>
+    <a href="#the%20mit%20license%20(mit)" name="the%20mit%20license%20(mit)" class="pilcrow">&#182;</a>
+    The MIT License (MIT)
+  </h2>
+</div>
+
+
+<p>Copyright © 2015 Mathias Peter, <a href='http://www.tcs.de'>http://www.tcs.de</a></p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p></div>
+  </div>
+</body>
+</html>
