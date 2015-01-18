@@ -3,3 +3,4 @@
 Gruntfile.*
 *.coffee
 /advanced_example.js
+/test/

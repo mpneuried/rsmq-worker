@@ -1,15 +1,22 @@
-should = require('should')
+should = require( 'should' )
+utils = require( './utils' )
 
-Module = require( "../." ) 
-
-_moduleInst = null
+_queuename = utils.randomString( 10, 1 )
+worker = null
 
 describe "----- rsmq-worker TESTS -----", ->
 
 	before ( done )->
-		_moduleInst = new Module()
-		# TODO add initialisation Code
-		done()
+
+		RSMQWorker = require( "../." )
+		worker = new RSMQWorker( _queuename, { interval: [ 0, 1 ] } )
+
+		worker.on "ready", =>
+			done()
+			return
+
+		worker.start()
+
 		return
 
 	after ( done )->
@@ -21,7 +28,20 @@ describe "----- rsmq-worker TESTS -----", ->
 
 		# Implement tests cases here
 		it "first test", ( done )->
-			done()
+			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
+			
+			_testFn = ( msg, next, id )=>
+
+				should.equal( msg, _examplemsg )
+				next()
+				
+				worker.removeListener( "message", _testFn )
+				done()
+				return
+
+			worker.on( "message", _testFn )
+			
+			worker.send( _examplemsg )
 			return
 
 		return

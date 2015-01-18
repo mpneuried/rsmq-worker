@@ -53,7 +53,7 @@ module.exports = (grunt) ->
 				src: [ "test/main.js" ]
 				options:
 					env: 
-						severity_heartbeat: "debug"
+						severity_rsmqworker: "warning"
 		
 		
 		docker:
