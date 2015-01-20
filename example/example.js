@@ -4,7 +4,7 @@
   RSMQWorker = require("../.");
 
   worker = new RSMQWorker("myqueue", {
-    intervall: [0, 1, 2, 3]
+    interval: [0, 1, 2, 3]
   });
 
   worker.on("message", (function(_this) {

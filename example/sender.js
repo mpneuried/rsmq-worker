@@ -1,5 +1,5 @@
 (function() {
-  var RSMQWorker, musicA, worker;
+  var RSMQWorker, worker;
 
   RSMQWorker = require("../.");
 
@@ -7,13 +7,12 @@
     autostart: false
   });
 
-  musicA = ["A4|.5", "A4|.5", "A4|.5", "F4|.3", "C5|.1", "A4|.5", "F4|.3", "C5|.1", "A4|1", "E5|.5", "E5|.5", "E5|.5", "F5|.3", "C5|.1", "GS4|.5", "F4|.3", "C5|.1", "A4|1", "end"];
-
   worker.on("ready", (function(_this) {
     return function() {
-      var msg, _i, _len;
-      for (_i = 0, _len = musicA.length; _i < _len; _i++) {
-        msg = musicA[_i];
+      var msg, _i, _len, _ref;
+      _ref = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        msg = _ref[_i];
         console.log("SEND", msg);
         worker.send(msg);
       }
