@@ -18,9 +18,6 @@
     </div>
     <div id="tree"></div>
     <div id="headings">
-      <div class="heading h1">
-        <a href="#rsmq-worker">rsmq-worker</a>
-      </div>
       <div class="heading h2">
         <a href="#install">Install</a>
       </div>
@@ -37,13 +34,13 @@
         <a href="#.start()">.start()</a>
       </div>
       <div class="heading h3">
-        <a href="#.del(%20id%20)">.del( id )</a>
-      </div>
-      <div class="heading h3">
         <a href="#.stop()">.stop()</a>
       </div>
       <div class="heading h3">
         <a href="#.send(%20msg%20%5B%2C%20delay%20%5D%20)">.send( msg [, delay ] )</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.del(%20id%20)">.del( id )</a>
       </div>
       <div class="heading h2">
         <a href="#events">Events</a>
@@ -73,25 +70,23 @@
         <a href="#release%20history">Release History</a>
       </div>
       <div class="heading h2">
+        <a href="#other%20projects">Other projects</a>
+      </div>
+      <div class="heading h2">
         <a href="#the%20mit%20license%20(mit)">The MIT License (MIT)</a>
       </div>
     </div>
   </div>
   <div id="sidebar-toggle"></div>
-  <div id="container"><div class="docs markdown">
-<div class="pilwrap" id="rsmq-worker">
-  <h1>
-    <a href="#rsmq-worker" name="rsmq-worker" class="pilcrow">&#182;</a>
-    rsmq-worker
-  </h1>
-</div>
-
+  <div id="container"><div class="docs markdown"><p><img src="https://trello-attachments.s3.amazonaws.com/5481963992d9ba3848568a1b/600x194/61b3b6117eeb0881c919c6996adb2620/rsmq_worker_small.png" alt="RSMQ-Worker" title="" /></p>
 
 <p><a href="http://travis-ci.org/mpneuried/rsmq-worker"><img src="https://secure.travis-ci.org/mpneuried/rsmq-worker.png?branch=master" alt="Build Status" title="" /></a>
 <a href="https://david-dm.org/mpneuried/rsmq-worker"><img src="https://david-dm.org/mpneuried/rsmq-worker.png" alt="Build Status" title="" /></a>
 <a href="http://badge.fury.io/js/rsmq-worker"><img src="https://badge.fury.io/js/rsmq-worker.png" alt="NPM version" title="" /></a></p>
 
-<p>RSMQ helper to simply implement a worker around the message queue.</p>
+<p>Helper to simply implement a worker <a href="https://github.com/smrchy/rsmq">RSMQ ( Redis Simple Message Queue )</a>.</p>
+
+<p><a href="https://nodei.co/npm/rsmq-worker/"><img src="https://nodei.co/npm/rsmq-worker.png?downloads=true&amp;stars=true" alt="NPM" title="" /></a></p>
 
 
 <div class="pilwrap" id="install">
@@ -123,6 +118,22 @@
 
 
 
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code>  <span class="kd">var</span> <span class="nx">RSMQWorker</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s2">&quot;rsmq-worker&quot;</span> <span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">worker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RSMQWorker</span><span class="p">(</span> <span class="s2">&quot;myqueue&quot;</span> <span class="p">);</span>
+
+  <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">next</span> <span class="p">){</span>
+      <span class="c1">// process your message</span>
+      <span class="nx">next</span><span class="p">()</span>
+  <span class="p">});</span>
+
+  <span class="nx">worker</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</code></pre></div>
+
+
+
 <p><strong>Config</strong> </p>
 
 <ul>
@@ -133,29 +144,13 @@
 <li><strong>options.invisibletime</strong>: <em>( <code>Number</code> optional; default = <code>30</code> )</em> A time in seconds to hide a message after it has been received.</li>
 <li><strong>options.autostart</strong>: <em>( <code>Boolean</code> optional; default = <code>false</code> )</em> Autostart the worker on init</li>
 <li><strong>options.customExceedCheck</strong>: <em>( <code>Function</code> optional; )</em> A custom function, with the raw message <em>(see message format)</em> as argument to build a custom exceed check. If you return a <code>true</code> the message will not exceed. On return <code>false</code> the regular check for <code>maxReceiveCount</code> will be used.</li>
-<li><strong>options.rsmq</strong>: <em>( <code>RedisSMQ</code> optional; default = <code>null</code> )</em> A allready existing rsmq instance to use instead of creating a new client</li>
-<li><strong>options.redis</strong>: <em>( <code>RedisClient</code> optional; default = <code>null</code> )</em> A allready existing redis client instance to use if no <code>rsmq</code> instance has been defiend </li>
-<li><strong>options.redisPrefix</strong>: <em>( <code>String</code> optional; default = <code>""</code> )</em> The redis Prefix for rsmq if  no <code>rsmq</code> instance has been defiend </li>
-<li><strong>options.host</strong>: <em>( <code>String</code> optional; default = <code>"localhost"</code> )</em> Host to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defiend </li>
-<li><strong>options.host</strong>: <em>( <code>Number</code> optional; default = <code>6379</code> )</em> Port to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defiend </li>
-<li><strong>options.options</strong>: <em>( <code>Object</code> optional; default = <code>{}</code> )</em> Options to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defiend </li></ul></li>
+<li><strong>options.rsmq</strong>: <em>( <code>RedisSMQ</code> optional; default = <code>null</code> )</em> A already existing rsmq instance to use instead of creating a new client</li>
+<li><strong>options.redis</strong>: <em>( <code>RedisClient</code> optional; default = <code>null</code> )</em> A already existing redis client instance to use if no <code>rsmq</code> instance has been defined </li>
+<li><strong>options.redisPrefix</strong>: <em>( <code>String</code> optional; default = <code>""</code> )</em> The redis Prefix for rsmq if  no <code>rsmq</code> instance has been defined </li>
+<li><strong>options.host</strong>: <em>( <code>String</code> optional; default = <code>"localhost"</code> )</em> Host to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defined </li>
+<li><strong>options.port</strong>: <em>( <code>Number</code> optional; default = <code>6379</code> )</em> Port to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defined </li>
+<li><strong>options.options</strong>: <em>( <code>Object</code> optional; default = <code>{}</code> )</em> Options to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defined </li></ul></li>
 </ul>
-
-<p><strong>Example:</strong></p>
-
-
-<div class="highlight"><pre><code>  <span class="kd">var</span> <span class="nx">RSMQWorker</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s2">&quot;rsmq-worker&quot;</span> <span class="p">);</span>
-  <span class="kd">var</span> <span class="nx">worker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RSMQWorker</span><span class="p">(</span> <span class="s2">&quot;myqueue&quot;</span> <span class="p">);</span>
-
-  <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">id</span> <span class="p">){</span>
-      <span class="c1">// process your message</span>
-      <span class="nx">next</span><span class="p">()</span>
-  <span class="p">});</span>
-
-  <span class="nx">worker</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
-</code></pre></div>
-
-
 
 
 <div class="pilwrap" id="raw%20message%20format">
@@ -169,7 +164,7 @@
 <p>A message ( e.g. received by the event <code>data</code> or <code>customExceedCheck</code> ) contains the following keys:</p>
 
 <ul>
-<li><strong>msg.message</strong> : <em>( <code>String</code> )</em> The queue message content. You can use complex content by using a stringfied JSON.</li>
+<li><strong>msg.message</strong> : <em>( <code>String</code> )</em> The queue message content. You can use complex content by using a stringified JSON.</li>
 <li><strong>msg.id</strong> : <em>( <code>String</code> )</em> The rsmq internal messag id</li>
 <li><strong>msg.sent</strong> : <em>( <code>Number</code> )</em> Timestamp of when this message was sent / created.</li>
 <li><strong>msg.fr</strong> : <em>( <code>Number</code> )</em> Timestamp of when this message was first received.</li>
@@ -195,27 +190,6 @@
 
 
 <p>If you haven't defined the config <code>autostart</code> to <code>true</code> you have to call the <code>.start()</code> method.</p>
-
-<p><strong>Return</strong></p>
-
-<p><em>( Self )</em>: The instance itself for chaining.</p>
-
-
-<div class="pilwrap" id=".del(%20id%20)">
-  <h3>
-    <a href="#.del(%20id%20)" name=".del(%20id%20)" class="pilcrow">&#182;</a>
-    <code>.del( id )</code>
-  </h3>
-</div>
-
-
-<p>Helper function to simply delete a message after it has been processed.</p>
-
-<p><strong>Arguments</strong></p>
-
-<ul>
-<li><code>id</code> : <em>( <code>String</code> required )</em>: The rsmq message id.</li>
-</ul>
 
 <p><strong>Return</strong></p>
 
@@ -259,6 +233,27 @@
 <p><em>( Self )</em>: The instance itself for chaining.</p>
 
 
+<div class="pilwrap" id=".del(%20id%20)">
+  <h3>
+    <a href="#.del(%20id%20)" name=".del(%20id%20)" class="pilcrow">&#182;</a>
+    <code>.del( id )</code>
+  </h3>
+</div>
+
+
+<p>Helper function to simply delete a message after it has been processed.</p>
+
+<p><strong>Arguments</strong></p>
+
+<ul>
+<li><code>id</code> : <em>( <code>String</code> required )</em>: The rsmq message id.</li>
+</ul>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Self )</em>: The instance itself for chaining.</p>
+
+
 <div class="pilwrap" id="events">
   <h2>
     <a href="#events" name="events" class="pilcrow">&#182;</a>
@@ -294,9 +289,9 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 <ul>
 <li><strong>message</strong> : <em>( <code>String</code> )</em> The queue message content to process. You can use complex content by using a stringfied JSON.</li>
-<li><strong>next</strong> : <em>( <code>Function</code> )</em> A function you have to call when your message has been prcessed. <br />
+<li><strong>next</strong> : <em>( <code>Function</code> )</em> A function you have to call when your message has been processed. <br />
 <strong>Arguments</strong> 
-<ul><li><code>delete</code>: <em>( <code>Boolean</code> optional; default = true )</em> It's possible to prevent the worker from autodelete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config <code>options.customExceedCheck</code></li></ul></li>
+<ul><li><code>delete</code>: <em>( <code>Boolean</code> optional; default = true )</em> It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config <code>options.customExceedCheck</code></li></ul></li>
 <li><strong>msgid</strong> : <em>( <code>String</code> )</em> The message id. This is useful if you want to delete a message manually.</li>
 </ul>
 
@@ -395,7 +390,9 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
     <span class="c1">//</span>
     <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">message</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">id</span> <span class="p">){</span>
+
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="nx">message</span> <span class="p">)</span>
+
         <span class="k">if</span><span class="p">(</span> <span class="nx">message</span> <span class="o">===</span> <span class="s2">&quot;createmessages&quot;</span> <span class="p">){</span>
             <span class="nx">next</span><span class="p">(</span> <span class="kc">false</span> <span class="p">)</span>
             <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;writefile&quot;</span><span class="p">,</span> <span class="nx">filename</span><span class="o">:</span> <span class="s2">&quot;./test.txt&quot;</span><span class="p">,</span> <span class="nx">txt</span><span class="o">:</span> <span class="s2">&quot;Foo Bar&quot;</span> <span class="p">}</span> <span class="p">)</span> <span class="p">);</span>
@@ -442,7 +439,8 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 
 <ul>
-<li>TEST scripts ;-)</li>
+<li>Timeout for message processing</li>
+<li>MORE tests!</li>
 </ul>
 
 
@@ -456,8 +454,33 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 <p>|Version|Date|Description|
 |:--:|:--:|:--|
-|0.1.0|2015-1-16|First working and documented version|
+|0.1.2|2015-1-20|Reorganized code, added code docs and optimized readme|
+|0.1.1|2015-1-17|Added test scripts and optimized repository file list|
+|0.1.0|2015-1-16|First working and documented version
 |0.0.1|2015-1-14|Initial commit|</p>
+
+<p><a href="https://nodei.co/npm/rsmq-worker/"><img src="https://nodei.co/npm-dl/rsmq-worker.png?months=6" alt="NPM" title="" /></a></p>
+
+
+<div class="pilwrap" id="other%20projects">
+  <h2>
+    <a href="#other%20projects" name="other%20projects" class="pilcrow">&#182;</a>
+    Other projects
+  </h2>
+</div>
+
+
+<p>|Name|Description|
+|:--|:--|
+|<a href="https://github.com/smrchy/rsmq"><strong>rsmq</strong></a>|A really simple message queue based on Redis|
+|<a href="https://github.com/tcs-de/nodecache"><strong>node-cache</strong></a>|Simple and fast NodeJS internal caching. Node internal in memory cache like memcached.|
+|<a href="https://github.com/smrchy/redis-sessions"><strong>redis-sessions</strong></a>|An advanced session store for NodeJS and Redis|
+|<a href="https://github.com/mpneuried/connect-redis-sessions"><strong>connect-redis-sessions</strong></a>|A connect or express middleware to simply use the <a href="https://github.com/smrchy/redis-sessions">redis sessions</a>. With <a href="https://github.com/smrchy/redis-sessions">redis sessions</a> you can handle multiple sessions per user_id.|
+|<a href="https://github.com/mpneuried/systemhealth"><strong>systemhealth</strong></a>|Node module to run simple custom checks for your machine or it's connections. It will use <a href="https://github.com/mpneuried/redis-heartbeat">redis-heartbeat</a> to send the current state to redis.|
+|<a href="https://github.com/smrchy/task-queue-worker"><strong>task-queue-worker</strong></a>|A powerful tool for background processing of tasks that are run by making standard http requests.|
+|<a href="https://github.com/mpneuried/soyer"><strong>soyer</strong></a>|Soyer is small lib for serverside use of Google Closure Templates with node.js.|
+|<a href="https://github.com/mpneuried/grunt-soy-compile"><strong>grunt-soy-compile</strong></a>|Compile Goggle Closure Templates ( SOY ) templates inclding the handling of XLIFF language files.|
+|<a href="https://github.com/mpneuried/backlunr"><strong>backlunr</strong></a>|A solution to bring Backbone Collections together with the browser fulltext search engine Lunr.js|</p>
 
 
 <div class="pilwrap" id="the%20mit%20license%20(mit)">

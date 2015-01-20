@@ -4,7 +4,7 @@
 [![Build Status](https://david-dm.org/mpneuried/rsmq-worker.png)](https://david-dm.org/mpneuried/rsmq-worker)
 [![NPM version](https://badge.fury.io/js/rsmq-worker.png)](http://badge.fury.io/js/rsmq-worker)
 
-RSMQ helper to simply implement a worker around the message queue.
+Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https://github.com/smrchy/rsmq).
 
 [![NPM](https://nodei.co/npm/rsmq-worker.png?downloads=true&stars=true)](https://nodei.co/npm/rsmq-worker/)
 
@@ -48,7 +48,7 @@ RSMQ helper to simply implement a worker around the message queue.
 	- **options.redis**: *( `RedisClient` optional; default = `null` )* A already existing redis client instance to use if no `rsmq` instance has been defined 
 	- **options.redisPrefix**: *( `String` optional; default = `""` )* The redis Prefix for rsmq if  no `rsmq` instance has been defined 
 	- **options.host**: *( `String` optional; default = `"localhost"` )* Host to connect to redis if no `rsmq` or `redis` instance has been defined 
-	- **options.host**: *( `Number` optional; default = `6379` )* Port to connect to redis if no `rsmq` or `redis` instance has been defined 
+	- **options.port**: *( `Number` optional; default = `6379` )* Port to connect to redis if no `rsmq` or `redis` instance has been defined 
 	- **options.options**: *( `Object` optional; default = `{}` )* Options to connect to redis if no `rsmq` or `redis` instance has been defined 
 
 
@@ -72,18 +72,6 @@ If you haven't defined the config `autostart` to `true` you have to call the `.s
 
 *( Self )*: The instance itself for chaining.
 
-### `.del( id )`
-
-Helper function to simply delete a message after it has been processed.
-
-**Arguments**
-
-* `id` : *( `String` required )*: The rsmq message id.
-
-**Return**
-
-*( Self )*: The instance itself for chaining.
-
 ### `.stop()`
 
 Stop the receive interval.
@@ -100,6 +88,18 @@ Helper function to simply send a message in the configured queue.
 
 * `filename` : *( `String` required )*: The rsmq message. In best practice it's a stringified JSON with additional data.
 * `delay` : *( `Number` optional; default = `0` )*: The message delay to hide this message for the next `x` seconds.
+
+**Return**
+
+*( Self )*: The instance itself for chaining.
+
+### `.del( id )`
+
+Helper function to simply delete a message after it has been processed.
+
+**Arguments**
+
+* `id` : *( `String` required )*: The rsmq message id.
 
 **Return**
 
@@ -222,13 +222,14 @@ This is an advanced example showing some features in action.
 
 ## Todos/Ideas
 
-- TEST scripts ;-)
-- Code method docs
+- Timeout for message processing
+- MORE tests!
 
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
-|0.1.1|2015-1-??|Added test scripts and optimized repository file list|
+|0.1.2|2015-1-20|Reorganized code, added code docs and optimized readme|
+|0.1.1|2015-1-17|Added test scripts and optimized repository file list|
 |0.1.0|2015-1-16|First working and documented version
 |0.0.1|2015-1-14|Initial commit|
 
