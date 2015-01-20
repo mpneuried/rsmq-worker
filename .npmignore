@@ -1,3 +1,6 @@
 /_src
 /_docs
 Gruntfile.*
+*.coffee
+/advanced_example.js
+/test/

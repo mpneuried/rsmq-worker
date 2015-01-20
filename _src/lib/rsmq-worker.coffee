@@ -10,6 +10,7 @@
 
 # **node modules**
 _ = require("lodash")
+async = require("async")
 RSMQ = require("rsmq")
 
 class rsmqWorker extends require( "mpbasic" )()
@@ -17,12 +18,16 @@ class rsmqWorker extends require( "mpbasic" )()
 	# ## defaults
 	defaults: =>
 		return @extend super,
-			# **rsmqWorker.intervall** *Number[]* An Array of increasing wait times in seconds
-			intervall: [ 0, 1, 5, 10 ]
+			# **rsmqWorker.interval** *Number[]* An Array of increasing wait times in seconds
+			interval: [ 0, 1, 5, 10 ]
 			# **rsmqWorker.maxReceiveCount** *Number* Receive count until a message will be exceeded
 			maxReceiveCount: 10
+			# **rsmqWorker.invisibletime** *Number* A time in seconds to hide a message after it has been received.
+			invisibletime: 30
 			# **rsmqWorker.autostart** *Boolean* Autostart the worker on init
 			autostart: false
+			# **rsmqWorker.customExceedCheck** *Function* A custom function, with the message id and content as argument to build a custom exceed check
+			customExceedCheck: null
 			
 			# **rsmqWorker.rsmq** *RedisSMQ* A allready existing rsmq instance to use instead of creating a new client
 			rsmq: null
@@ -78,10 +83,10 @@ class rsmqWorker extends require( "mpbasic" )()
 		# handle redis disconnect
 		@queue.on "disconnect", ( err )=>
 			@warning "redis connection lost"
-			_intervall = @timeout?
+			_interval = @timeout?
 			if not @reconnectActive
 				@reconnectActive = true
-				@stop() if _intervall
+				@stop() if _interval
 
 				# on reconnect
 				@queue.once "connect", =>
@@ -89,7 +94,7 @@ class rsmqWorker extends require( "mpbasic" )()
 					@reconnectActive = false
 					@queue = new @_getRsmq( true )
 					@_runOfflineMessages()
-					@intervall() if _intervall
+					@interval() if _interval
 					@warning "redis connection reconnected"
 					return
 
@@ -141,7 +146,9 @@ class rsmqWorker extends require( "mpbasic" )()
 	_initQueue: =>
 		@queue.createQueue qname: @queuename, ( err, resp )=>
 			if err?.name is "queueExists"
+				@ready = true
 				@emit "ready"
+				@_runOfflineMessages()
 				return
 
 			throw err if err
@@ -153,6 +160,9 @@ class rsmqWorker extends require( "mpbasic" )()
 
 			@ready = true
 			@emit "ready"
+
+			# after the ready has been fired run saved messages
+			@_runOfflineMessages()
 			return
 		return
 
@@ -167,10 +177,10 @@ class rsmqWorker extends require( "mpbasic" )()
 	###
 	start: =>
 		if @ready
-			@intervall()
+			@interval()
 			return
-		@on "ready", @intervall
-		return
+		@on "ready", @interval
+		return @
 
 
 	send: ( msg, delay = 0 )=>
@@ -179,7 +189,7 @@ class rsmqWorker extends require( "mpbasic" )()
 		else
 			@debug "store message during redis offline time", msg, delay
 			@offlineQueue.push( msg: msg, delay: delay )
-		return
+		return @
 
 	_send: ( msg, delay )=>
 		@queue.sendMessage { qname: @queuename, message: msg, delay: delay }, ( err, resp )=>
@@ -203,25 +213,25 @@ class rsmqWorker extends require( "mpbasic" )()
 				_aq.push sndData
 		return
 
-	receive: ( _useIntervall = false )=>
+	receive: ( _useInterval = false )=>
 		@debug "start receive"
-		@queue.receiveMessage qname: @queuename, ( err, msg )=>
+		@queue.receiveMessage { qname: @queuename, vt: @config.invisibletime }, ( err, msg )=>
 			@debug "received", msg
 			if err
-				@emit( "next", true ) if _useIntervall
+				@emit( "next", true ) if _useInterval
 				@error "receive queue message", err
 				return
 
 			if msg?.id
 				@emit "data", msg
 				_id = msg.id
-				_fnNext = ( err, del = true )=>
+				_fnNext = ( del = true )=>
 					@del( _id ) if del
-					@emit( "next" ) if _useIntervall
+					@emit( "next" ) if _useInterval
 					return
 				@emit "message", msg.message, _fnNext, _id
 			else
-				@emit( "next", true ) if _useIntervall
+				@emit( "next", true ) if _useInterval
 			return
 		return
 
@@ -233,17 +243,20 @@ class rsmqWorker extends require( "mpbasic" )()
 			@debug "delete queue message", resp
 			@emit( "deleted", id )
 			return
-		return
+		return @
 
 	check: ( msg )=>
+		if @config.customExceedCheck?( msg )
+			return
+
 		if msg.rc >= @config.maxReceiveCount
-			@emit "exceeded", msg.message, msg.rc
+			@emit "exceeded", msg
 			@warning "message received more than #{@config.maxReceiveCount} times. So delete it", msg
 			@del( msg.id )
 		return
 
-	intervall: =>
-		@debug "run intervall"
+	interval: =>
+		@debug "run interval"
 		@receive( true )
 		return
 
@@ -251,26 +264,26 @@ class rsmqWorker extends require( "mpbasic" )()
 		if not wait
 			@waitCount = 0
 
-		if _.isArray( @config.intervall )
-			_timeout = if @config.intervall[ @waitCount ]? then @config.intervall[ @waitCount ] else _.last( @config.intervall )
+		if _.isArray( @config.interval )
+			_timeout = if @config.interval[ @waitCount ]? then @config.interval[ @waitCount ] else _.last( @config.interval )
 		else
 			if wait
-				_timeout = @config.intervall
+				_timeout = @config.interval
 			else
 				_timeout = 0
 		
 		@debug "wait", @waitCount, _timeout * 1000
 		if _timeout >= 0
 			clearTimeout( @timeout ) if @timeout?
-			@timeout = _.delay( @intervall, _timeout * 1000 )
+			@timeout = _.delay( @interval, _timeout * 1000 )
 			@waitCount++
 		else
-			@intervall()
+			@interval()
 		return
 
 	stop: =>
 		clearTimeout( @timeout ) if @timeout?
-		return
+		return @
 
 #export this class
 module.exports = rsmqWorker
