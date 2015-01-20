@@ -1,11 +1,12 @@
-rsmq-worker
-============
+![RSMQ-Worker](https://trello-attachments.s3.amazonaws.com/5481963992d9ba3848568a1b/600x194/61b3b6117eeb0881c919c6996adb2620/rsmq_worker_small.png)
 
 [![Build Status](https://secure.travis-ci.org/mpneuried/rsmq-worker.png?branch=master)](http://travis-ci.org/mpneuried/rsmq-worker)
 [![Build Status](https://david-dm.org/mpneuried/rsmq-worker.png)](https://david-dm.org/mpneuried/rsmq-worker)
 [![NPM version](https://badge.fury.io/js/rsmq-worker.png)](http://badge.fury.io/js/rsmq-worker)
 
 RSMQ helper to simply implement a worker around the message queue.
+
+[![NPM](https://nodei.co/npm/rsmq-worker.png?downloads=true&stars=true)](https://nodei.co/npm/rsmq-worker/)
 
 ## Install
 
@@ -17,7 +18,6 @@ RSMQ helper to simply implement a worker around the message queue.
 
 ```js
   new RSMQWorker( queuename, options );
-
 ```
 
 **Config** 
@@ -29,12 +29,12 @@ RSMQ helper to simply implement a worker around the message queue.
 	- **options.invisibletime**: *( `Number` optional; default = `30` )* A time in seconds to hide a message after it has been received.
 	- **options.autostart**: *( `Boolean` optional; default = `false` )* Autostart the worker on init
 	- **options.customExceedCheck**: *( `Function` optional; )* A custom function, with the raw message *(see message format)* as argument to build a custom exceed check. If you return a `true` the message will not exceed. On return `false` the regular check for `maxReceiveCount` will be used.
-	- **options.rsmq**: *( `RedisSMQ` optional; default = `null` )* A allready existing rsmq instance to use instead of creating a new client
-	- **options.redis**: *( `RedisClient` optional; default = `null` )* A allready existing redis client instance to use if no `rsmq` instance has been defiend 
-	- **options.redisPrefix**: *( `String` optional; default = `""` )* The redis Prefix for rsmq if  no `rsmq` instance has been defiend 
-	- **options.host**: *( `String` optional; default = `"localhost"` )* Host to connect to redis if no `rsmq` or `redis` instance has been defiend 
-	- **options.host**: *( `Number` optional; default = `6379` )* Port to connect to redis if no `rsmq` or `redis` instance has been defiend 
-	- **options.options**: *( `Object` optional; default = `{}` )* Options to connect to redis if no `rsmq` or `redis` instance has been defiend 
+	- **options.rsmq**: *( `RedisSMQ` optional; default = `null` )* A already existing rsmq instance to use instead of creating a new client
+	- **options.redis**: *( `RedisClient` optional; default = `null` )* A already existing redis client instance to use if no `rsmq` instance has been defined 
+	- **options.redisPrefix**: *( `String` optional; default = `""` )* The redis Prefix for rsmq if  no `rsmq` instance has been defined 
+	- **options.host**: *( `String` optional; default = `"localhost"` )* Host to connect to redis if no `rsmq` or `redis` instance has been defined 
+	- **options.host**: *( `Number` optional; default = `6379` )* Port to connect to redis if no `rsmq` or `redis` instance has been defined 
+	- **options.options**: *( `Object` optional; default = `{}` )* Options to connect to redis if no `rsmq` or `redis` instance has been defined 
 
 **Example:**
 
@@ -54,7 +54,7 @@ RSMQ helper to simply implement a worker around the message queue.
 
 A message ( e.g. received by the event `data` or `customExceedCheck` ) contains the following keys:
 
-- **msg.message** : *( `String` )* The queue message content. You can use complex content by using a stringfied JSON.
+- **msg.message** : *( `String` )* The queue message content. You can use complex content by using a stringified JSON.
 - **msg.id** : *( `String` )* The rsmq internal messag id
 - **msg.sent** : *( `Number` )* Timestamp of when this message was sent / created.
 - **msg.fr** : *( `Number` )* Timestamp of when this message was first received.
@@ -122,9 +122,9 @@ worker.on( "message", function( message, next, msgid ){
 **Arguments** 
 
 - **message** : *( `String` )* The queue message content to process. You can use complex content by using a stringfied JSON.
-- **next** : *( `Function` )* A function you have to call when your message has been prcessed.  
+- **next** : *( `Function` )* A function you have to call when your message has been processed.  
   **Arguments** 
-  * `delete`: *( `Boolean` optional; default = true )* It's possible to prevent the worker from autodelete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config `options.customExceedCheck`
+  * `delete`: *( `Boolean` optional; default = true )* It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config `options.customExceedCheck`
 - **msgid** : *( `String` )* The message id. This is useful if you want to delete a message manually.
 
 ### `ready`
@@ -224,9 +224,25 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
-|0.1.1|2015-1-??|Added test scripts and optimized repo file list|
-|0.1.0|2015-1-16|First working and documented version|
+|0.1.1|2015-1-??|Added test scripts and optimized repository file list|
+|0.1.0|2015-1-16|First working and documented version
 |0.0.1|2015-1-14|Initial commit|
+
+[![NPM](https://nodei.co/npm-dl/rsmq-worker.png?months=6)](https://nodei.co/npm/rsmq-worker/)
+
+## Other projects
+
+|Name|Description|
+|:--|:--|
+|[**rsmq**](https://github.com/smrchy/rsmq)|A really simple message queue based on Redis|
+|[**node-cache**](https://github.com/tcs-de/nodecache)|Simple and fast NodeJS internal caching. Node internal in memory cache like memcached.|
+|[**redis-sessions**](https://github.com/smrchy/redis-sessions)|An advanced session store for NodeJS and Redis|
+|[**connect-redis-sessions**](https://github.com/mpneuried/connect-redis-sessions)|A connect or express middleware to simply use the [redis sessions](https://github.com/smrchy/redis-sessions). With [redis sessions](https://github.com/smrchy/redis-sessions) you can handle multiple sessions per user_id.|
+|[**systemhealth**](https://github.com/mpneuried/systemhealth)|Node module to run simple custom checks for your machine or it's connections. It will use [redis-heartbeat](https://github.com/mpneuried/redis-heartbeat) to send the current state to redis.|
+|[**task-queue-worker**](https://github.com/smrchy/task-queue-worker)|A powerful tool for background processing of tasks that are run by making standard http requests.|
+|[**soyer**](https://github.com/mpneuried/soyer)|Soyer is small lib for serverside use of Google Closure Templates with node.js.|
+|[**grunt-soy-compile**](https://github.com/mpneuried/grunt-soy-compile)|Compile Goggle Closure Templates ( SOY ) templates inclding the handling of XLIFF language files.|
+|[**backlunr**](https://github.com/mpneuried/backlunr)|A solution to bring Backbone Collections together with the browser fulltext search engine Lunr.js|
 
 ## The MIT License (MIT)
 
