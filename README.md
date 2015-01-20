@@ -20,6 +20,21 @@ RSMQ helper to simply implement a worker around the message queue.
   new RSMQWorker( queuename, options );
 ```
 
+
+**Example:**
+
+```js
+  var RSMQWorker = require( "rsmq-worker" );
+  var worker = new RSMQWorker( "myqueue" );
+
+  worker.on( "message", function( msg, next ){
+  	// process your message
+  	next()
+  });
+
+  worker.start();
+```
+
 **Config** 
 
 - **queuename**: *( `String` required )* The queuename to pull the messages
@@ -36,19 +51,6 @@ RSMQ helper to simply implement a worker around the message queue.
 	- **options.host**: *( `Number` optional; default = `6379` )* Port to connect to redis if no `rsmq` or `redis` instance has been defined 
 	- **options.options**: *( `Object` optional; default = `{}` )* Options to connect to redis if no `rsmq` or `redis` instance has been defined 
 
-**Example:**
-
-```js
-  var RSMQWorker = require( "rsmq-worker" );
-  var worker = new RSMQWorker( "myqueue" );
-
-  worker.on( "message", function( msg, next, id ){
-  	// process your message
-  	next()
-  });
-
-  worker.start();
-```
 
 ## Raw message format
 
@@ -181,7 +183,9 @@ This is an advanced example showing some features in action.
 
 	//
 	worker.on( "message", function( message, next, id ){
+		
 		console.log( "message", message )
+		
 		if( message === "createmessages" ){
 			next( false )
 			worker.send( JSON.stringify( { type: "writefile", filename: "./test.txt", txt: "Foo Bar" } ) );
