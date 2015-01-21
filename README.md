@@ -223,6 +223,7 @@ This is an advanced example showing some features in action.
 ## Todos/Ideas
 
 - Timeout for message processing
+- Handle errors better
 - MORE tests!
 
 ## Release History
