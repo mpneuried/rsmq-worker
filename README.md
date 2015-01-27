@@ -43,6 +43,7 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
 	- **options.maxReceiveCount**: *( `Number` optional; default = `10` )* Receive count until a message will be exceeded
 	- **options.invisibletime**: *( `Number` optional; default = `30` )* A time in seconds to hide a message after it has been received.
 	- **options.autostart**: *( `Boolean` optional; default = `false` )* Autostart the worker on init
+	- **options.timeout**: *( `Number` optional; default = `3000` )* Message processing timeout in `ms`. So you have to call the `next()` method of `message` at least after e.g. 3000ms. If set to `0` it'll wait until infinity.
 	- **options.customExceedCheck**: *( `Function` optional; )* A custom function, with the raw message *(see message format)* as argument to build a custom exceed check. If you return a `true` the message will not exceed. On return `false` the regular check for `maxReceiveCount` will be used.
 	- **options.rsmq**: *( `RedisSMQ` optional; default = `null` )* A already existing rsmq instance to use instead of creating a new client
 	- **options.redis**: *( `RedisClient` optional; default = `null` )* A already existing redis client instance to use if no `rsmq` instance has been defined 
@@ -157,6 +158,23 @@ Fired after a message has been exceeded and immediately will be deleted.
 
 - **msg** : *( `String` )* The raw rsmq message. ( See section Raw message format )
 
+### `timeout`
+
+Fired if a message processing exceeds the configured timeout.
+
+**Arguments** 
+
+- **msg** : *( `String` )* The raw rsmq message. ( See section Raw message format )
+
+### `error`
+
+Fired if a message processing throws an error.
+
+**Arguments** 
+
+- **err** : *( `Error|Any` )* The thrown error
+- **msg** : *( `String` )* The raw rsmq message. ( See section Raw message format )
+
 ## Advanced example
 
 This is an advanced example showing some features in action.
@@ -222,17 +240,16 @@ This is an advanced example showing some features in action.
 
 ## Todos/Ideas
 
-- Timeout for message processing
-- Handle errors better
 - MORE tests!
 
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
-|0.1.2|2015-1-20|Reorganized code, added code docs and optimized readme|
-|0.1.1|2015-1-17|Added test scripts and optimized repository file list|
-|0.1.0|2015-1-16|First working and documented version
-|0.0.1|2015-1-14|Initial commit|
+|0.2.0|2015-01-27|Added timeout, better error handling and send callback|
+|0.1.2|2015-01-20|Reorganized code, added code docs and optimized readme|
+|0.1.1|2015-01-17|Added test scripts and optimized repository file list|
+|0.1.0|2015-01-16|First working and documented version
+|0.0.1|2015-01-14|Initial commit|
 
 [![NPM](https://nodei.co/npm-dl/rsmq-worker.png?months=6)](https://nodei.co/npm/rsmq-worker/)
 

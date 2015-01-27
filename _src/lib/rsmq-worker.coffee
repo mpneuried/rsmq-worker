@@ -28,6 +28,8 @@ class RSMQWorker extends require( "mpbasic" )()
 			autostart: false
 			# **RSMQWorker.customExceedCheck** *Function* A custom function, with the message id and content as argument to build a custom exceed check
 			customExceedCheck: null
+			# **RSMQWorker.timeout** *Number* Message processing timeout in `ms`. If set to `0` it'll wait until infinity.
+			timeout: 3000
 			
 			# **RSMQWorker.rsmq** *RedisSMQ* A allready existing rsmq instance to use instead of creating a new client
 			rsmq: null
@@ -110,17 +112,18 @@ class RSMQWorker extends require( "mpbasic" )()
 	
 	@param { String } msg The message content 
 	@param { Number } [delay=0] The message delay to hide this message for the next `x` seconds.
+	@param { Function } [cb] A optional callback to get a secure response for a successful send.
 	
 	@return { RSMQWorker } The instance itself for chaining. 
 	
 	@api public
 	###
-	send: ( msg, delay = 0 )=>
+	send: ( msg, delay = 0, cb )=>
 		if @queue.connected
-			@_send( msg, delay )
+			@_send( msg, delay, cb )
 		else
 			@debug "store message during redis offline time", msg, delay
-			@offlineQueue.push( msg: msg, delay: delay )
+			@offlineQueue.push( msg: msg, delay: delay, cb: cb )
 		return @
 
 	###
@@ -254,15 +257,18 @@ class RSMQWorker extends require( "mpbasic" )()
 	
 	@param { String } msg The message content 
 	@param { Number } delay The message delay to hide this message for the next `x` seconds.
+	@param { Function } [cb] A optional callback function
 	
 	@api private
 	###
-	_send: ( msg, delay )=>
+	_send: ( msg, delay, cb )=>
 		@queue.sendMessage { qname: @queuename, message: msg, delay: delay }, ( err, resp )=>
 			if err
 				@error "send pending queue message", err
+				cb( err ) if cb? and _.isFunction( cb )
 				return
 			@emit "new", resp
+			cb( null, resp ) if cb? and _.isFunction( cb )
 			return
 		return
 
@@ -279,7 +285,7 @@ class RSMQWorker extends require( "mpbasic" )()
 		if @offlineQueue.length
 			_aq = async.queue( ( sndData, cb )=>
 				@debug "run offline stored message", arguments
-				@_send( sndData.msg, sndData.delay )
+				@_send( sndData.msg, sndData.delay, sndData.cb )
 				cb()
 				return
 			, 3 )
@@ -310,12 +316,29 @@ class RSMQWorker extends require( "mpbasic" )()
 
 			if msg?.id
 				@emit "data", msg
-				_id = msg.id
-				_fnNext = ( del = true )=>
+				_id = msg.id#
+
+				# add a processing timeout
+				if @config.timeout > 0
+					timeout = setTimeout( =>
+						@warning "timeout", msg
+						@emit "timeout", msg
+						_fnNext( false )
+						return
+					, @config.timeout )
+
+				_fnNext = _.once ( del = true )=>
+					clearTimeout( timeout ) if timeout?
 					@del( _id ) if del
 					@emit( "next" ) if _useInterval
 					return
-				@emit "message", msg.message, _fnNext, _id
+				try
+					@emit "message", msg.message, _fnNext, _id
+				catch _err
+					@error "error", _err
+					@emit "error", _err, msg
+					_fnNext( false )
+					return
 			else
 				@emit( "next", true ) if _useInterval
 			return
