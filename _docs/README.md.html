@@ -148,6 +148,7 @@
 <ul><li><strong>options.interval</strong>: <em>( <code>Number[]</code> optional; default = <code>[ 0, 1, 5, 10 ]</code> )</em> An Array of increasing wait times in seconds</li>
 <li><strong>options.maxReceiveCount</strong>: <em>( <code>Number</code> optional; default = <code>10</code> )</em> Receive count until a message will be exceeded</li>
 <li><strong>options.invisibletime</strong>: <em>( <code>Number</code> optional; default = <code>30</code> )</em> A time in seconds to hide a message after it has been received.</li>
+<li><strong>options.defaultDelay</strong>: <em>( <code>Number</code> optional; default = <code>1</code> )</em> The default delay in seconds for for sending new messages to the queue.</li>
 <li><strong>options.autostart</strong>: <em>( <code>Boolean</code> optional; default = <code>false</code> )</em> Autostart the worker on init</li>
 <li><strong>options.timeout</strong>: <em>( <code>Number</code> optional; default = <code>3000</code> )</em> Message processing timeout in <code>ms</code>. So you have to call the <code>next()</code> method of <code>message</code> at least after e.g. 3000ms. If set to <code>0</code> it'll wait until infinity.</li>
 <li><strong>options.customExceedCheck</strong>: <em>( <code>Function</code> optional; )</em> A custom function, with the raw message <em>(see message format)</em> as argument to build a custom exceed check. If you return a <code>true</code> the message will not exceed. On return <code>false</code> the regular check for <code>maxReceiveCount</code> will be used.</li>
@@ -495,6 +496,7 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 <p>|Version|Date|Description|
 |:--:|:--:|:--|
+|0.2.1|2015-01-27|added option <code>defaultDelay</code> and optimized argumtes of the <code>send</code> method|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|
 |0.1.2|2015-01-20|Reorganized code, added code docs and optimized readme|
 |0.1.1|2015-01-17|Added test scripts and optimized repository file list|

@@ -24,6 +24,8 @@ class RSMQWorker extends require( "mpbasic" )()
 			maxReceiveCount: 10
 			# **RSMQWorker.invisibletime** *Number* A time in seconds to hide a message after it has been received.
 			invisibletime: 30
+			# **RSMQWorker.defaultDelay** *Number* The default delay in seconds for for sending new messages to the queue.
+			defaultDelay: 1
 			# **RSMQWorker.autostart** *Boolean* Autostart the worker on init
 			autostart: false
 			# **RSMQWorker.customExceedCheck** *Function* A custom function, with the message id and content as argument to build a custom exceed check
@@ -118,7 +120,10 @@ class RSMQWorker extends require( "mpbasic" )()
 	
 	@api public
 	###
-	send: ( msg, delay = 0, cb )=>
+	send: ( msg, args..., cb )=>
+		[ delay ] = args
+		if not delay?
+			delay = @config.defaultDelay
 		if @queue.connected
 			@_send( msg, delay, cb )
 		else

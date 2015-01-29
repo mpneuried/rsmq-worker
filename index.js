@@ -1,5 +1,5 @@
 (function() {
-  exports.version = '0.2.0';
+  exports.version = '0.2.1';
 
   module.exports = require('./lib/rsmq-worker');
 

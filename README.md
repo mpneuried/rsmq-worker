@@ -42,6 +42,7 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
 	- **options.interval**: *( `Number[]` optional; default = `[ 0, 1, 5, 10 ]` )* An Array of increasing wait times in seconds
 	- **options.maxReceiveCount**: *( `Number` optional; default = `10` )* Receive count until a message will be exceeded
 	- **options.invisibletime**: *( `Number` optional; default = `30` )* A time in seconds to hide a message after it has been received.
+	- **options.defaultDelay**: *( `Number` optional; default = `1` )* The default delay in seconds for for sending new messages to the queue.
 	- **options.autostart**: *( `Boolean` optional; default = `false` )* Autostart the worker on init
 	- **options.timeout**: *( `Number` optional; default = `3000` )* Message processing timeout in `ms`. So you have to call the `next()` method of `message` at least after e.g. 3000ms. If set to `0` it'll wait until infinity.
 	- **options.customExceedCheck**: *( `Function` optional; )* A custom function, with the raw message *(see message format)* as argument to build a custom exceed check. If you return a `true` the message will not exceed. On return `false` the regular check for `maxReceiveCount` will be used.
@@ -245,6 +246,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.2.1|2015-01-27|added option `defaultDelay` and optimized argumtes of the `send` method|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|
 |0.1.2|2015-01-20|Reorganized code, added code docs and optimized readme|
 |0.1.1|2015-01-17|Added test scripts and optimized repository file list|
