@@ -1,9 +1,10 @@
 os:
-- linux
+  - linux
 services:
-- redis-server
+  - redis-server
 language: node_js
 node_js:
-- 0.10
+  - 0.10
 before_script:
-- "npm install -g mocha grunt-cli"
+  - "npm install -g mocha grunt-cli"
+  - "grunt build"

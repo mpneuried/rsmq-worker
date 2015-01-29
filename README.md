@@ -255,6 +255,8 @@ This is an advanced example showing some features in action.
 
 [![NPM](https://nodei.co/npm-dl/rsmq-worker.png?months=6)](https://nodei.co/npm/rsmq-worker/)
 
+> Initially Generated with [generator-mpnodemodule](https://github.com/mpneuried/generator-mpnodemodule)
+
 ## Other projects
 
 |Name|Description|
