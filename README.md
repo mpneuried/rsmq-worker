@@ -246,7 +246,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
-|0.2.1|2015-01-27|added option `defaultDelay` and optimized argumtes of the `send` method|
+|0.2.2|2015-01-27|added option `defaultDelay` and optimized argumtes of the `send` method; fixed travis.yml|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|
 |0.1.2|2015-01-20|Reorganized code, added code docs and optimized readme|
 |0.1.1|2015-01-17|Added test scripts and optimized repository file list|
