@@ -32,6 +32,17 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
   	next()
   });
 
+  // optional error listeners
+  worker.on('error', function( err, msg ){
+      console.log( "ERROR", err, msg.id );
+  });
+  worker.on('exceeded', function( msg ){
+      console.log( "EXCEEDED", msg.id );
+  });
+  worker.on('timeout', function( msg ){
+      console.log( "TIMEOUT", msg.id, msg.rc );
+  });
+
   worker.start();
 ```
 
@@ -128,7 +139,7 @@ worker.on( "message", function( message, next, msgid ){
 - **message** : *( `String` )* The queue message content to process. You can use complex content by using a stringfied JSON.
 - **next** : *( `Function` )* A function you have to call when your message has been processed.  
   **Arguments** 
-  * `delete`: *( `Boolean` optional; default = true )* It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config `options.customExceedCheck`
+  * `delete`: *( `Boolean|Error` optional; default = true )* `Error`: If you return an error it will emited as error evebt; `Boolean`: It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config `options.customExceedCheck`
 - **msgid** : *( `String` )* The message id. This is useful if you want to delete a message manually.
 
 ### `ready`
@@ -192,6 +203,7 @@ This is an advanced example showing some features in action.
 		return false
 	}
 
+	
 	var worker = new RSMQWorker( "myqueue", {
 		interval: [ .1, 1 ],				// wait 100ms between every receive and step up to 1,3 on empty receives
 		invisibletime: 2,						// hide received message for 5 sec
@@ -200,10 +212,21 @@ This is an advanced example showing some features in action.
 		customExceedCheck: fnCheck	// set the custom exceed check
 	});
 
+	// Listen to erros
+	worker.on('error', function( err, msg ){
+	    console.log( "ERROR", err, msg.id );
+	});
+	worker.on('exceeded', function( msg ){
+	    console.log( "EXCEEDED", msg.id );
+	});
+	worker.on('timeout', function( msg ){
+	    console.log( "TIMEOUT", msg.id, msg.rc );
+	});
+
 	//
 	worker.on( "message", function( message, next, id ){
 		
-		console.log( "message", message )
+		console.log( "message", message );
 		
 		if( message === "createmessages" ){
 			next( false )
@@ -217,7 +240,7 @@ This is an advanced example showing some features in action.
 			case "writefile": 
 				fs.writeFile( _data.filename, _data.txt, function( err ){
 					if( err ){
-						console.error( err )
+						next( err );
 					}else{
 						next()
 					}
@@ -226,7 +249,7 @@ This is an advanced example showing some features in action.
 			case "deletefile": 
 				fs.unlink( _data.filename, function( err ){
 					if( err ){
-						console.error( err )
+						next( err );
 					}else{
 						next()
 					}
@@ -246,6 +269,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.0|2015-02-16|It's now possible to return a erorr as first argument of `next`. This will lead to an error emit + optimized readme|
 |0.2.2|2015-01-27|added option `defaultDelay` and optimized argumtes of the `send` method; fixed travis.yml|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|
 |0.1.2|2015-01-20|Reorganized code, added code docs and optimized readme|
@@ -262,8 +286,10 @@ This is an advanced example showing some features in action.
 |Name|Description|
 |:--|:--|
 |[**rsmq**](https://github.com/smrchy/rsmq)|A really simple message queue based on Redis|
+|[**redis-notifications**](https://github.com/mpneuried/redis-notifications)|A redis based notification engine. It implements the rsmq-worker to safely create notifications and recurring reports.|
 |[**node-cache**](https://github.com/tcs-de/nodecache)|Simple and fast NodeJS internal caching. Node internal in memory cache like memcached.|
 |[**redis-sessions**](https://github.com/smrchy/redis-sessions)|An advanced session store for NodeJS and Redis|
+|[**obj-schema**](https://github.com/mpneuried/obj-schema)|Simple module to validate an object by a predefined schema|
 |[**connect-redis-sessions**](https://github.com/mpneuried/connect-redis-sessions)|A connect or express middleware to simply use the [redis sessions](https://github.com/smrchy/redis-sessions). With [redis sessions](https://github.com/smrchy/redis-sessions) you can handle multiple sessions per user_id.|
 |[**systemhealth**](https://github.com/mpneuried/systemhealth)|Node module to run simple custom checks for your machine or it's connections. It will use [redis-heartbeat](https://github.com/mpneuried/redis-heartbeat) to send the current state to redis.|
 |[**task-queue-worker**](https://github.com/smrchy/task-queue-worker)|A powerful tool for background processing of tasks that are run by making standard http requests.|

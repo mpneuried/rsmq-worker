@@ -333,8 +333,13 @@ class RSMQWorker extends require( "mpbasic" )()
 					, @config.timeout )
 
 				_fnNext = _.once ( del = true )=>
+					if _.isBoolean( del ) or _.isNumber( del )
+						@del( _id ) if del
+					else if del?
+						# if there is a return value ant it's not a boolean or number i asume it's an error
+						@emit "error", del, msg
+
 					clearTimeout( timeout ) if timeout?
-					@del( _id ) if del
 					@emit( "next" ) if _useInterval
 					return
 				try
