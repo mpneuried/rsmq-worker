@@ -270,7 +270,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
-|0.3.1|2015-02-23|changed default prefix/namespace;|
+|0.3.2|2015-02-23|changed default prefix/namespace;|
 |0.3.0|2015-02-16|It's now possible to return a erorr as first argument of `next`. This will lead to an error emit + optimized readme|
 |0.2.2|2015-01-27|added option `defaultDelay` and optimized argumtes of the `send` method; fixed travis.yml|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|
