@@ -135,6 +135,17 @@
       <span class="nx">next</span><span class="p">()</span>
   <span class="p">});</span>
 
+  <span class="c1">// optional error listeners</span>
+  <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">msg</span> <span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
+  <span class="p">});</span>
+  <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;exceeded&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;EXCEEDED&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
+  <span class="p">});</span>
+  <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;TIMEOUT&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">rc</span> <span class="p">);</span>
+  <span class="p">});</span>
+
   <span class="nx">worker</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
 </code></pre></div>
 
@@ -154,7 +165,7 @@
 <li><strong>options.customExceedCheck</strong>: <em>( <code>Function</code> optional; )</em> A custom function, with the raw message <em>(see message format)</em> as argument to build a custom exceed check. If you return a <code>true</code> the message will not exceed. On return <code>false</code> the regular check for <code>maxReceiveCount</code> will be used.</li>
 <li><strong>options.rsmq</strong>: <em>( <code>RedisSMQ</code> optional; default = <code>null</code> )</em> A already existing rsmq instance to use instead of creating a new client</li>
 <li><strong>options.redis</strong>: <em>( <code>RedisClient</code> optional; default = <code>null</code> )</em> A already existing redis client instance to use if no <code>rsmq</code> instance has been defined </li>
-<li><strong>options.redisPrefix</strong>: <em>( <code>String</code> optional; default = <code>""</code> )</em> The redis Prefix for rsmq if  no <code>rsmq</code> instance has been defined </li>
+<li><strong>options.redisPrefix</strong>: <em>( <code>String</code> optional; default = <code>""</code> )</em> The redis prefix/namespace for rsmq if no <code>rsmq</code> instance has been defined. This has to match the option <code>ns</code> of RSMQ.</li>
 <li><strong>options.host</strong>: <em>( <code>String</code> optional; default = <code>"localhost"</code> )</em> Host to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defined </li>
 <li><strong>options.port</strong>: <em>( <code>Number</code> optional; default = <code>6379</code> )</em> Port to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defined </li>
 <li><strong>options.options</strong>: <em>( <code>Object</code> optional; default = <code>{}</code> )</em> Options to connect to redis if no <code>rsmq</code> or <code>redis</code> instance has been defined </li></ul></li>
@@ -299,7 +310,7 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 <li><strong>message</strong> : <em>( <code>String</code> )</em> The queue message content to process. You can use complex content by using a stringfied JSON.</li>
 <li><strong>next</strong> : <em>( <code>Function</code> )</em> A function you have to call when your message has been processed. <br />
 <strong>Arguments</strong> 
-<ul><li><code>delete</code>: <em>( <code>Boolean</code> optional; default = true )</em> It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config <code>options.customExceedCheck</code></li></ul></li>
+<ul><li><code>delete</code>: <em>( <code>Boolean|Error</code> optional; default = true )</em> <code>Error</code>: If you return an error it will emited as error evebt; <code>Boolean</code>: It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config <code>options.customExceedCheck</code></li></ul></li>
 <li><strong>msgid</strong> : <em>( <code>String</code> )</em> The message id. This is useful if you want to delete a message manually.</li>
 </ul>
 
@@ -423,6 +434,7 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
         <span class="k">return</span> <span class="kc">false</span>
     <span class="p">}</span>
 
+
     <span class="kd">var</span> <span class="nx">worker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">RSMQWorker</span><span class="p">(</span> <span class="s2">&quot;myqueue&quot;</span><span class="p">,</span> <span class="p">{</span>
         <span class="nx">interval</span><span class="o">:</span> <span class="p">[</span> <span class="p">.</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">],</span>                <span class="c1">// wait 100ms between every receive and step up to 1,3 on empty receives</span>
         <span class="nx">invisibletime</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>                       <span class="c1">// hide received message for 5 sec</span>
@@ -431,10 +443,21 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
         <span class="nx">customExceedCheck</span><span class="o">:</span> <span class="nx">fnCheck</span>  <span class="c1">// set the custom exceed check</span>
     <span class="p">});</span>
 
+    <span class="c1">// Listen to erros</span>
+    <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">msg</span> <span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
+    <span class="p">});</span>
+    <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;exceeded&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;EXCEEDED&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
+    <span class="p">});</span>
+    <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;TIMEOUT&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">rc</span> <span class="p">);</span>
+    <span class="p">});</span>
+
     <span class="c1">//</span>
     <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">message</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">id</span> <span class="p">){</span>
 
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="nx">message</span> <span class="p">)</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="nx">message</span> <span class="p">);</span>
 
         <span class="k">if</span><span class="p">(</span> <span class="nx">message</span> <span class="o">===</span> <span class="s2">&quot;createmessages&quot;</span> <span class="p">){</span>
             <span class="nx">next</span><span class="p">(</span> <span class="kc">false</span> <span class="p">)</span>
@@ -448,7 +471,7 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
             <span class="k">case</span> <span class="s2">&quot;writefile&quot;</span><span class="o">:</span> 
                 <span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span> <span class="nx">_data</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span> <span class="nx">_data</span><span class="p">.</span><span class="nx">txt</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
                     <span class="k">if</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
-                        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">err</span> <span class="p">)</span>
+                        <span class="nx">next</span><span class="p">(</span> <span class="nx">err</span> <span class="p">);</span>
                     <span class="p">}</span><span class="k">else</span><span class="p">{</span>
                         <span class="nx">next</span><span class="p">()</span>
                     <span class="p">}</span>
@@ -457,7 +480,7 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
             <span class="k">case</span> <span class="s2">&quot;deletefile&quot;</span><span class="o">:</span> 
                 <span class="nx">fs</span><span class="p">.</span><span class="nx">unlink</span><span class="p">(</span> <span class="nx">_data</span><span class="p">.</span><span class="nx">filename</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
                     <span class="k">if</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
-                        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">err</span> <span class="p">)</span>
+                        <span class="nx">next</span><span class="p">(</span> <span class="nx">err</span> <span class="p">);</span>
                     <span class="p">}</span><span class="k">else</span><span class="p">{</span>
                         <span class="nx">next</span><span class="p">()</span>
                     <span class="p">}</span>
@@ -483,6 +506,7 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 <ul>
 <li>MORE tests!</li>
+<li>A terminal client interface. E.g.: <code>rsmq-worker [script] [options]</code> + <code>module.exports = function( message, next, id ){ /* processing */ };</code></li>
 </ul>
 
 
@@ -496,6 +520,8 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 <p>|Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.1|2015-02-23|changed default prefix/namespace;|
+|0.3.0|2015-02-16|It's now possible to return a erorr as first argument of <code>next</code>. This will lead to an error emit + optimized readme|
 |0.2.2|2015-01-27|added option <code>defaultDelay</code> and optimized argumtes of the <code>send</code> method; fixed travis.yml|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|
 |0.1.2|2015-01-20|Reorganized code, added code docs and optimized readme|
@@ -521,8 +547,10 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 <p>|Name|Description|
 |:--|:--|
 |<a href="https://github.com/smrchy/rsmq"><strong>rsmq</strong></a>|A really simple message queue based on Redis|
+|<a href="https://github.com/mpneuried/redis-notifications"><strong>redis-notifications</strong></a>|A redis based notification engine. It implements the rsmq-worker to safely create notifications and recurring reports.|
 |<a href="https://github.com/tcs-de/nodecache"><strong>node-cache</strong></a>|Simple and fast NodeJS internal caching. Node internal in memory cache like memcached.|
 |<a href="https://github.com/smrchy/redis-sessions"><strong>redis-sessions</strong></a>|An advanced session store for NodeJS and Redis|
+|<a href="https://github.com/mpneuried/obj-schema"><strong>obj-schema</strong></a>|Simple module to validate an object by a predefined schema|
 |<a href="https://github.com/mpneuried/connect-redis-sessions"><strong>connect-redis-sessions</strong></a>|A connect or express middleware to simply use the <a href="https://github.com/smrchy/redis-sessions">redis sessions</a>. With <a href="https://github.com/smrchy/redis-sessions">redis sessions</a> you can handle multiple sessions per user_id.|
 |<a href="https://github.com/mpneuried/systemhealth"><strong>systemhealth</strong></a>|Node module to run simple custom checks for your machine or it's connections. It will use <a href="https://github.com/mpneuried/redis-heartbeat">redis-heartbeat</a> to send the current state to redis.|
 |<a href="https://github.com/smrchy/task-queue-worker"><strong>task-queue-worker</strong></a>|A powerful tool for background processing of tasks that are run by making standard http requests.|

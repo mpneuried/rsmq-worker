@@ -59,7 +59,7 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
 	- **options.customExceedCheck**: *( `Function` optional; )* A custom function, with the raw message *(see message format)* as argument to build a custom exceed check. If you return a `true` the message will not exceed. On return `false` the regular check for `maxReceiveCount` will be used.
 	- **options.rsmq**: *( `RedisSMQ` optional; default = `null` )* A already existing rsmq instance to use instead of creating a new client
 	- **options.redis**: *( `RedisClient` optional; default = `null` )* A already existing redis client instance to use if no `rsmq` instance has been defined 
-	- **options.redisPrefix**: *( `String` optional; default = `""` )* The redis Prefix for rsmq if  no `rsmq` instance has been defined 
+	- **options.redisPrefix**: *( `String` optional; default = `""` )* The redis prefix/namespace for rsmq if no `rsmq` instance has been defined. This has to match the option `ns` of RSMQ.
 	- **options.host**: *( `String` optional; default = `"localhost"` )* Host to connect to redis if no `rsmq` or `redis` instance has been defined 
 	- **options.port**: *( `Number` optional; default = `6379` )* Port to connect to redis if no `rsmq` or `redis` instance has been defined 
 	- **options.options**: *( `Object` optional; default = `{}` )* Options to connect to redis if no `rsmq` or `redis` instance has been defined 
@@ -265,10 +265,12 @@ This is an advanced example showing some features in action.
 ## Todos/Ideas
 
 - MORE tests!
+- A terminal client interface. E.g.: `rsmq-worker [script] [options]` + `module.exports = function( message, next, id ){ /* processing */ };`
 
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.1|2015-02-23|changed default prefix/namespace;|
 |0.3.0|2015-02-16|It's now possible to return a erorr as first argument of `next`. This will lead to an error emit + optimized readme|
 |0.2.2|2015-01-27|added option `defaultDelay` and optimized argumtes of the `send` method; fixed travis.yml|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|

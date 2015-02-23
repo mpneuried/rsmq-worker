@@ -38,8 +38,8 @@ class RSMQWorker extends require( "mpbasic" )()
 
 			# **RSMQWorker.redis** *RedisClient* A allready existing redis client instance to use if no `rsmq` instance has been defiend 
 			redis: null
-			# **RSMQWorker.redisPrefix** *String* The redis Prefix for rsmq if  no `rsmq` instance has been defiend 
-			redisPrefix: ""
+			# **RSMQWorker.redisPrefix** *String* The redis prefix/namespace for rsmq if no `rsmq` instance has been defined. This has th match the `ns` setting of RSMQ.
+			redisPrefix: "rsmq"
 			
 			# **RSMQWorker.host** *String* Host to connect to redis if no `rsmq` or `redis` instance has been defiend 
 			host: "localhost"

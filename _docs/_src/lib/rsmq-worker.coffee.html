@@ -284,10 +284,10 @@
 <div class="pilwrap">
   <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
 </div>
-<p><strong>RSMQWorker.redisPrefix</strong> <em>String</em> The redis Prefix for rsmq if  no <code>rsmq</code> instance has been defiend </p>
+<p><strong>RSMQWorker.redisPrefix</strong> <em>String</em> The redis prefix/namespace for rsmq if no <code>rsmq</code> instance has been defined. This has th match the <code>ns</code> setting of RSMQ.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-42" id="line-42">42</a>  
-<a class="line-num" href="#line-43" id="line-43">43</a>        <span class="nv">redisPrefix: </span><span class="s">&quot;&quot;</span>
+<a class="line-num" href="#line-43" id="line-43">43</a>        <span class="nv">redisPrefix: </span><span class="s">&quot;rsmq&quot;</span>
 <a class="line-num" href="#line-44" id="line-44">44</a>        
 <a class="line-num" href="#line-45" id="line-45">45</a>  
 <a class="line-num" href="#line-46" id="line-46">46</a>  </pre></div>
@@ -945,7 +945,7 @@
 <a class="line-num" href="#line-334" id="line-334">334</a>            <span class="p">,</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">timeout</span> <span class="p">)</span>
 <a class="line-num" href="#line-335" id="line-335">335</a>  
 <a class="line-num" href="#line-336" id="line-336">336</a>          <span class="nv">_fnNext = </span><span class="nx">_</span><span class="p">.</span><span class="nx">once</span> <span class="nf">( del = true )=&gt;</span>
-<a class="line-num" href="#line-337" id="line-337">337</a>            <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isBoolean</span><span class="p">(</span> <span class="nx">del</span> <span class="p">)</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isNumeric</span><span class="p">(</span> <span class="nx">del</span> <span class="p">)</span>
+<a class="line-num" href="#line-337" id="line-337">337</a>            <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isBoolean</span><span class="p">(</span> <span class="nx">del</span> <span class="p">)</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span> <span class="nx">del</span> <span class="p">)</span>
 <a class="line-num" href="#line-338" id="line-338">338</a>              <span class="nx">@del</span><span class="p">(</span> <span class="nx">_id</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">del</span>
 <a class="line-num" href="#line-339" id="line-339">339</a>            <span class="k">else</span> <span class="k">if</span> <span class="nx">del</span><span class="o">?</span>
 <a class="line-num" href="#line-340" id="line-340">340</a>  
