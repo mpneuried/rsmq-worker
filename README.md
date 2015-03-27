@@ -118,6 +118,18 @@ Helper function to simply delete a message after it has been processed.
 
 *( Self )*: The instance itself for chaining.
 
+### `.changeInterval( interval )`
+
+Change the interval timeouts in operation.
+
+**Arguments**
+
+* `interval` : *( `Number|Array` required )*: The new interval.
+
+**Return**
+
+*( Self )*: The instance itself for chaining.
+
 ## Events
 
 ### `message`
@@ -270,6 +282,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.3|2015-03-27|added `changeInterval` to modify the intervall in operation|
 |0.3.2|2015-02-23|changed default prefix/namespace;|
 |0.3.0|2015-02-16|It's now possible to return a erorr as first argument of `next`. This will lead to an error emit + optimized readme|
 |0.2.2|2015-01-27|added option `defaultDelay` and optimized argumtes of the `send` method; fixed travis.yml|

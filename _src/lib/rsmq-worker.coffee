@@ -155,6 +155,23 @@ class RSMQWorker extends require( "mpbasic" )()
 		return @
 
 	###
+	## changeInterval
+	
+	`RSMQWorker.changeInterval( interval )`
+	
+	Change the interval timeouts in operation
+	
+	@param { Number|Array } interval The new interval
+	
+	@return { RSMQWorker } The instance itself for chaining. 
+	
+	@api public
+	###
+	changeInterval: ( interval )=>
+		@config.interval = interval
+		return @
+
+	###
 	## _initRSMQ
 	
 	`RSMQWorker._initRSMQ()`
@@ -420,6 +437,7 @@ class RSMQWorker extends require( "mpbasic" )()
 		else
 			@interval()
 		return
+
 
 
 #export this class
