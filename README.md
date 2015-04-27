@@ -284,6 +284,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.5|2015-04-27|again ... fixed argument dispatch for `.send()`|
 |0.3.4|2015-04-27|fixed argument dispatch for `.send()` and added optional cb for `.del()`|
 |0.3.3|2015-03-27|added `changeInterval` to modify the intervall in operation|
 |0.3.2|2015-02-23|changed default prefix/namespace;|

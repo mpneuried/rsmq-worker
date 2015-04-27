@@ -122,7 +122,7 @@ class RSMQWorker extends require( "mpbasic" )()
 	###
 	send: ( msg, args... )=>
 		[ delay, cb ] = args
-		if args.length > 1 and _.isFunction( delay )
+		if _.isFunction( delay )
 			cb = delay
 			delay = null
 

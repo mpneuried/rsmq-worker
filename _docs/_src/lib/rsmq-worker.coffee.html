@@ -521,7 +521,7 @@
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-123" id="line-123">123</a>  
 <a class="line-num" href="#line-124" id="line-124">124</a>    <span class="nv">send: </span><span class="nf">( msg, args... )=&gt;</span>
 <a class="line-num" href="#line-125" id="line-125">125</a>      <span class="p">[</span> <span class="nx">delay</span><span class="p">,</span> <span class="nx">cb</span> <span class="p">]</span> <span class="o">=</span> <span class="nx">args</span>
-<a class="line-num" href="#line-126" id="line-126">126</a>      <span class="k">if</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">and</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">delay</span> <span class="p">)</span>
+<a class="line-num" href="#line-126" id="line-126">126</a>      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">delay</span> <span class="p">)</span>
 <a class="line-num" href="#line-127" id="line-127">127</a>        <span class="nv">cb = </span><span class="nx">delay</span>
 <a class="line-num" href="#line-128" id="line-128">128</a>        <span class="nv">delay = </span><span class="kc">null</span>
 <a class="line-num" href="#line-129" id="line-129">129</a>  
