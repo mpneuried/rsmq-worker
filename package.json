@@ -31,7 +31,7 @@
   "devDependencies": {
     "should": "4.3.x",
     "grunt": "0.4.x",
-    "grunt-regarde": "0.6.x",
+    "grunt-regarde": "*",
     "grunt-contrib-coffee": "0.13.x",
     "grunt-include-replace": "3.0.x",
     "grunt-mocha-cli": "1.13.x",
