@@ -120,8 +120,12 @@ class RSMQWorker extends require( "mpbasic" )()
 	
 	@api public
 	###
-	send: ( msg, args..., cb )=>
-		[ delay ] = args
+	send: ( msg, args... )=>
+		[ delay, cb ] = args
+		if args.length > 1 and _.isFunction( delay )
+			cb = delay
+			delay = null
+
 		if not delay?
 			delay = @config.defaultDelay
 		if @queue.connected
@@ -139,18 +143,21 @@ class RSMQWorker extends require( "mpbasic" )()
 	Delete a messge from queue. This is usually done automatically unless you call `next(false)`
 	
 	@param { String } id The rsmq message id 
+	@param { Function } [cb] A optional callback to get a secure response for a successful delete.
 	
 	@return { RSMQWorker } The instance itself for chaining. 
 	
 	@api public
 	###
-	del: ( id )=>
+	del: ( id, cb )=>
 		@queue.deleteMessage qname: @queuename, id: id, ( err, resp )=>
 			if err
 				@error "delete queue message", err
+				cb( err ) if _.isFunction( cb )
 				return
 			@debug "delete queue message", resp
 			@emit( "deleted", id )
+			cb( null ) if _.isFunction( cb )
 			return
 		return @
 

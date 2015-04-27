@@ -46,6 +46,9 @@
         <a href="#del">del</a>
       </div>
       <div class="heading h2">
+        <a href="#changeinterval">changeInterval</a>
+      </div>
+      <div class="heading h2">
         <a href="#_initrsmq">_initRSMQ</a>
       </div>
       <div class="heading h2">
@@ -516,19 +519,23 @@
 </div>
         </td>
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-123" id="line-123">123</a>  
-<a class="line-num" href="#line-124" id="line-124">124</a>    <span class="nv">send: </span><span class="nf">( msg, args..., cb )=&gt;</span>
-<a class="line-num" href="#line-125" id="line-125">125</a>      <span class="p">[</span> <span class="nx">delay</span> <span class="p">]</span> <span class="o">=</span> <span class="nx">args</span>
-<a class="line-num" href="#line-126" id="line-126">126</a>      <span class="k">if</span> <span class="o">not</span> <span class="nx">delay</span><span class="o">?</span>
-<a class="line-num" href="#line-127" id="line-127">127</a>        <span class="nv">delay = </span><span class="nx">@config</span><span class="p">.</span><span class="nx">defaultDelay</span>
-<a class="line-num" href="#line-128" id="line-128">128</a>      <span class="k">if</span> <span class="nx">@queue</span><span class="p">.</span><span class="nx">connected</span>
-<a class="line-num" href="#line-129" id="line-129">129</a>        <span class="nx">@_send</span><span class="p">(</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">delay</span><span class="p">,</span> <span class="nx">cb</span> <span class="p">)</span>
-<a class="line-num" href="#line-130" id="line-130">130</a>      <span class="k">else</span>
-<a class="line-num" href="#line-131" id="line-131">131</a>        <span class="nx">@debug</span> <span class="s">&quot;store message during redis offline time&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">delay</span>
-<a class="line-num" href="#line-132" id="line-132">132</a>        <span class="nx">@offlineQueue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nv">msg: </span><span class="nx">msg</span><span class="p">,</span> <span class="nv">delay: </span><span class="nx">delay</span><span class="p">,</span> <span class="nv">cb: </span><span class="nx">cb</span> <span class="p">)</span>
-<a class="line-num" href="#line-133" id="line-133">133</a>      <span class="k">return</span> <span class="nx">@</span>
-<a class="line-num" href="#line-134" id="line-134">134</a>  
-<a class="line-num" href="#line-135" id="line-135">135</a>  
-<a class="line-num" href="#line-136" id="line-136">136</a>  </pre></div>
+<a class="line-num" href="#line-124" id="line-124">124</a>    <span class="nv">send: </span><span class="nf">( msg, args... )=&gt;</span>
+<a class="line-num" href="#line-125" id="line-125">125</a>      <span class="p">[</span> <span class="nx">delay</span><span class="p">,</span> <span class="nx">cb</span> <span class="p">]</span> <span class="o">=</span> <span class="nx">args</span>
+<a class="line-num" href="#line-126" id="line-126">126</a>      <span class="k">if</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">and</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">delay</span> <span class="p">)</span>
+<a class="line-num" href="#line-127" id="line-127">127</a>        <span class="nv">cb = </span><span class="nx">delay</span>
+<a class="line-num" href="#line-128" id="line-128">128</a>        <span class="nv">delay = </span><span class="kc">null</span>
+<a class="line-num" href="#line-129" id="line-129">129</a>  
+<a class="line-num" href="#line-130" id="line-130">130</a>      <span class="k">if</span> <span class="o">not</span> <span class="nx">delay</span><span class="o">?</span>
+<a class="line-num" href="#line-131" id="line-131">131</a>        <span class="nv">delay = </span><span class="nx">@config</span><span class="p">.</span><span class="nx">defaultDelay</span>
+<a class="line-num" href="#line-132" id="line-132">132</a>      <span class="k">if</span> <span class="nx">@queue</span><span class="p">.</span><span class="nx">connected</span>
+<a class="line-num" href="#line-133" id="line-133">133</a>        <span class="nx">@_send</span><span class="p">(</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">delay</span><span class="p">,</span> <span class="nx">cb</span> <span class="p">)</span>
+<a class="line-num" href="#line-134" id="line-134">134</a>      <span class="k">else</span>
+<a class="line-num" href="#line-135" id="line-135">135</a>        <span class="nx">@debug</span> <span class="s">&quot;store message during redis offline time&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">delay</span>
+<a class="line-num" href="#line-136" id="line-136">136</a>        <span class="nx">@offlineQueue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nv">msg: </span><span class="nx">msg</span><span class="p">,</span> <span class="nv">delay: </span><span class="nx">delay</span><span class="p">,</span> <span class="nv">cb: </span><span class="nx">cb</span> <span class="p">)</span>
+<a class="line-num" href="#line-137" id="line-137">137</a>      <span class="k">return</span> <span class="nx">@</span>
+<a class="line-num" href="#line-138" id="line-138">138</a>  
+<a class="line-num" href="#line-139" id="line-139">139</a>  
+<a class="line-num" href="#line-140" id="line-140">140</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -553,6 +560,11 @@
       <span class="dox_type">String</span>
       <span>The rsmq message id </span>
     </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">[cb]</span>
+      <span class="dox_type">Function</span>
+      <span>A optional callback to get a secure response for a successful delete.</span>
+    </div>
     <div class="dox_tag_title">Returns</div>
     <div class="dox_tag_detail">
       <span class="dox_tag_name"></span>
@@ -567,19 +579,67 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-147" id="line-147">147</a>  
-<a class="line-num" href="#line-148" id="line-148">148</a>    <span class="nv">del: </span><span class="nf">( id )=&gt;</span>
-<a class="line-num" href="#line-149" id="line-149">149</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">deleteMessage</span> <span class="nv">qname: </span><span class="nx">@queuename</span><span class="p">,</span> <span class="nv">id: </span><span class="nx">id</span><span class="p">,</span> <span class="nf">( err, resp )=&gt;</span>
-<a class="line-num" href="#line-150" id="line-150">150</a>        <span class="k">if</span> <span class="nx">err</span>
-<a class="line-num" href="#line-151" id="line-151">151</a>          <span class="nx">@error</span> <span class="s">&quot;delete queue message&quot;</span><span class="p">,</span> <span class="nx">err</span>
-<a class="line-num" href="#line-152" id="line-152">152</a>          <span class="k">return</span>
-<a class="line-num" href="#line-153" id="line-153">153</a>        <span class="nx">@debug</span> <span class="s">&quot;delete queue message&quot;</span><span class="p">,</span> <span class="nx">resp</span>
-<a class="line-num" href="#line-154" id="line-154">154</a>        <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;deleted&quot;</span><span class="p">,</span> <span class="nx">id</span> <span class="p">)</span>
-<a class="line-num" href="#line-155" id="line-155">155</a>        <span class="k">return</span>
-<a class="line-num" href="#line-156" id="line-156">156</a>      <span class="k">return</span> <span class="nx">@</span>
-<a class="line-num" href="#line-157" id="line-157">157</a>  
-<a class="line-num" href="#line-158" id="line-158">158</a>  
-<a class="line-num" href="#line-159" id="line-159">159</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-152" id="line-152">152</a>  
+<a class="line-num" href="#line-153" id="line-153">153</a>    <span class="nv">del: </span><span class="nf">( id, cb )=&gt;</span>
+<a class="line-num" href="#line-154" id="line-154">154</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">deleteMessage</span> <span class="nv">qname: </span><span class="nx">@queuename</span><span class="p">,</span> <span class="nv">id: </span><span class="nx">id</span><span class="p">,</span> <span class="nf">( err, resp )=&gt;</span>
+<a class="line-num" href="#line-155" id="line-155">155</a>        <span class="k">if</span> <span class="nx">err</span>
+<a class="line-num" href="#line-156" id="line-156">156</a>          <span class="nx">@error</span> <span class="s">&quot;delete queue message&quot;</span><span class="p">,</span> <span class="nx">err</span>
+<a class="line-num" href="#line-157" id="line-157">157</a>          <span class="nx">cb</span><span class="p">(</span> <span class="nx">err</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">cb</span> <span class="p">)</span>
+<a class="line-num" href="#line-158" id="line-158">158</a>          <span class="k">return</span>
+<a class="line-num" href="#line-159" id="line-159">159</a>        <span class="nx">@debug</span> <span class="s">&quot;delete queue message&quot;</span><span class="p">,</span> <span class="nx">resp</span>
+<a class="line-num" href="#line-160" id="line-160">160</a>        <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;deleted&quot;</span><span class="p">,</span> <span class="nx">id</span> <span class="p">)</span>
+<a class="line-num" href="#line-161" id="line-161">161</a>        <span class="nx">cb</span><span class="p">(</span> <span class="kc">null</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">cb</span> <span class="p">)</span>
+<a class="line-num" href="#line-162" id="line-162">162</a>        <span class="k">return</span>
+<a class="line-num" href="#line-163" id="line-163">163</a>      <span class="k">return</span> <span class="nx">@</span>
+<a class="line-num" href="#line-164" id="line-164">164</a>  
+<a class="line-num" href="#line-165" id="line-165">165</a>  
+<a class="line-num" href="#line-166" id="line-166">166</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="changeinterval">
+  <h2>
+    <a href="#changeinterval" name="changeinterval" class="pilcrow">&#182;</a>
+    changeInterval
+  </h2>
+</div>
+
+  </div>
+  <div class="body"><p><code>RSMQWorker.changeInterval( interval )</code></p>
+
+<p>Change the interval timeouts in operation</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">interval</span>
+      <span class="dox_type">Number</span>
+      <span class="dox_type">Array</span>
+      <span>The new interval</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">RSMQWorker</span>
+      <span>The instance itself for chaining. </span>
+    </div>
+    <div class="dox_tag_title">API</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">public
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-177" id="line-177">177</a>  
+<a class="line-num" href="#line-178" id="line-178">178</a>    <span class="nv">changeInterval: </span><span class="nf">( interval )=&gt;</span>
+<a class="line-num" href="#line-179" id="line-179">179</a>      <span class="vi">@config.interval = </span><span class="nx">interval</span>
+<a class="line-num" href="#line-180" id="line-180">180</a>      <span class="k">return</span> <span class="nx">@</span>
+<a class="line-num" href="#line-181" id="line-181">181</a>  
+<a class="line-num" href="#line-182" id="line-182">182</a>  
+<a class="line-num" href="#line-183" id="line-183">183</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -606,33 +666,14 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-166" id="line-166">166</a>  
-<a class="line-num" href="#line-167" id="line-167">167</a>    <span class="nv">_initRSMQ: </span><span class="o">=&gt;</span>
-<a class="line-num" href="#line-168" id="line-168">168</a>      <span class="vi">@queue = </span><span class="nx">@_getRsmq</span><span class="p">()</span>
-<a class="line-num" href="#line-169" id="line-169">169</a>  
-<a class="line-num" href="#line-170" id="line-170">170</a>      <span class="vi">@reconnectActive = </span><span class="kc">false</span>
-<a class="line-num" href="#line-171" id="line-171">171</a>  
-<a class="line-num" href="#line-172" id="line-172">172</a>  
-<a class="line-num" href="#line-173" id="line-173">173</a>  </pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-26" id="section-26">&#182;</a>
-</div>
-<p>handle redis disconnect</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-172" id="line-172">172</a>  
-<a class="line-num" href="#line-173" id="line-173">173</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">on</span> <span class="s">&quot;disconnect&quot;</span><span class="p">,</span> <span class="nf">( err )=&gt;</span>
-<a class="line-num" href="#line-174" id="line-174">174</a>        <span class="nx">@warning</span> <span class="s">&quot;redis connection lost&quot;</span>
-<a class="line-num" href="#line-175" id="line-175">175</a>        <span class="nv">_interval = </span><span class="nx">@timeout</span><span class="o">?</span>
-<a class="line-num" href="#line-176" id="line-176">176</a>        <span class="k">if</span> <span class="o">not</span> <span class="nx">@reconnectActive</span>
-<a class="line-num" href="#line-177" id="line-177">177</a>          <span class="vi">@reconnectActive = </span><span class="kc">true</span>
-<a class="line-num" href="#line-178" id="line-178">178</a>          <span class="nx">@stop</span><span class="p">()</span> <span class="k">if</span> <span class="nx">_interval</span>
-<a class="line-num" href="#line-179" id="line-179">179</a>  
-<a class="line-num" href="#line-180" id="line-180">180</a>  
-<a class="line-num" href="#line-181" id="line-181">181</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-190" id="line-190">190</a>  
+<a class="line-num" href="#line-191" id="line-191">191</a>    <span class="nv">_initRSMQ: </span><span class="o">=&gt;</span>
+<a class="line-num" href="#line-192" id="line-192">192</a>      <span class="vi">@queue = </span><span class="nx">@_getRsmq</span><span class="p">()</span>
+<a class="line-num" href="#line-193" id="line-193">193</a>  
+<a class="line-num" href="#line-194" id="line-194">194</a>      <span class="vi">@reconnectActive = </span><span class="kc">false</span>
+<a class="line-num" href="#line-195" id="line-195">195</a>  
+<a class="line-num" href="#line-196" id="line-196">196</a>  
+<a class="line-num" href="#line-197" id="line-197">197</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -640,28 +681,47 @@
 <div class="pilwrap">
   <a class="pilcrow" href="#section-27" id="section-27">&#182;</a>
 </div>
+<p>handle redis disconnect</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-196" id="line-196">196</a>  
+<a class="line-num" href="#line-197" id="line-197">197</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">on</span> <span class="s">&quot;disconnect&quot;</span><span class="p">,</span> <span class="nf">( err )=&gt;</span>
+<a class="line-num" href="#line-198" id="line-198">198</a>        <span class="nx">@warning</span> <span class="s">&quot;redis connection lost&quot;</span>
+<a class="line-num" href="#line-199" id="line-199">199</a>        <span class="nv">_interval = </span><span class="nx">@timeout</span><span class="o">?</span>
+<a class="line-num" href="#line-200" id="line-200">200</a>        <span class="k">if</span> <span class="o">not</span> <span class="nx">@reconnectActive</span>
+<a class="line-num" href="#line-201" id="line-201">201</a>          <span class="vi">@reconnectActive = </span><span class="kc">true</span>
+<a class="line-num" href="#line-202" id="line-202">202</a>          <span class="nx">@stop</span><span class="p">()</span> <span class="k">if</span> <span class="nx">_interval</span>
+<a class="line-num" href="#line-203" id="line-203">203</a>  
+<a class="line-num" href="#line-204" id="line-204">204</a>  
+<a class="line-num" href="#line-205" id="line-205">205</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-28" id="section-28">&#182;</a>
+</div>
 <p>on reconnect</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-180" id="line-180">180</a>  
-<a class="line-num" href="#line-181" id="line-181">181</a>          <span class="nx">@queue</span><span class="p">.</span><span class="nx">once</span> <span class="s">&quot;connect&quot;</span><span class="p">,</span> <span class="o">=&gt;</span>
-<a class="line-num" href="#line-182" id="line-182">182</a>            <span class="vi">@waitCount = </span><span class="mi">0</span>
-<a class="line-num" href="#line-183" id="line-183">183</a>            <span class="vi">@reconnectActive = </span><span class="kc">false</span>
-<a class="line-num" href="#line-184" id="line-184">184</a>            <span class="vi">@queue = </span><span class="k">new</span> <span class="nx">@_getRsmq</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span>
-<a class="line-num" href="#line-185" id="line-185">185</a>            <span class="nx">@_runOfflineMessages</span><span class="p">()</span>
-<a class="line-num" href="#line-186" id="line-186">186</a>            <span class="nx">@interval</span><span class="p">()</span> <span class="k">if</span> <span class="nx">_interval</span>
-<a class="line-num" href="#line-187" id="line-187">187</a>            <span class="nx">@warning</span> <span class="s">&quot;redis connection reconnected&quot;</span>
-<a class="line-num" href="#line-188" id="line-188">188</a>            <span class="k">return</span>
-<a class="line-num" href="#line-189" id="line-189">189</a>  
-<a class="line-num" href="#line-190" id="line-190">190</a>        <span class="k">return</span>
-<a class="line-num" href="#line-191" id="line-191">191</a>      <span class="k">if</span> <span class="nx">@queue</span><span class="p">.</span><span class="nx">connected</span>
-<a class="line-num" href="#line-192" id="line-192">192</a>        <span class="nx">@_initQueue</span><span class="p">()</span>
-<a class="line-num" href="#line-193" id="line-193">193</a>      <span class="k">else</span>
-<a class="line-num" href="#line-194" id="line-194">194</a>        <span class="nx">@queue</span><span class="p">.</span><span class="nx">once</span> <span class="s">&quot;connect&quot;</span><span class="p">,</span> <span class="nx">@_initQueue</span>
-<a class="line-num" href="#line-195" id="line-195">195</a>      
-<a class="line-num" href="#line-196" id="line-196">196</a>      <span class="k">return</span>
-<a class="line-num" href="#line-197" id="line-197">197</a>  
-<a class="line-num" href="#line-198" id="line-198">198</a>  
-<a class="line-num" href="#line-199" id="line-199">199</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-204" id="line-204">204</a>  
+<a class="line-num" href="#line-205" id="line-205">205</a>          <span class="nx">@queue</span><span class="p">.</span><span class="nx">once</span> <span class="s">&quot;connect&quot;</span><span class="p">,</span> <span class="o">=&gt;</span>
+<a class="line-num" href="#line-206" id="line-206">206</a>            <span class="vi">@waitCount = </span><span class="mi">0</span>
+<a class="line-num" href="#line-207" id="line-207">207</a>            <span class="vi">@reconnectActive = </span><span class="kc">false</span>
+<a class="line-num" href="#line-208" id="line-208">208</a>            <span class="vi">@queue = </span><span class="k">new</span> <span class="nx">@_getRsmq</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span>
+<a class="line-num" href="#line-209" id="line-209">209</a>            <span class="nx">@_runOfflineMessages</span><span class="p">()</span>
+<a class="line-num" href="#line-210" id="line-210">210</a>            <span class="nx">@interval</span><span class="p">()</span> <span class="k">if</span> <span class="nx">_interval</span>
+<a class="line-num" href="#line-211" id="line-211">211</a>            <span class="nx">@warning</span> <span class="s">&quot;redis connection reconnected&quot;</span>
+<a class="line-num" href="#line-212" id="line-212">212</a>            <span class="k">return</span>
+<a class="line-num" href="#line-213" id="line-213">213</a>  
+<a class="line-num" href="#line-214" id="line-214">214</a>        <span class="k">return</span>
+<a class="line-num" href="#line-215" id="line-215">215</a>      <span class="k">if</span> <span class="nx">@queue</span><span class="p">.</span><span class="nx">connected</span>
+<a class="line-num" href="#line-216" id="line-216">216</a>        <span class="nx">@_initQueue</span><span class="p">()</span>
+<a class="line-num" href="#line-217" id="line-217">217</a>      <span class="k">else</span>
+<a class="line-num" href="#line-218" id="line-218">218</a>        <span class="nx">@queue</span><span class="p">.</span><span class="nx">once</span> <span class="s">&quot;connect&quot;</span><span class="p">,</span> <span class="nx">@_initQueue</span>
+<a class="line-num" href="#line-219" id="line-219">219</a>      
+<a class="line-num" href="#line-220" id="line-220">220</a>      <span class="k">return</span>
+<a class="line-num" href="#line-221" id="line-221">221</a>  
+<a class="line-num" href="#line-222" id="line-222">222</a>  
+<a class="line-num" href="#line-223" id="line-223">223</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -700,23 +760,23 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-210" id="line-210">210</a>  
-<a class="line-num" href="#line-211" id="line-211">211</a>    <span class="nv">_getRsmq: </span><span class="nf">( forceInit = false )=&gt;</span>
-<a class="line-num" href="#line-212" id="line-212">212</a>      <span class="k">if</span> <span class="o">not</span> <span class="nx">forceInit</span> <span class="o">and</span> <span class="nx">@queue</span><span class="o">?</span>
-<a class="line-num" href="#line-213" id="line-213">213</a>        <span class="k">return</span> <span class="nx">@queue</span>
-<a class="line-num" href="#line-214" id="line-214">214</a>  
-<a class="line-num" href="#line-215" id="line-215">215</a>      <span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">rsmq</span><span class="o">?</span><span class="p">.</span><span class="nx">constructor</span><span class="o">?</span><span class="p">.</span><span class="nx">name</span> <span class="o">is</span> <span class="s">&quot;RedisSMQ&quot;</span>
-<a class="line-num" href="#line-216" id="line-216">216</a>        <span class="nx">@debug</span> <span class="s">&quot;use given rsmq client&quot;</span>
-<a class="line-num" href="#line-217" id="line-217">217</a>        <span class="k">return</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">rsmq</span>
-<a class="line-num" href="#line-218" id="line-218">218</a>        
-<a class="line-num" href="#line-219" id="line-219">219</a>  
-<a class="line-num" href="#line-220" id="line-220">220</a>      <span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">redis</span><span class="o">?</span><span class="p">.</span><span class="nx">constructor</span><span class="o">?</span><span class="p">.</span><span class="nx">name</span> <span class="o">is</span> <span class="s">&quot;RedisClient&quot;</span>
-<a class="line-num" href="#line-221" id="line-221">221</a>        <span class="k">return</span> <span class="k">new</span> <span class="nx">RSMQ</span><span class="p">(</span> <span class="nv">client: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">redis</span><span class="p">,</span> <span class="nv">ns: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">redisPrefix</span> <span class="p">)</span>
-<a class="line-num" href="#line-222" id="line-222">222</a>      <span class="k">else</span>
-<a class="line-num" href="#line-223" id="line-223">223</a>        <span class="k">return</span> <span class="k">new</span> <span class="nx">RSMQ</span><span class="p">(</span> <span class="nv">host: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">host</span><span class="p">,</span> <span class="nv">port: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="nv">options: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">options</span><span class="p">,</span> <span class="nv">ns: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">redisPrefix</span> <span class="p">)</span>
-<a class="line-num" href="#line-224" id="line-224">224</a>  
-<a class="line-num" href="#line-225" id="line-225">225</a>  
-<a class="line-num" href="#line-226" id="line-226">226</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-234" id="line-234">234</a>  
+<a class="line-num" href="#line-235" id="line-235">235</a>    <span class="nv">_getRsmq: </span><span class="nf">( forceInit = false )=&gt;</span>
+<a class="line-num" href="#line-236" id="line-236">236</a>      <span class="k">if</span> <span class="o">not</span> <span class="nx">forceInit</span> <span class="o">and</span> <span class="nx">@queue</span><span class="o">?</span>
+<a class="line-num" href="#line-237" id="line-237">237</a>        <span class="k">return</span> <span class="nx">@queue</span>
+<a class="line-num" href="#line-238" id="line-238">238</a>  
+<a class="line-num" href="#line-239" id="line-239">239</a>      <span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">rsmq</span><span class="o">?</span><span class="p">.</span><span class="nx">constructor</span><span class="o">?</span><span class="p">.</span><span class="nx">name</span> <span class="o">is</span> <span class="s">&quot;RedisSMQ&quot;</span>
+<a class="line-num" href="#line-240" id="line-240">240</a>        <span class="nx">@debug</span> <span class="s">&quot;use given rsmq client&quot;</span>
+<a class="line-num" href="#line-241" id="line-241">241</a>        <span class="k">return</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">rsmq</span>
+<a class="line-num" href="#line-242" id="line-242">242</a>        
+<a class="line-num" href="#line-243" id="line-243">243</a>  
+<a class="line-num" href="#line-244" id="line-244">244</a>      <span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">redis</span><span class="o">?</span><span class="p">.</span><span class="nx">constructor</span><span class="o">?</span><span class="p">.</span><span class="nx">name</span> <span class="o">is</span> <span class="s">&quot;RedisClient&quot;</span>
+<a class="line-num" href="#line-245" id="line-245">245</a>        <span class="k">return</span> <span class="k">new</span> <span class="nx">RSMQ</span><span class="p">(</span> <span class="nv">client: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">redis</span><span class="p">,</span> <span class="nv">ns: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">redisPrefix</span> <span class="p">)</span>
+<a class="line-num" href="#line-246" id="line-246">246</a>      <span class="k">else</span>
+<a class="line-num" href="#line-247" id="line-247">247</a>        <span class="k">return</span> <span class="k">new</span> <span class="nx">RSMQ</span><span class="p">(</span> <span class="nv">host: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">host</span><span class="p">,</span> <span class="nv">port: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="nv">options: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">options</span><span class="p">,</span> <span class="nv">ns: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">redisPrefix</span> <span class="p">)</span>
+<a class="line-num" href="#line-248" id="line-248">248</a>  
+<a class="line-num" href="#line-249" id="line-249">249</a>  
+<a class="line-num" href="#line-250" id="line-250">250</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -743,43 +803,43 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-233" id="line-233">233</a>  
-<a class="line-num" href="#line-234" id="line-234">234</a>    <span class="nv">_initQueue: </span><span class="o">=&gt;</span>
-<a class="line-num" href="#line-235" id="line-235">235</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">createQueue</span> <span class="nv">qname: </span><span class="nx">@queuename</span><span class="p">,</span> <span class="nf">( err, resp )=&gt;</span>
-<a class="line-num" href="#line-236" id="line-236">236</a>        <span class="k">if</span> <span class="nx">err</span><span class="o">?</span><span class="p">.</span><span class="nx">name</span> <span class="o">is</span> <span class="s">&quot;queueExists&quot;</span>
-<a class="line-num" href="#line-237" id="line-237">237</a>          <span class="vi">@ready = </span><span class="kc">true</span>
-<a class="line-num" href="#line-238" id="line-238">238</a>          <span class="nx">@emit</span> <span class="s">&quot;ready&quot;</span>
-<a class="line-num" href="#line-239" id="line-239">239</a>          <span class="nx">@_runOfflineMessages</span><span class="p">()</span>
-<a class="line-num" href="#line-240" id="line-240">240</a>          <span class="k">return</span>
-<a class="line-num" href="#line-241" id="line-241">241</a>  
-<a class="line-num" href="#line-242" id="line-242">242</a>        <span class="k">throw</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
-<a class="line-num" href="#line-243" id="line-243">243</a>  
-<a class="line-num" href="#line-244" id="line-244">244</a>        <span class="k">if</span> <span class="nx">resp</span> <span class="o">is</span> <span class="mi">1</span>
-<a class="line-num" href="#line-245" id="line-245">245</a>          <span class="nx">@debug</span> <span class="s">&quot;queue created&quot;</span>
-<a class="line-num" href="#line-246" id="line-246">246</a>        <span class="k">else</span>
-<a class="line-num" href="#line-247" id="line-247">247</a>          <span class="nx">@debug</span> <span class="s">&quot;queue allready existed&quot;</span>
-<a class="line-num" href="#line-248" id="line-248">248</a>  
-<a class="line-num" href="#line-249" id="line-249">249</a>        <span class="vi">@ready = </span><span class="kc">true</span>
-<a class="line-num" href="#line-250" id="line-250">250</a>        <span class="nx">@emit</span> <span class="s">&quot;ready&quot;</span>
-<a class="line-num" href="#line-251" id="line-251">251</a>  
-<a class="line-num" href="#line-252" id="line-252">252</a>  
-<a class="line-num" href="#line-253" id="line-253">253</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-257" id="line-257">257</a>  
+<a class="line-num" href="#line-258" id="line-258">258</a>    <span class="nv">_initQueue: </span><span class="o">=&gt;</span>
+<a class="line-num" href="#line-259" id="line-259">259</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">createQueue</span> <span class="nv">qname: </span><span class="nx">@queuename</span><span class="p">,</span> <span class="nf">( err, resp )=&gt;</span>
+<a class="line-num" href="#line-260" id="line-260">260</a>        <span class="k">if</span> <span class="nx">err</span><span class="o">?</span><span class="p">.</span><span class="nx">name</span> <span class="o">is</span> <span class="s">&quot;queueExists&quot;</span>
+<a class="line-num" href="#line-261" id="line-261">261</a>          <span class="vi">@ready = </span><span class="kc">true</span>
+<a class="line-num" href="#line-262" id="line-262">262</a>          <span class="nx">@emit</span> <span class="s">&quot;ready&quot;</span>
+<a class="line-num" href="#line-263" id="line-263">263</a>          <span class="nx">@_runOfflineMessages</span><span class="p">()</span>
+<a class="line-num" href="#line-264" id="line-264">264</a>          <span class="k">return</span>
+<a class="line-num" href="#line-265" id="line-265">265</a>  
+<a class="line-num" href="#line-266" id="line-266">266</a>        <span class="k">throw</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
+<a class="line-num" href="#line-267" id="line-267">267</a>  
+<a class="line-num" href="#line-268" id="line-268">268</a>        <span class="k">if</span> <span class="nx">resp</span> <span class="o">is</span> <span class="mi">1</span>
+<a class="line-num" href="#line-269" id="line-269">269</a>          <span class="nx">@debug</span> <span class="s">&quot;queue created&quot;</span>
+<a class="line-num" href="#line-270" id="line-270">270</a>        <span class="k">else</span>
+<a class="line-num" href="#line-271" id="line-271">271</a>          <span class="nx">@debug</span> <span class="s">&quot;queue allready existed&quot;</span>
+<a class="line-num" href="#line-272" id="line-272">272</a>  
+<a class="line-num" href="#line-273" id="line-273">273</a>        <span class="vi">@ready = </span><span class="kc">true</span>
+<a class="line-num" href="#line-274" id="line-274">274</a>        <span class="nx">@emit</span> <span class="s">&quot;ready&quot;</span>
+<a class="line-num" href="#line-275" id="line-275">275</a>  
+<a class="line-num" href="#line-276" id="line-276">276</a>  
+<a class="line-num" href="#line-277" id="line-277">277</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-30" id="section-30">&#182;</a>
+  <a class="pilcrow" href="#section-31" id="section-31">&#182;</a>
 </div>
 <p>after the ready has been fired run saved messages</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-252" id="line-252">252</a>  
-<a class="line-num" href="#line-253" id="line-253">253</a>        <span class="nx">@_runOfflineMessages</span><span class="p">()</span>
-<a class="line-num" href="#line-254" id="line-254">254</a>        <span class="k">return</span>
-<a class="line-num" href="#line-255" id="line-255">255</a>      <span class="k">return</span>
-<a class="line-num" href="#line-256" id="line-256">256</a>  
-<a class="line-num" href="#line-257" id="line-257">257</a>  
-<a class="line-num" href="#line-258" id="line-258">258</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-276" id="line-276">276</a>  
+<a class="line-num" href="#line-277" id="line-277">277</a>        <span class="nx">@_runOfflineMessages</span><span class="p">()</span>
+<a class="line-num" href="#line-278" id="line-278">278</a>        <span class="k">return</span>
+<a class="line-num" href="#line-279" id="line-279">279</a>      <span class="k">return</span>
+<a class="line-num" href="#line-280" id="line-280">280</a>  
+<a class="line-num" href="#line-281" id="line-281">281</a>  
+<a class="line-num" href="#line-282" id="line-282">282</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -822,20 +882,20 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-269" id="line-269">269</a>  
-<a class="line-num" href="#line-270" id="line-270">270</a>    <span class="nv">_send: </span><span class="nf">( msg, delay, cb )=&gt;</span>
-<a class="line-num" href="#line-271" id="line-271">271</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">sendMessage</span> <span class="p">{</span> <span class="nv">qname: </span><span class="nx">@queuename</span><span class="p">,</span> <span class="nv">message: </span><span class="nx">msg</span><span class="p">,</span> <span class="nv">delay: </span><span class="nx">delay</span> <span class="p">},</span> <span class="nf">( err, resp )=&gt;</span>
-<a class="line-num" href="#line-272" id="line-272">272</a>        <span class="k">if</span> <span class="nx">err</span>
-<a class="line-num" href="#line-273" id="line-273">273</a>          <span class="nx">@error</span> <span class="s">&quot;send pending queue message&quot;</span><span class="p">,</span> <span class="nx">err</span>
-<a class="line-num" href="#line-274" id="line-274">274</a>          <span class="nx">cb</span><span class="p">(</span> <span class="nx">err</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">cb</span><span class="o">?</span> <span class="o">and</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">cb</span> <span class="p">)</span>
-<a class="line-num" href="#line-275" id="line-275">275</a>          <span class="k">return</span>
-<a class="line-num" href="#line-276" id="line-276">276</a>        <span class="nx">@emit</span> <span class="s">&quot;new&quot;</span><span class="p">,</span> <span class="nx">resp</span>
-<a class="line-num" href="#line-277" id="line-277">277</a>        <span class="nx">cb</span><span class="p">(</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">resp</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">cb</span><span class="o">?</span> <span class="o">and</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">cb</span> <span class="p">)</span>
-<a class="line-num" href="#line-278" id="line-278">278</a>        <span class="k">return</span>
-<a class="line-num" href="#line-279" id="line-279">279</a>      <span class="k">return</span>
-<a class="line-num" href="#line-280" id="line-280">280</a>  
-<a class="line-num" href="#line-281" id="line-281">281</a>  
-<a class="line-num" href="#line-282" id="line-282">282</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-293" id="line-293">293</a>  
+<a class="line-num" href="#line-294" id="line-294">294</a>    <span class="nv">_send: </span><span class="nf">( msg, delay, cb )=&gt;</span>
+<a class="line-num" href="#line-295" id="line-295">295</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">sendMessage</span> <span class="p">{</span> <span class="nv">qname: </span><span class="nx">@queuename</span><span class="p">,</span> <span class="nv">message: </span><span class="nx">msg</span><span class="p">,</span> <span class="nv">delay: </span><span class="nx">delay</span> <span class="p">},</span> <span class="nf">( err, resp )=&gt;</span>
+<a class="line-num" href="#line-296" id="line-296">296</a>        <span class="k">if</span> <span class="nx">err</span>
+<a class="line-num" href="#line-297" id="line-297">297</a>          <span class="nx">@error</span> <span class="s">&quot;send pending queue message&quot;</span><span class="p">,</span> <span class="nx">err</span>
+<a class="line-num" href="#line-298" id="line-298">298</a>          <span class="nx">cb</span><span class="p">(</span> <span class="nx">err</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">cb</span><span class="o">?</span> <span class="o">and</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">cb</span> <span class="p">)</span>
+<a class="line-num" href="#line-299" id="line-299">299</a>          <span class="k">return</span>
+<a class="line-num" href="#line-300" id="line-300">300</a>        <span class="nx">@emit</span> <span class="s">&quot;new&quot;</span><span class="p">,</span> <span class="nx">resp</span>
+<a class="line-num" href="#line-301" id="line-301">301</a>        <span class="nx">cb</span><span class="p">(</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">resp</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">cb</span><span class="o">?</span> <span class="o">and</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span> <span class="nx">cb</span> <span class="p">)</span>
+<a class="line-num" href="#line-302" id="line-302">302</a>        <span class="k">return</span>
+<a class="line-num" href="#line-303" id="line-303">303</a>      <span class="k">return</span>
+<a class="line-num" href="#line-304" id="line-304">304</a>  
+<a class="line-num" href="#line-305" id="line-305">305</a>  
+<a class="line-num" href="#line-306" id="line-306">306</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -862,22 +922,22 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-289" id="line-289">289</a>  
-<a class="line-num" href="#line-290" id="line-290">290</a>    <span class="nv">_runOfflineMessages: </span><span class="o">=&gt;</span>
-<a class="line-num" href="#line-291" id="line-291">291</a>      <span class="k">if</span> <span class="nx">@offlineQueue</span><span class="p">.</span><span class="nx">length</span>
-<a class="line-num" href="#line-292" id="line-292">292</a>        <span class="nv">_aq = </span><span class="nx">async</span><span class="p">.</span><span class="nx">queue</span><span class="p">(</span> <span class="nf">( sndData, cb )=&gt;</span>
-<a class="line-num" href="#line-293" id="line-293">293</a>          <span class="nx">@debug</span> <span class="s">&quot;run offline stored message&quot;</span><span class="p">,</span> <span class="nx">arguments</span>
-<a class="line-num" href="#line-294" id="line-294">294</a>          <span class="nx">@_send</span><span class="p">(</span> <span class="nx">sndData</span><span class="p">.</span><span class="nx">msg</span><span class="p">,</span> <span class="nx">sndData</span><span class="p">.</span><span class="nx">delay</span><span class="p">,</span> <span class="nx">sndData</span><span class="p">.</span><span class="nx">cb</span> <span class="p">)</span>
-<a class="line-num" href="#line-295" id="line-295">295</a>          <span class="nx">cb</span><span class="p">()</span>
-<a class="line-num" href="#line-296" id="line-296">296</a>          <span class="k">return</span>
-<a class="line-num" href="#line-297" id="line-297">297</a>        <span class="p">,</span> <span class="mi">3</span> <span class="p">)</span>
-<a class="line-num" href="#line-298" id="line-298">298</a>        <span class="k">for</span> <span class="nx">sndData</span> <span class="k">in</span> <span class="nx">@offlineQueue</span>
-<a class="line-num" href="#line-299" id="line-299">299</a>          <span class="nx">@debug</span> <span class="s">&quot;queue offline stored message&quot;</span><span class="p">,</span> <span class="nx">sndData</span>
-<a class="line-num" href="#line-300" id="line-300">300</a>          <span class="nx">_aq</span><span class="p">.</span><span class="nx">push</span> <span class="nx">sndData</span>
-<a class="line-num" href="#line-301" id="line-301">301</a>      <span class="k">return</span>
-<a class="line-num" href="#line-302" id="line-302">302</a>  
-<a class="line-num" href="#line-303" id="line-303">303</a>  
-<a class="line-num" href="#line-304" id="line-304">304</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-313" id="line-313">313</a>  
+<a class="line-num" href="#line-314" id="line-314">314</a>    <span class="nv">_runOfflineMessages: </span><span class="o">=&gt;</span>
+<a class="line-num" href="#line-315" id="line-315">315</a>      <span class="k">if</span> <span class="nx">@offlineQueue</span><span class="p">.</span><span class="nx">length</span>
+<a class="line-num" href="#line-316" id="line-316">316</a>        <span class="nv">_aq = </span><span class="nx">async</span><span class="p">.</span><span class="nx">queue</span><span class="p">(</span> <span class="nf">( sndData, cb )=&gt;</span>
+<a class="line-num" href="#line-317" id="line-317">317</a>          <span class="nx">@debug</span> <span class="s">&quot;run offline stored message&quot;</span><span class="p">,</span> <span class="nx">arguments</span>
+<a class="line-num" href="#line-318" id="line-318">318</a>          <span class="nx">@_send</span><span class="p">(</span> <span class="nx">sndData</span><span class="p">.</span><span class="nx">msg</span><span class="p">,</span> <span class="nx">sndData</span><span class="p">.</span><span class="nx">delay</span><span class="p">,</span> <span class="nx">sndData</span><span class="p">.</span><span class="nx">cb</span> <span class="p">)</span>
+<a class="line-num" href="#line-319" id="line-319">319</a>          <span class="nx">cb</span><span class="p">()</span>
+<a class="line-num" href="#line-320" id="line-320">320</a>          <span class="k">return</span>
+<a class="line-num" href="#line-321" id="line-321">321</a>        <span class="p">,</span> <span class="mi">3</span> <span class="p">)</span>
+<a class="line-num" href="#line-322" id="line-322">322</a>        <span class="k">for</span> <span class="nx">sndData</span> <span class="k">in</span> <span class="nx">@offlineQueue</span>
+<a class="line-num" href="#line-323" id="line-323">323</a>          <span class="nx">@debug</span> <span class="s">&quot;queue offline stored message&quot;</span><span class="p">,</span> <span class="nx">sndData</span>
+<a class="line-num" href="#line-324" id="line-324">324</a>          <span class="nx">_aq</span><span class="p">.</span><span class="nx">push</span> <span class="nx">sndData</span>
+<a class="line-num" href="#line-325" id="line-325">325</a>      <span class="k">return</span>
+<a class="line-num" href="#line-326" id="line-326">326</a>  
+<a class="line-num" href="#line-327" id="line-327">327</a>  
+<a class="line-num" href="#line-328" id="line-328">328</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -910,46 +970,22 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-313" id="line-313">313</a>  
-<a class="line-num" href="#line-314" id="line-314">314</a>    <span class="nv">receive: </span><span class="nf">( _useInterval = false )=&gt;</span>
-<a class="line-num" href="#line-315" id="line-315">315</a>      <span class="nx">@debug</span> <span class="s">&quot;start receive&quot;</span>
-<a class="line-num" href="#line-316" id="line-316">316</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">receiveMessage</span> <span class="p">{</span> <span class="nv">qname: </span><span class="nx">@queuename</span><span class="p">,</span> <span class="nv">vt: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">invisibletime</span> <span class="p">},</span> <span class="nf">( err, msg )=&gt;</span>
-<a class="line-num" href="#line-317" id="line-317">317</a>        <span class="nx">@debug</span> <span class="s">&quot;received&quot;</span><span class="p">,</span> <span class="nx">msg</span>
-<a class="line-num" href="#line-318" id="line-318">318</a>        <span class="k">if</span> <span class="nx">err</span>
-<a class="line-num" href="#line-319" id="line-319">319</a>          <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;next&quot;</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">_useInterval</span>
-<a class="line-num" href="#line-320" id="line-320">320</a>          <span class="nx">@error</span> <span class="s">&quot;receive queue message&quot;</span><span class="p">,</span> <span class="nx">err</span>
-<a class="line-num" href="#line-321" id="line-321">321</a>          <span class="k">return</span>
-<a class="line-num" href="#line-322" id="line-322">322</a>  
-<a class="line-num" href="#line-323" id="line-323">323</a>        <span class="k">if</span> <span class="nx">msg</span><span class="o">?</span><span class="p">.</span><span class="nx">id</span>
-<a class="line-num" href="#line-324" id="line-324">324</a>          <span class="nx">@emit</span> <span class="s">&quot;data&quot;</span><span class="p">,</span> <span class="nx">msg</span>
-<a class="line-num" href="#line-325" id="line-325">325</a>          <span class="nv">_id = </span><span class="nx">msg</span><span class="p">.</span><span class="nx">id</span><span class="c1">#</span>
-<a class="line-num" href="#line-326" id="line-326">326</a>  
-<a class="line-num" href="#line-327" id="line-327">327</a>  
-<a class="line-num" href="#line-328" id="line-328">328</a>  </pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-34" id="section-34">&#182;</a>
-</div>
-<p>add a processing timeout</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-327" id="line-327">327</a>  
-<a class="line-num" href="#line-328" id="line-328">328</a>          <span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">&gt;</span> <span class="mi">0</span>
-<a class="line-num" href="#line-329" id="line-329">329</a>            <span class="nv">timeout = </span><span class="nx">setTimeout</span><span class="p">(</span> <span class="o">=&gt;</span>
-<a class="line-num" href="#line-330" id="line-330">330</a>              <span class="nx">@warning</span> <span class="s">&quot;timeout&quot;</span><span class="p">,</span> <span class="nx">msg</span>
-<a class="line-num" href="#line-331" id="line-331">331</a>              <span class="nx">@emit</span> <span class="s">&quot;timeout&quot;</span><span class="p">,</span> <span class="nx">msg</span>
-<a class="line-num" href="#line-332" id="line-332">332</a>              <span class="nx">_fnNext</span><span class="p">(</span> <span class="kc">false</span> <span class="p">)</span>
-<a class="line-num" href="#line-333" id="line-333">333</a>              <span class="k">return</span>
-<a class="line-num" href="#line-334" id="line-334">334</a>            <span class="p">,</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">timeout</span> <span class="p">)</span>
-<a class="line-num" href="#line-335" id="line-335">335</a>  
-<a class="line-num" href="#line-336" id="line-336">336</a>          <span class="nv">_fnNext = </span><span class="nx">_</span><span class="p">.</span><span class="nx">once</span> <span class="nf">( del = true )=&gt;</span>
-<a class="line-num" href="#line-337" id="line-337">337</a>            <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isBoolean</span><span class="p">(</span> <span class="nx">del</span> <span class="p">)</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span> <span class="nx">del</span> <span class="p">)</span>
-<a class="line-num" href="#line-338" id="line-338">338</a>              <span class="nx">@del</span><span class="p">(</span> <span class="nx">_id</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">del</span>
-<a class="line-num" href="#line-339" id="line-339">339</a>            <span class="k">else</span> <span class="k">if</span> <span class="nx">del</span><span class="o">?</span>
-<a class="line-num" href="#line-340" id="line-340">340</a>  
-<a class="line-num" href="#line-341" id="line-341">341</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-337" id="line-337">337</a>  
+<a class="line-num" href="#line-338" id="line-338">338</a>    <span class="nv">receive: </span><span class="nf">( _useInterval = false )=&gt;</span>
+<a class="line-num" href="#line-339" id="line-339">339</a>      <span class="nx">@debug</span> <span class="s">&quot;start receive&quot;</span>
+<a class="line-num" href="#line-340" id="line-340">340</a>      <span class="nx">@queue</span><span class="p">.</span><span class="nx">receiveMessage</span> <span class="p">{</span> <span class="nv">qname: </span><span class="nx">@queuename</span><span class="p">,</span> <span class="nv">vt: </span><span class="nx">@config</span><span class="p">.</span><span class="nx">invisibletime</span> <span class="p">},</span> <span class="nf">( err, msg )=&gt;</span>
+<a class="line-num" href="#line-341" id="line-341">341</a>        <span class="nx">@debug</span> <span class="s">&quot;received&quot;</span><span class="p">,</span> <span class="nx">msg</span>
+<a class="line-num" href="#line-342" id="line-342">342</a>        <span class="k">if</span> <span class="nx">err</span>
+<a class="line-num" href="#line-343" id="line-343">343</a>          <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;next&quot;</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">_useInterval</span>
+<a class="line-num" href="#line-344" id="line-344">344</a>          <span class="nx">@error</span> <span class="s">&quot;receive queue message&quot;</span><span class="p">,</span> <span class="nx">err</span>
+<a class="line-num" href="#line-345" id="line-345">345</a>          <span class="k">return</span>
+<a class="line-num" href="#line-346" id="line-346">346</a>  
+<a class="line-num" href="#line-347" id="line-347">347</a>        <span class="k">if</span> <span class="nx">msg</span><span class="o">?</span><span class="p">.</span><span class="nx">id</span>
+<a class="line-num" href="#line-348" id="line-348">348</a>          <span class="nx">@emit</span> <span class="s">&quot;data&quot;</span><span class="p">,</span> <span class="nx">msg</span>
+<a class="line-num" href="#line-349" id="line-349">349</a>          <span class="nv">_id = </span><span class="nx">msg</span><span class="p">.</span><span class="nx">id</span><span class="c1">#</span>
+<a class="line-num" href="#line-350" id="line-350">350</a>  
+<a class="line-num" href="#line-351" id="line-351">351</a>  
+<a class="line-num" href="#line-352" id="line-352">352</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -957,28 +993,52 @@
 <div class="pilwrap">
   <a class="pilcrow" href="#section-35" id="section-35">&#182;</a>
 </div>
+<p>add a processing timeout</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-351" id="line-351">351</a>  
+<a class="line-num" href="#line-352" id="line-352">352</a>          <span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<a class="line-num" href="#line-353" id="line-353">353</a>            <span class="nv">timeout = </span><span class="nx">setTimeout</span><span class="p">(</span> <span class="o">=&gt;</span>
+<a class="line-num" href="#line-354" id="line-354">354</a>              <span class="nx">@warning</span> <span class="s">&quot;timeout&quot;</span><span class="p">,</span> <span class="nx">msg</span>
+<a class="line-num" href="#line-355" id="line-355">355</a>              <span class="nx">@emit</span> <span class="s">&quot;timeout&quot;</span><span class="p">,</span> <span class="nx">msg</span>
+<a class="line-num" href="#line-356" id="line-356">356</a>              <span class="nx">_fnNext</span><span class="p">(</span> <span class="kc">false</span> <span class="p">)</span>
+<a class="line-num" href="#line-357" id="line-357">357</a>              <span class="k">return</span>
+<a class="line-num" href="#line-358" id="line-358">358</a>            <span class="p">,</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">timeout</span> <span class="p">)</span>
+<a class="line-num" href="#line-359" id="line-359">359</a>  
+<a class="line-num" href="#line-360" id="line-360">360</a>          <span class="nv">_fnNext = </span><span class="nx">_</span><span class="p">.</span><span class="nx">once</span> <span class="nf">( del = true )=&gt;</span>
+<a class="line-num" href="#line-361" id="line-361">361</a>            <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isBoolean</span><span class="p">(</span> <span class="nx">del</span> <span class="p">)</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span> <span class="nx">del</span> <span class="p">)</span>
+<a class="line-num" href="#line-362" id="line-362">362</a>              <span class="nx">@del</span><span class="p">(</span> <span class="nx">_id</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">del</span>
+<a class="line-num" href="#line-363" id="line-363">363</a>            <span class="k">else</span> <span class="k">if</span> <span class="nx">del</span><span class="o">?</span>
+<a class="line-num" href="#line-364" id="line-364">364</a>  
+<a class="line-num" href="#line-365" id="line-365">365</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-36" id="section-36">&#182;</a>
+</div>
 <p>if there is a return value ant it's not a boolean or number i asume it's an error</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-340" id="line-340">340</a>  
-<a class="line-num" href="#line-341" id="line-341">341</a>              <span class="nx">@emit</span> <span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="nx">del</span><span class="p">,</span> <span class="nx">msg</span>
-<a class="line-num" href="#line-342" id="line-342">342</a>  
-<a class="line-num" href="#line-343" id="line-343">343</a>            <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">timeout</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">timeout</span><span class="o">?</span>
-<a class="line-num" href="#line-344" id="line-344">344</a>            <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;next&quot;</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">_useInterval</span>
-<a class="line-num" href="#line-345" id="line-345">345</a>            <span class="k">return</span>
-<a class="line-num" href="#line-346" id="line-346">346</a>          <span class="k">try</span>
-<a class="line-num" href="#line-347" id="line-347">347</a>            <span class="nx">@emit</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">message</span><span class="p">,</span> <span class="nx">_fnNext</span><span class="p">,</span> <span class="nx">_id</span>
-<a class="line-num" href="#line-348" id="line-348">348</a>          <span class="k">catch</span> <span class="nx">_err</span>
-<a class="line-num" href="#line-349" id="line-349">349</a>            <span class="nx">@error</span> <span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="nx">_err</span>
-<a class="line-num" href="#line-350" id="line-350">350</a>            <span class="nx">@emit</span> <span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="nx">_err</span><span class="p">,</span> <span class="nx">msg</span>
-<a class="line-num" href="#line-351" id="line-351">351</a>            <span class="nx">_fnNext</span><span class="p">(</span> <span class="kc">false</span> <span class="p">)</span>
-<a class="line-num" href="#line-352" id="line-352">352</a>            <span class="k">return</span>
-<a class="line-num" href="#line-353" id="line-353">353</a>        <span class="k">else</span>
-<a class="line-num" href="#line-354" id="line-354">354</a>          <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;next&quot;</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">_useInterval</span>
-<a class="line-num" href="#line-355" id="line-355">355</a>        <span class="k">return</span>
-<a class="line-num" href="#line-356" id="line-356">356</a>      <span class="k">return</span>
-<a class="line-num" href="#line-357" id="line-357">357</a>  
-<a class="line-num" href="#line-358" id="line-358">358</a>  
-<a class="line-num" href="#line-359" id="line-359">359</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-364" id="line-364">364</a>  
+<a class="line-num" href="#line-365" id="line-365">365</a>              <span class="nx">@emit</span> <span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="nx">del</span><span class="p">,</span> <span class="nx">msg</span>
+<a class="line-num" href="#line-366" id="line-366">366</a>  
+<a class="line-num" href="#line-367" id="line-367">367</a>            <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">timeout</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">timeout</span><span class="o">?</span>
+<a class="line-num" href="#line-368" id="line-368">368</a>            <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;next&quot;</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">_useInterval</span>
+<a class="line-num" href="#line-369" id="line-369">369</a>            <span class="k">return</span>
+<a class="line-num" href="#line-370" id="line-370">370</a>          <span class="k">try</span>
+<a class="line-num" href="#line-371" id="line-371">371</a>            <span class="nx">@emit</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">message</span><span class="p">,</span> <span class="nx">_fnNext</span><span class="p">,</span> <span class="nx">_id</span>
+<a class="line-num" href="#line-372" id="line-372">372</a>          <span class="k">catch</span> <span class="nx">_err</span>
+<a class="line-num" href="#line-373" id="line-373">373</a>            <span class="nx">@error</span> <span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="nx">_err</span>
+<a class="line-num" href="#line-374" id="line-374">374</a>            <span class="nx">@emit</span> <span class="s">&quot;error&quot;</span><span class="p">,</span> <span class="nx">_err</span><span class="p">,</span> <span class="nx">msg</span>
+<a class="line-num" href="#line-375" id="line-375">375</a>            <span class="nx">_fnNext</span><span class="p">(</span> <span class="kc">false</span> <span class="p">)</span>
+<a class="line-num" href="#line-376" id="line-376">376</a>            <span class="k">return</span>
+<a class="line-num" href="#line-377" id="line-377">377</a>        <span class="k">else</span>
+<a class="line-num" href="#line-378" id="line-378">378</a>          <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;next&quot;</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">_useInterval</span>
+<a class="line-num" href="#line-379" id="line-379">379</a>        <span class="k">return</span>
+<a class="line-num" href="#line-380" id="line-380">380</a>      <span class="k">return</span>
+<a class="line-num" href="#line-381" id="line-381">381</a>  
+<a class="line-num" href="#line-382" id="line-382">382</a>  
+<a class="line-num" href="#line-383" id="line-383">383</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -1011,19 +1071,19 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-368" id="line-368">368</a>  
-<a class="line-num" href="#line-369" id="line-369">369</a>    <span class="nv">check: </span><span class="nf">( msg )=&gt;</span>
-<a class="line-num" href="#line-370" id="line-370">370</a>      <span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">customExceedCheck</span><span class="o">?</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">)</span>
-<a class="line-num" href="#line-371" id="line-371">371</a>        <span class="k">return</span>
-<a class="line-num" href="#line-372" id="line-372">372</a>  
-<a class="line-num" href="#line-373" id="line-373">373</a>      <span class="k">if</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">rc</span> <span class="o">&gt;=</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">maxReceiveCount</span>
-<a class="line-num" href="#line-374" id="line-374">374</a>        <span class="nx">@emit</span> <span class="s">&quot;exceeded&quot;</span><span class="p">,</span> <span class="nx">msg</span>
-<a class="line-num" href="#line-375" id="line-375">375</a>        <span class="nx">@warning</span> <span class="s">&quot;message received more than </span><span class="si">#{</span><span class="nx">@config</span><span class="p">.</span><span class="nx">maxReceiveCount</span><span class="si">}</span><span class="s"> times. So delete it&quot;</span><span class="p">,</span> <span class="nx">msg</span>
-<a class="line-num" href="#line-376" id="line-376">376</a>        <span class="nx">@del</span><span class="p">(</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">)</span>
-<a class="line-num" href="#line-377" id="line-377">377</a>      <span class="k">return</span>
-<a class="line-num" href="#line-378" id="line-378">378</a>  
-<a class="line-num" href="#line-379" id="line-379">379</a>  
-<a class="line-num" href="#line-380" id="line-380">380</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-392" id="line-392">392</a>  
+<a class="line-num" href="#line-393" id="line-393">393</a>    <span class="nv">check: </span><span class="nf">( msg )=&gt;</span>
+<a class="line-num" href="#line-394" id="line-394">394</a>      <span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">customExceedCheck</span><span class="o">?</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">)</span>
+<a class="line-num" href="#line-395" id="line-395">395</a>        <span class="k">return</span>
+<a class="line-num" href="#line-396" id="line-396">396</a>  
+<a class="line-num" href="#line-397" id="line-397">397</a>      <span class="k">if</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">rc</span> <span class="o">&gt;=</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">maxReceiveCount</span>
+<a class="line-num" href="#line-398" id="line-398">398</a>        <span class="nx">@emit</span> <span class="s">&quot;exceeded&quot;</span><span class="p">,</span> <span class="nx">msg</span>
+<a class="line-num" href="#line-399" id="line-399">399</a>        <span class="nx">@warning</span> <span class="s">&quot;message received more than </span><span class="si">#{</span><span class="nx">@config</span><span class="p">.</span><span class="nx">maxReceiveCount</span><span class="si">}</span><span class="s"> times. So delete it&quot;</span><span class="p">,</span> <span class="nx">msg</span>
+<a class="line-num" href="#line-400" id="line-400">400</a>        <span class="nx">@del</span><span class="p">(</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">)</span>
+<a class="line-num" href="#line-401" id="line-401">401</a>      <span class="k">return</span>
+<a class="line-num" href="#line-402" id="line-402">402</a>  
+<a class="line-num" href="#line-403" id="line-403">403</a>  
+<a class="line-num" href="#line-404" id="line-404">404</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -1050,14 +1110,14 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-387" id="line-387">387</a>  
-<a class="line-num" href="#line-388" id="line-388">388</a>    <span class="nv">interval: </span><span class="o">=&gt;</span>
-<a class="line-num" href="#line-389" id="line-389">389</a>      <span class="nx">@debug</span> <span class="s">&quot;run interval&quot;</span>
-<a class="line-num" href="#line-390" id="line-390">390</a>      <span class="nx">@receive</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span>
-<a class="line-num" href="#line-391" id="line-391">391</a>      <span class="k">return</span>
-<a class="line-num" href="#line-392" id="line-392">392</a>  
-<a class="line-num" href="#line-393" id="line-393">393</a>  
-<a class="line-num" href="#line-394" id="line-394">394</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-411" id="line-411">411</a>  
+<a class="line-num" href="#line-412" id="line-412">412</a>    <span class="nv">interval: </span><span class="o">=&gt;</span>
+<a class="line-num" href="#line-413" id="line-413">413</a>      <span class="nx">@debug</span> <span class="s">&quot;run interval&quot;</span>
+<a class="line-num" href="#line-414" id="line-414">414</a>      <span class="nx">@receive</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span>
+<a class="line-num" href="#line-415" id="line-415">415</a>      <span class="k">return</span>
+<a class="line-num" href="#line-416" id="line-416">416</a>  
+<a class="line-num" href="#line-417" id="line-417">417</a>  
+<a class="line-num" href="#line-418" id="line-418">418</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -1090,43 +1150,44 @@
   </div>
 </div>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-403" id="line-403">403</a>  
-<a class="line-num" href="#line-404" id="line-404">404</a>    <span class="nv">next: </span><span class="nf">( wait = false )=&gt;</span>
-<a class="line-num" href="#line-405" id="line-405">405</a>      <span class="k">if</span> <span class="o">not</span> <span class="nx">wait</span>
-<a class="line-num" href="#line-406" id="line-406">406</a>        <span class="vi">@waitCount = </span><span class="mi">0</span>
-<a class="line-num" href="#line-407" id="line-407">407</a>  
-<a class="line-num" href="#line-408" id="line-408">408</a>      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span> <span class="p">)</span>
-<a class="line-num" href="#line-409" id="line-409">409</a>        <span class="nv">_timeout = </span><span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span><span class="p">[</span> <span class="nx">@waitCount</span> <span class="p">]</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span><span class="p">[</span> <span class="nx">@waitCount</span> <span class="p">]</span> <span class="k">else</span> <span class="nx">_</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span> <span class="p">)</span>
-<a class="line-num" href="#line-410" id="line-410">410</a>      <span class="k">else</span>
-<a class="line-num" href="#line-411" id="line-411">411</a>        <span class="k">if</span> <span class="nx">wait</span>
-<a class="line-num" href="#line-412" id="line-412">412</a>          <span class="nv">_timeout = </span><span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span>
-<a class="line-num" href="#line-413" id="line-413">413</a>        <span class="k">else</span>
-<a class="line-num" href="#line-414" id="line-414">414</a>          <span class="nv">_timeout = </span><span class="mi">0</span>
-<a class="line-num" href="#line-415" id="line-415">415</a>      
-<a class="line-num" href="#line-416" id="line-416">416</a>      <span class="nx">@debug</span> <span class="s">&quot;wait&quot;</span><span class="p">,</span> <span class="nx">@waitCount</span><span class="p">,</span> <span class="nx">_timeout</span> <span class="o">*</span> <span class="mi">1000</span>
-<a class="line-num" href="#line-417" id="line-417">417</a>      <span class="k">if</span> <span class="nx">_timeout</span> <span class="o">&gt;=</span> <span class="mi">0</span>
-<a class="line-num" href="#line-418" id="line-418">418</a>        <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">@timeout</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">@timeout</span><span class="o">?</span>
-<a class="line-num" href="#line-419" id="line-419">419</a>        <span class="vi">@timeout = </span><span class="nx">_</span><span class="p">.</span><span class="nx">delay</span><span class="p">(</span> <span class="nx">@interval</span><span class="p">,</span> <span class="nx">_timeout</span> <span class="o">*</span> <span class="mi">1000</span> <span class="p">)</span>
-<a class="line-num" href="#line-420" id="line-420">420</a>        <span class="nx">@waitCount</span><span class="o">++</span>
-<a class="line-num" href="#line-421" id="line-421">421</a>      <span class="k">else</span>
-<a class="line-num" href="#line-422" id="line-422">422</a>        <span class="nx">@interval</span><span class="p">()</span>
-<a class="line-num" href="#line-423" id="line-423">423</a>      <span class="k">return</span>
-<a class="line-num" href="#line-424" id="line-424">424</a>  
-<a class="line-num" href="#line-425" id="line-425">425</a>  
-<a class="line-num" href="#line-426" id="line-426">426</a>  
-<a class="line-num" href="#line-427" id="line-427">427</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-427" id="line-427">427</a>  
+<a class="line-num" href="#line-428" id="line-428">428</a>    <span class="nv">next: </span><span class="nf">( wait = false )=&gt;</span>
+<a class="line-num" href="#line-429" id="line-429">429</a>      <span class="k">if</span> <span class="o">not</span> <span class="nx">wait</span>
+<a class="line-num" href="#line-430" id="line-430">430</a>        <span class="vi">@waitCount = </span><span class="mi">0</span>
+<a class="line-num" href="#line-431" id="line-431">431</a>  
+<a class="line-num" href="#line-432" id="line-432">432</a>      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span> <span class="p">)</span>
+<a class="line-num" href="#line-433" id="line-433">433</a>        <span class="nv">_timeout = </span><span class="k">if</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span><span class="p">[</span> <span class="nx">@waitCount</span> <span class="p">]</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span><span class="p">[</span> <span class="nx">@waitCount</span> <span class="p">]</span> <span class="k">else</span> <span class="nx">_</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span> <span class="p">)</span>
+<a class="line-num" href="#line-434" id="line-434">434</a>      <span class="k">else</span>
+<a class="line-num" href="#line-435" id="line-435">435</a>        <span class="k">if</span> <span class="nx">wait</span>
+<a class="line-num" href="#line-436" id="line-436">436</a>          <span class="nv">_timeout = </span><span class="nx">@config</span><span class="p">.</span><span class="nx">interval</span>
+<a class="line-num" href="#line-437" id="line-437">437</a>        <span class="k">else</span>
+<a class="line-num" href="#line-438" id="line-438">438</a>          <span class="nv">_timeout = </span><span class="mi">0</span>
+<a class="line-num" href="#line-439" id="line-439">439</a>      
+<a class="line-num" href="#line-440" id="line-440">440</a>      <span class="nx">@debug</span> <span class="s">&quot;wait&quot;</span><span class="p">,</span> <span class="nx">@waitCount</span><span class="p">,</span> <span class="nx">_timeout</span> <span class="o">*</span> <span class="mi">1000</span>
+<a class="line-num" href="#line-441" id="line-441">441</a>      <span class="k">if</span> <span class="nx">_timeout</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+<a class="line-num" href="#line-442" id="line-442">442</a>        <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">@timeout</span> <span class="p">)</span> <span class="k">if</span> <span class="nx">@timeout</span><span class="o">?</span>
+<a class="line-num" href="#line-443" id="line-443">443</a>        <span class="vi">@timeout = </span><span class="nx">_</span><span class="p">.</span><span class="nx">delay</span><span class="p">(</span> <span class="nx">@interval</span><span class="p">,</span> <span class="nx">_timeout</span> <span class="o">*</span> <span class="mi">1000</span> <span class="p">)</span>
+<a class="line-num" href="#line-444" id="line-444">444</a>        <span class="nx">@waitCount</span><span class="o">++</span>
+<a class="line-num" href="#line-445" id="line-445">445</a>      <span class="k">else</span>
+<a class="line-num" href="#line-446" id="line-446">446</a>        <span class="nx">@interval</span><span class="p">()</span>
+<a class="line-num" href="#line-447" id="line-447">447</a>      <span class="k">return</span>
+<a class="line-num" href="#line-448" id="line-448">448</a>  
+<a class="line-num" href="#line-449" id="line-449">449</a>  
+<a class="line-num" href="#line-450" id="line-450">450</a>  
+<a class="line-num" href="#line-451" id="line-451">451</a>  
+<a class="line-num" href="#line-452" id="line-452">452</a>  </pre></div>
         </td>
       </tr>
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-39" id="section-39">&#182;</a>
+  <a class="pilcrow" href="#section-40" id="section-40">&#182;</a>
 </div>
 <p>export this class</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-426" id="line-426">426</a>  
-<a class="line-num" href="#line-427" id="line-427">427</a>  <span class="nv">module.exports = </span><span class="nx">RSMQWorker</span>
-<a class="line-num" href="#line-428" id="line-428">428</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-451" id="line-451">451</a>  
+<a class="line-num" href="#line-452" id="line-452">452</a>  <span class="nv">module.exports = </span><span class="nx">RSMQWorker</span>
+<a class="line-num" href="#line-453" id="line-453">453</a>  </pre></div>
         </td>
       </tr>
   </tbody>

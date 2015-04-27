@@ -9,10 +9,10 @@
 
   worker.on("ready", (function(_this) {
     return function() {
-      var i, len, msg, ref;
-      ref = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-      for (i = 0, len = ref.length; i < len; i++) {
-        msg = ref[i];
+      var msg, _i, _len, _ref;
+      _ref = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        msg = _ref[_i];
         console.log("SEND", msg);
         worker.send(msg);
       }

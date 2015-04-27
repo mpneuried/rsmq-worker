@@ -37,10 +37,13 @@
         <a href="#.stop()">.stop()</a>
       </div>
       <div class="heading h3">
-        <a href="#.send(%20msg%20%5B%2C%20delay%20%5D%20)">.send( msg [, delay ] )</a>
+        <a href="#.send(%20msg%20%5B%2C%20delay%20%5D%5B%2C%20cb%20%5D%20)">.send( msg [, delay ][, cb ] )</a>
       </div>
       <div class="heading h3">
-        <a href="#.del(%20id%20)">.del( id )</a>
+        <a href="#.del(%20id%20%5B%2C%20cb%20%5D%20)">.del( id [, cb ] )</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.changeinterval(%20interval%20)">.changeInterval( interval )</a>
       </div>
       <div class="heading h2">
         <a href="#events">Events</a>
@@ -230,10 +233,10 @@
 <p><em>( Self )</em>: The instance itself for chaining.</p>
 
 
-<div class="pilwrap" id=".send(%20msg%20%5B%2C%20delay%20%5D%20)">
+<div class="pilwrap" id=".send(%20msg%20%5B%2C%20delay%20%5D%5B%2C%20cb%20%5D%20)">
   <h3>
-    <a href="#.send(%20msg%20%5B%2C%20delay%20%5D%20)" name=".send(%20msg%20%5B%2C%20delay%20%5D%20)" class="pilcrow">&#182;</a>
-    <code>.send( msg [, delay ] )</code>
+    <a href="#.send(%20msg%20%5B%2C%20delay%20%5D%5B%2C%20cb%20%5D%20)" name=".send(%20msg%20%5B%2C%20delay%20%5D%5B%2C%20cb%20%5D%20)" class="pilcrow">&#182;</a>
+    <code>.send( msg [, delay ][, cb ] )</code>
   </h3>
 </div>
 
@@ -245,6 +248,7 @@
 <ul>
 <li><code>filename</code> : <em>( <code>String</code> required )</em>: The rsmq message. In best practice it's a stringified JSON with additional data.</li>
 <li><code>delay</code> : <em>( <code>Number</code> optional; default = <code>0</code> )</em>: The message delay to hide this message for the next <code>x</code> seconds.</li>
+<li><code>cb</code> : <em>( <code>Function</code> optional )</em>: A optional callback to get a secure response for a successful send.</li>
 </ul>
 
 <p><strong>Return</strong></p>
@@ -252,10 +256,10 @@
 <p><em>( Self )</em>: The instance itself for chaining.</p>
 
 
-<div class="pilwrap" id=".del(%20id%20)">
+<div class="pilwrap" id=".del(%20id%20%5B%2C%20cb%20%5D%20)">
   <h3>
-    <a href="#.del(%20id%20)" name=".del(%20id%20)" class="pilcrow">&#182;</a>
-    <code>.del( id )</code>
+    <a href="#.del(%20id%20%5B%2C%20cb%20%5D%20)" name=".del(%20id%20%5B%2C%20cb%20%5D%20)" class="pilcrow">&#182;</a>
+    <code>.del( id [, cb ] )</code>
   </h3>
 </div>
 
@@ -266,6 +270,28 @@
 
 <ul>
 <li><code>id</code> : <em>( <code>String</code> required )</em>: The rsmq message id.</li>
+<li><code>cb</code> : <em>( <code>Function</code> optional )</em>: A optional callback to get a secure response for a successful delete.</li>
+</ul>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Self )</em>: The instance itself for chaining.</p>
+
+
+<div class="pilwrap" id=".changeinterval(%20interval%20)">
+  <h3>
+    <a href="#.changeinterval(%20interval%20)" name=".changeinterval(%20interval%20)" class="pilcrow">&#182;</a>
+    <code>.changeInterval( interval )</code>
+  </h3>
+</div>
+
+
+<p>Change the interval timeouts in operation.</p>
+
+<p><strong>Arguments</strong></p>
+
+<ul>
+<li><code>interval</code> : <em>( <code>Number|Array</code> required )</em>: The new interval.</li>
 </ul>
 
 <p><strong>Return</strong></p>
@@ -506,7 +532,7 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 <ul>
 <li>MORE tests!</li>
-<li>A terminal client interface. E.g.: <code>rsmq-worker [script] [options]</code> + <code>module.exports = function( message, next, id ){ /* processing */ };</code></li>
+<li>Optional parallel execution. To do multiple receives in parallel.</li>
 </ul>
 
 
@@ -520,6 +546,8 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 <p>|Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.4|2015-04-27|fixed argument dispatch for <code>.send()</code> and added optional cb for <code>.del()</code>|
+|0.3.3|2015-03-27|added <code>changeInterval</code> to modify the intervall in operation|
 |0.3.2|2015-02-23|changed default prefix/namespace;|
 |0.3.0|2015-02-16|It's now possible to return a erorr as first argument of <code>next</code>. This will lead to an error emit + optimized readme|
 |0.2.2|2015-01-27|added option <code>defaultDelay</code> and optimized argumtes of the <code>send</code> method; fixed travis.yml|
@@ -547,6 +575,8 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 <p>|Name|Description|
 |:--|:--|
 |<a href="https://github.com/smrchy/rsmq"><strong>rsmq</strong></a>|A really simple message queue based on Redis|
+|<a href="https://github.com/mpneuried/rsmq-cli"><strong>rsmq-cli</strong></a>|a terminal client for rsmq|
+|<a href="https://github.com/smrchy/rest-rsmq"><strong>rest-rsmq</strong></a>|REST interface for.|
 |<a href="https://github.com/mpneuried/redis-notifications"><strong>redis-notifications</strong></a>|A redis based notification engine. It implements the rsmq-worker to safely create notifications and recurring reports.|
 |<a href="https://github.com/tcs-de/nodecache"><strong>node-cache</strong></a>|Simple and fast NodeJS internal caching. Node internal in memory cache like memcached.|
 |<a href="https://github.com/smrchy/redis-sessions"><strong>redis-sessions</strong></a>|An advanced session store for NodeJS and Redis|

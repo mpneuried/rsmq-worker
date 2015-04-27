@@ -93,7 +93,7 @@ Stop the receive interval.
 
 *( Self )*: The instance itself for chaining.
 
-### `.send( msg [, delay ] )`
+### `.send( msg [, delay ][, cb ] )`
 
 Helper function to simply send a message in the configured queue.
 
@@ -101,18 +101,20 @@ Helper function to simply send a message in the configured queue.
 
 * `filename` : *( `String` required )*: The rsmq message. In best practice it's a stringified JSON with additional data.
 * `delay` : *( `Number` optional; default = `0` )*: The message delay to hide this message for the next `x` seconds.
+* `cb` : *( `Function` optional )*: A optional callback to get a secure response for a successful send.
 
 **Return**
 
 *( Self )*: The instance itself for chaining.
 
-### `.del( id )`
+### `.del( id [, cb ] )`
 
 Helper function to simply delete a message after it has been processed.
 
 **Arguments**
 
 * `id` : *( `String` required )*: The rsmq message id.
+* `cb` : *( `Function` optional )*: A optional callback to get a secure response for a successful delete.
 
 **Return**
 
@@ -277,11 +279,12 @@ This is an advanced example showing some features in action.
 ## Todos/Ideas
 
 - MORE tests!
-- A terminal client interface. E.g.: `rsmq-worker [script] [options]` + `module.exports = function( message, next, id ){ /* processing */ };`
+- Optional parallel execution. To do multiple receives in parallel.
 
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.4|2015-04-27|fixed argument dispatch for `.send()` and added optional cb for `.del()`|
 |0.3.3|2015-03-27|added `changeInterval` to modify the intervall in operation|
 |0.3.2|2015-02-23|changed default prefix/namespace;|
 |0.3.0|2015-02-16|It's now possible to return a erorr as first argument of `next`. This will lead to an error emit + optimized readme|
@@ -301,6 +304,8 @@ This is an advanced example showing some features in action.
 |Name|Description|
 |:--|:--|
 |[**rsmq**](https://github.com/smrchy/rsmq)|A really simple message queue based on Redis|
+|[**rsmq-cli**](https://github.com/mpneuried/rsmq-cli)|a terminal client for rsmq|
+|[**rest-rsmq**](https://github.com/smrchy/rest-rsmq)|REST interface for.|
 |[**redis-notifications**](https://github.com/mpneuried/redis-notifications)|A redis based notification engine. It implements the rsmq-worker to safely create notifications and recurring reports.|
 |[**node-cache**](https://github.com/tcs-de/nodecache)|Simple and fast NodeJS internal caching. Node internal in memory cache like memcached.|
 |[**redis-sessions**](https://github.com/smrchy/redis-sessions)|An advanced session store for NodeJS and Redis|

@@ -101,13 +101,56 @@
 <a class="line-num" href="#line-41" id="line-41">41</a>          <span class="k">return</span>
 <a class="line-num" href="#line-42" id="line-42">42</a>  
 <a class="line-num" href="#line-43" id="line-43">43</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">_testFn</span> <span class="p">)</span>
-<a class="line-num" href="#line-44" id="line-44">44</a>        
-<a class="line-num" href="#line-45" id="line-45">45</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">_examplemsg</span> <span class="p">)</span>
-<a class="line-num" href="#line-46" id="line-46">46</a>        <span class="k">return</span>
-<a class="line-num" href="#line-47" id="line-47">47</a>  
-<a class="line-num" href="#line-48" id="line-48">48</a>      <span class="k">return</span>
-<a class="line-num" href="#line-49" id="line-49">49</a>    <span class="k">return</span>
-<a class="line-num" href="#line-50" id="line-50">50</a>  </pre></div>
+<a class="line-num" href="#line-44" id="line-44">44</a>  
+<a class="line-num" href="#line-45" id="line-45">45</a>        
+<a class="line-num" href="#line-46" id="line-46">46</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">_examplemsg</span> <span class="p">)</span>
+<a class="line-num" href="#line-47" id="line-47">47</a>        <span class="k">return</span>
+<a class="line-num" href="#line-48" id="line-48">48</a>  
+<a class="line-num" href="#line-49" id="line-49">49</a>      <span class="nx">it</span> <span class="s">&quot;delay test&quot;</span><span class="p">,</span> <span class="nf">( done )-&gt;</span>
+<a class="line-num" href="#line-50" id="line-50">50</a>        <span class="nv">_examplemsg = </span><span class="nx">utils</span><span class="p">.</span><span class="nx">randomString</span><span class="p">(</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">randRange</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">99</span> <span class="p">),</span> <span class="mi">3</span> <span class="p">)</span>
+<a class="line-num" href="#line-51" id="line-51">51</a>        <span class="nv">_start = </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span>
+<a class="line-num" href="#line-52" id="line-52">52</a>        <span class="nv">_delay = </span><span class="mi">5</span>
+<a class="line-num" href="#line-53" id="line-53">53</a>        <span class="nx">@timeout</span><span class="p">(</span> <span class="nx">_delay</span><span class="o">*</span><span class="mf">1.5</span><span class="o">*</span><span class="mi">1000</span> <span class="p">)</span>
+<a class="line-num" href="#line-54" id="line-54">54</a>        <span class="nv">_testFn = </span><span class="nf">( msg, next, id )=&gt;</span>
+<a class="line-num" href="#line-55" id="line-55">55</a>  
+<a class="line-num" href="#line-56" id="line-56">56</a>          <span class="nx">should</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">_examplemsg</span> <span class="p">)</span>
+<a class="line-num" href="#line-57" id="line-57">57</a>          <span class="nx">next</span><span class="p">()</span>
+<a class="line-num" href="#line-58" id="line-58">58</a>          <span class="nv">_diff = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span> <span class="p">(</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">-</span> <span class="nx">_start</span> <span class="p">)</span><span class="o">/</span><span class="mi">1000</span> <span class="p">)</span>
+<a class="line-num" href="#line-59" id="line-59">59</a>          <span class="nx">_diff</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">be</span><span class="p">.</span><span class="nx">above</span><span class="p">(</span><span class="nx">_delay</span><span class="p">)</span>
+<a class="line-num" href="#line-60" id="line-60">60</a>          <span class="nx">worker</span><span class="p">.</span><span class="nx">removeListener</span><span class="p">(</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">_testFn</span> <span class="p">)</span>
+<a class="line-num" href="#line-61" id="line-61">61</a>          <span class="nx">done</span><span class="p">()</span>
+<a class="line-num" href="#line-62" id="line-62">62</a>          <span class="k">return</span>
+<a class="line-num" href="#line-63" id="line-63">63</a>  
+<a class="line-num" href="#line-64" id="line-64">64</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">_testFn</span> <span class="p">)</span>
+<a class="line-num" href="#line-65" id="line-65">65</a>        
+<a class="line-num" href="#line-66" id="line-66">66</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">_examplemsg</span><span class="p">,</span> <span class="nx">_delay</span> <span class="p">)</span>
+<a class="line-num" href="#line-67" id="line-67">67</a>        <span class="k">return</span>
+<a class="line-num" href="#line-68" id="line-68">68</a>  
+<a class="line-num" href="#line-69" id="line-69">69</a>      <span class="nx">it</span> <span class="s">&quot;delay test with callback&quot;</span><span class="p">,</span> <span class="nf">( done )-&gt;</span>
+<a class="line-num" href="#line-70" id="line-70">70</a>        <span class="nv">_examplemsg = </span><span class="nx">utils</span><span class="p">.</span><span class="nx">randomString</span><span class="p">(</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">randRange</span><span class="p">(</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">99</span> <span class="p">),</span> <span class="mi">3</span> <span class="p">)</span>
+<a class="line-num" href="#line-71" id="line-71">71</a>        <span class="nv">_start = </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span>
+<a class="line-num" href="#line-72" id="line-72">72</a>        <span class="nv">_delay = </span><span class="mi">5</span>
+<a class="line-num" href="#line-73" id="line-73">73</a>        <span class="nx">@timeout</span><span class="p">(</span> <span class="nx">_delay</span><span class="o">*</span><span class="mf">1.5</span><span class="o">*</span><span class="mi">1000</span> <span class="p">)</span>
+<a class="line-num" href="#line-74" id="line-74">74</a>        <span class="nv">_testFn = </span><span class="nf">( msg, next, id )=&gt;</span>
+<a class="line-num" href="#line-75" id="line-75">75</a>  
+<a class="line-num" href="#line-76" id="line-76">76</a>          <span class="nx">should</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span> <span class="nx">msg</span><span class="p">,</span> <span class="nx">_examplemsg</span> <span class="p">)</span>
+<a class="line-num" href="#line-77" id="line-77">77</a>          <span class="nx">next</span><span class="p">()</span>
+<a class="line-num" href="#line-78" id="line-78">78</a>          <span class="nv">_diff = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span> <span class="p">(</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">-</span> <span class="nx">_start</span> <span class="p">)</span><span class="o">/</span><span class="mi">1000</span> <span class="p">)</span>
+<a class="line-num" href="#line-79" id="line-79">79</a>          <span class="nx">_diff</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">be</span><span class="p">.</span><span class="nx">above</span><span class="p">(</span><span class="nx">_delay</span><span class="p">)</span>
+<a class="line-num" href="#line-80" id="line-80">80</a>          <span class="nx">worker</span><span class="p">.</span><span class="nx">removeListener</span><span class="p">(</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">_testFn</span> <span class="p">)</span>
+<a class="line-num" href="#line-81" id="line-81">81</a>          <span class="nx">done</span><span class="p">()</span>
+<a class="line-num" href="#line-82" id="line-82">82</a>          <span class="k">return</span>
+<a class="line-num" href="#line-83" id="line-83">83</a>  
+<a class="line-num" href="#line-84" id="line-84">84</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s">&quot;message&quot;</span><span class="p">,</span> <span class="nx">_testFn</span> <span class="p">)</span>
+<a class="line-num" href="#line-85" id="line-85">85</a>        
+<a class="line-num" href="#line-86" id="line-86">86</a>        <span class="nx">worker</span><span class="p">.</span><span class="nx">send</span> <span class="nx">_examplemsg</span><span class="p">,</span> <span class="nx">_delay</span><span class="p">,</span> <span class="nf">( err )=&gt;</span>
+<a class="line-num" href="#line-87" id="line-87">87</a>          <span class="nx">should</span><span class="p">.</span><span class="o">not</span><span class="p">.</span><span class="nx">exist</span><span class="p">(</span> <span class="nx">err</span> <span class="p">)</span>
+<a class="line-num" href="#line-88" id="line-88">88</a>          <span class="k">return</span>
+<a class="line-num" href="#line-89" id="line-89">89</a>        <span class="k">return</span>
+<a class="line-num" href="#line-90" id="line-90">90</a>  
+<a class="line-num" href="#line-91" id="line-91">91</a>      <span class="k">return</span>
+<a class="line-num" href="#line-92" id="line-92">92</a>    <span class="k">return</span>
+<a class="line-num" href="#line-93" id="line-93">93</a>  </pre></div>
         </td>
       </tr>
   </tbody>
