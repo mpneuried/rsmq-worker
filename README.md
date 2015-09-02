@@ -72,7 +72,7 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
 A message ( e.g. received by the event `data` or `customExceedCheck` ) contains the following keys:
 
 - **msg.message** : *( `String` )* The queue message content. You can use complex content by using a stringified JSON.
-- **msg.id** : *( `String` )* The rsmq internal messag id
+- **msg.id** : *( `String` )* The rsmq internal message id
 - **msg.sent** : *( `Number` )* Timestamp of when this message was sent / created.
 - **msg.fr** : *( `Number` )* Timestamp of when this message was first received.
 - **msg.rc** : *( `Number` )* Number of times this message was received.
@@ -101,9 +101,9 @@ Helper function to simply send a message in the configured queue.
 
 **Arguments**
 
-* `filename` : *( `String` required )*: The rsmq message. In best practice it's a stringified JSON with additional data.
+* `msg` : *( `String` required )*: The rsmq message. In best practice it's a stringified JSON with additional data.
 * `delay` : *( `Number` optional; default = `0` )*: The message delay to hide this message for the next `x` seconds.
-* `cb` : *( `Function` optional )*: A optional callback to get a secure response for a successful send.
+* `cb` : *( `Function` optional )*: An optional callback to get a secure response for a successful send.
 
 **Return**
 
@@ -139,7 +139,7 @@ Change the interval timeouts in operation.
 ### `message`
 
 Main event to catch and process a message.
-If you do not set a handler for this Event nothing wohld be happen.
+If you do not set a handler for this Event nothing will happen.
 
 **Example:**
 
@@ -152,10 +152,10 @@ worker.on( "message", function( message, next, msgid ){
 
 **Arguments** 
 
-- **message** : *( `String` )* The queue message content to process. You can use complex content by using a stringfied JSON.
+- **message** : *( `String` )* The queue message content to process. You can use complex content by using a stringified JSON.
 - **next** : *( `Function` )* A function you have to call when your message has been processed.  
   **Arguments** 
-  * `delete`: *( `Boolean|Error` optional; default = true )* `Error`: If you return an error it will emited as error evebt; `Boolean`: It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config `options.customExceedCheck`
+  * `delete`: *( `Boolean|Error` optional; default = true )* `Error`: If you return an error it will emitted as an error event; `Boolean`: It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config `options.customExceedCheck`
 - **msgid** : *( `String` )* The message id. This is useful if you want to delete a message manually.
 
 ### `ready`
@@ -228,7 +228,7 @@ This is an advanced example showing some features in action.
 		customExceedCheck: fnCheck	// set the custom exceed check
 	});
 
-	// Listen to erros
+	// Listen to errors
 	worker.on('error', function( err, msg ){
 	    console.log( "ERROR", err, msg.id );
 	});
@@ -288,10 +288,10 @@ This is an advanced example showing some features in action.
 |:--:|:--:|:--|
 |0.3.5|2015-04-27|again ... fixed argument dispatch for `.send()`|
 |0.3.4|2015-04-27|fixed argument dispatch for `.send()` and added optional cb for `.del()`|
-|0.3.3|2015-03-27|added `changeInterval` to modify the intervall in operation|
+|0.3.3|2015-03-27|added `changeInterval` to modify the interval in operation|
 |0.3.2|2015-02-23|changed default prefix/namespace;|
-|0.3.0|2015-02-16|It's now possible to return a erorr as first argument of `next`. This will lead to an error emit + optimized readme|
-|0.2.2|2015-01-27|added option `defaultDelay` and optimized argumtes of the `send` method; fixed travis.yml|
+|0.3.0|2015-02-16|It's now possible to return an error as first argument of `next`. This will lead to an error emit + optimized readme|
+|0.2.2|2015-01-27|added option `defaultDelay` and optimized arguments of the `send` method; fixed travis.yml|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|
 |0.1.2|2015-01-20|Reorganized code, added code docs and optimized readme|
 |0.1.1|2015-01-17|Added test scripts and optimized repository file list|
