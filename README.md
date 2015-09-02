@@ -286,6 +286,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.6|2015-09-02|Updated dependencies; optimized readme (thanks to [Tobias Lidskog](https://github.com/tobli))|
 |0.3.5|2015-04-27|again ... fixed argument dispatch for `.send()`|
 |0.3.4|2015-04-27|fixed argument dispatch for `.send()` and added optional cb for `.del()`|
 |0.3.3|2015-03-27|added `changeInterval` to modify the interval in operation|
