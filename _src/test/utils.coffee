@@ -5,7 +5,7 @@
 # A collection of helper functions
 
 # export the functions
-module.exports = 
+module.exports =
 	###
 	## randomString
 	
@@ -51,4 +51,3 @@ module.exports =
 	###
 	randRange: ( lowVal, highVal )->
 		return Math.floor( Math.random()*(highVal-lowVal+1 ))+lowVal
-

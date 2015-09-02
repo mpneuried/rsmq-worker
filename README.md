@@ -59,6 +59,7 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
 	- **options.autostart**: *( `Boolean` optional; default = `false` )* Autostart the worker on init
 	- **options.timeout**: *( `Number` optional; default = `3000` )* Message processing timeout in `ms`. So you have to call the `next()` method of `message` at least after e.g. 3000ms. If set to `0` it'll wait until infinity.
 	- **options.customExceedCheck**: *( `Function` optional; )* A custom function, with the raw message *(see message format)* as argument to build a custom exceed check. If you return a `true` the message will not exceed. On return `false` the regular check for `maxReceiveCount` will be used.
+	- **options.alwaysLogErrors**: *( `Boolean` optional; default = `false` )* An error will be logged to the console even if an error listener has been attached.
 	- **options.rsmq**: *( `RedisSMQ` optional; default = `null` )* A already existing rsmq instance to use instead of creating a new client
 	- **options.redis**: *( `RedisClient` optional; default = `null` )* A already existing redis client instance to use if no `rsmq` instance has been defined 
 	- **options.redisPrefix**: *( `String` optional; default = `""` )* The redis prefix/namespace for rsmq if no `rsmq` instance has been defined. This has to match the option `ns` of RSMQ.
@@ -286,7 +287,8 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
-|0.3.6|2015-09-02|Updated dependencies; optimized readme (thanks to [Tobias Lidskog](https://github.com/tobli))|
+|0.3.7|2015-09-02|Added tests to check the behavior during errors within message processing; Added option `alwaysLogErrors` to prevent console logs if an error event handler was attached. [Issue #3](https://github.com/mpneuried/rsmq-worker/issues/3)|
+|0.3.6|2015-09-02|Updated dependencies; optimized readme (thanks to [Tobias Lidskog](https://github.com/tobli) for the [pull #4](https://github.com/mpneuried/rsmq-worker/pull/4))|
 |0.3.5|2015-04-27|again ... fixed argument dispatch for `.send()`|
 |0.3.4|2015-04-27|fixed argument dispatch for `.send()` and added optional cb for `.del()`|
 |0.3.3|2015-03-27|added `changeInterval` to modify the interval in operation|

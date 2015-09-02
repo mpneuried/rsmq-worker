@@ -93,6 +93,8 @@
 <a href="https://david-dm.org/mpneuried/rsmq-worker"><img src="https://david-dm.org/mpneuried/rsmq-worker.png" alt="Build Status" title="" /></a>
 <a href="http://badge.fury.io/js/rsmq-worker"><img src="https://badge.fury.io/js/rsmq-worker.png" alt="NPM version" title="" /></a></p>
 
+<p><a href="https://gitter.im/mpneuried/rsmq-worker?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Join the chat at https://gitter.im/mpneuried/rsmq-worker" title="" /></a></p>
+
 <p>Helper to simply implement a worker <a href="https://github.com/smrchy/rsmq">RSMQ ( Redis Simple Message Queue )</a>.</p>
 
 <p><a href="https://nodei.co/npm/rsmq-worker/"><img src="https://nodei.co/npm/rsmq-worker.png?downloads=true&amp;stars=true" alt="NPM" title="" /></a></p>
@@ -166,6 +168,7 @@
 <li><strong>options.autostart</strong>: <em>( <code>Boolean</code> optional; default = <code>false</code> )</em> Autostart the worker on init</li>
 <li><strong>options.timeout</strong>: <em>( <code>Number</code> optional; default = <code>3000</code> )</em> Message processing timeout in <code>ms</code>. So you have to call the <code>next()</code> method of <code>message</code> at least after e.g. 3000ms. If set to <code>0</code> it'll wait until infinity.</li>
 <li><strong>options.customExceedCheck</strong>: <em>( <code>Function</code> optional; )</em> A custom function, with the raw message <em>(see message format)</em> as argument to build a custom exceed check. If you return a <code>true</code> the message will not exceed. On return <code>false</code> the regular check for <code>maxReceiveCount</code> will be used.</li>
+<li><strong>options.alwaysLogErrors</strong>: <em>( <code>Boolean</code> optional; default = <code>false</code> )</em> An error will be logged to the console even if an error listener has been attached.</li>
 <li><strong>options.rsmq</strong>: <em>( <code>RedisSMQ</code> optional; default = <code>null</code> )</em> A already existing rsmq instance to use instead of creating a new client</li>
 <li><strong>options.redis</strong>: <em>( <code>RedisClient</code> optional; default = <code>null</code> )</em> A already existing redis client instance to use if no <code>rsmq</code> instance has been defined </li>
 <li><strong>options.redisPrefix</strong>: <em>( <code>String</code> optional; default = <code>""</code> )</em> The redis prefix/namespace for rsmq if no <code>rsmq</code> instance has been defined. This has to match the option <code>ns</code> of RSMQ.</li>
@@ -187,7 +190,7 @@
 
 <ul>
 <li><strong>msg.message</strong> : <em>( <code>String</code> )</em> The queue message content. You can use complex content by using a stringified JSON.</li>
-<li><strong>msg.id</strong> : <em>( <code>String</code> )</em> The rsmq internal messag id</li>
+<li><strong>msg.id</strong> : <em>( <code>String</code> )</em> The rsmq internal message id</li>
 <li><strong>msg.sent</strong> : <em>( <code>Number</code> )</em> Timestamp of when this message was sent / created.</li>
 <li><strong>msg.fr</strong> : <em>( <code>Number</code> )</em> Timestamp of when this message was first received.</li>
 <li><strong>msg.rc</strong> : <em>( <code>Number</code> )</em> Number of times this message was received.</li>
@@ -246,9 +249,9 @@
 <p><strong>Arguments</strong></p>
 
 <ul>
-<li><code>filename</code> : <em>( <code>String</code> required )</em>: The rsmq message. In best practice it's a stringified JSON with additional data.</li>
+<li><code>msg</code> : <em>( <code>String</code> required )</em>: The rsmq message. In best practice it's a stringified JSON with additional data.</li>
 <li><code>delay</code> : <em>( <code>Number</code> optional; default = <code>0</code> )</em>: The message delay to hide this message for the next <code>x</code> seconds.</li>
-<li><code>cb</code> : <em>( <code>Function</code> optional )</em>: A optional callback to get a secure response for a successful send.</li>
+<li><code>cb</code> : <em>( <code>Function</code> optional )</em>: An optional callback to get a secure response for a successful send.</li>
 </ul>
 
 <p><strong>Return</strong></p>
@@ -317,7 +320,7 @@
 
 
 <p>Main event to catch and process a message.
-If you do not set a handler for this Event nothing wohld be happen.</p>
+If you do not set a handler for this Event nothing will happen.</p>
 
 <p><strong>Example:</strong></p>
 
@@ -333,10 +336,10 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 <p><strong>Arguments</strong> </p>
 
 <ul>
-<li><strong>message</strong> : <em>( <code>String</code> )</em> The queue message content to process. You can use complex content by using a stringfied JSON.</li>
+<li><strong>message</strong> : <em>( <code>String</code> )</em> The queue message content to process. You can use complex content by using a stringified JSON.</li>
 <li><strong>next</strong> : <em>( <code>Function</code> )</em> A function you have to call when your message has been processed. <br />
 <strong>Arguments</strong> 
-<ul><li><code>delete</code>: <em>( <code>Boolean|Error</code> optional; default = true )</em> <code>Error</code>: If you return an error it will emited as error evebt; <code>Boolean</code>: It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config <code>options.customExceedCheck</code></li></ul></li>
+<ul><li><code>delete</code>: <em>( <code>Boolean|Error</code> optional; default = true )</em> <code>Error</code>: If you return an error it will emitted as an error event; <code>Boolean</code>: It's possible to prevent the worker from auto-delete the message on end. This is useful if you want to pop up a message multiple times. To implement this, please check the config <code>options.customExceedCheck</code></li></ul></li>
 <li><strong>msgid</strong> : <em>( <code>String</code> )</em> The message id. This is useful if you want to delete a message manually.</li>
 </ul>
 
@@ -469,7 +472,7 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
         <span class="nx">customExceedCheck</span><span class="o">:</span> <span class="nx">fnCheck</span>  <span class="c1">// set the custom exceed check</span>
     <span class="p">});</span>
 
-    <span class="c1">// Listen to erros</span>
+    <span class="c1">// Listen to errors</span>
     <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">msg</span> <span class="p">){</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
     <span class="p">});</span>
@@ -546,12 +549,14 @@ If you do not set a handler for this Event nothing wohld be happen.</p>
 
 <p>|Version|Date|Description|
 |:--:|:--:|:--|
+|0.3.7|2015-09-02|Added tests to check the behavior during errors within message processing. And added option <code>alwaysLogErrors</code> to prevent console logs if an error event handler was attached. <a href="https://github.com/mpneuried/rsmq-worker/issues/3">Issue #3</a>|
+|0.3.6|2015-09-02|Updated dependencies; optimized readme (thanks to <a href="https://github.com/tobli">Tobias Lidskog</a> for the <a href="https://github.com/mpneuried/rsmq-worker/pull/4">pull #4</a>)|
 |0.3.5|2015-04-27|again ... fixed argument dispatch for <code>.send()</code>|
 |0.3.4|2015-04-27|fixed argument dispatch for <code>.send()</code> and added optional cb for <code>.del()</code>|
-|0.3.3|2015-03-27|added <code>changeInterval</code> to modify the intervall in operation|
+|0.3.3|2015-03-27|added <code>changeInterval</code> to modify the interval in operation|
 |0.3.2|2015-02-23|changed default prefix/namespace;|
-|0.3.0|2015-02-16|It's now possible to return a erorr as first argument of <code>next</code>. This will lead to an error emit + optimized readme|
-|0.2.2|2015-01-27|added option <code>defaultDelay</code> and optimized argumtes of the <code>send</code> method; fixed travis.yml|
+|0.3.0|2015-02-16|It's now possible to return an error as first argument of <code>next</code>. This will lead to an error emit + optimized readme|
+|0.2.2|2015-01-27|added option <code>defaultDelay</code> and optimized arguments of the <code>send</code> method; fixed travis.yml|
 |0.2.0|2015-01-27|Added timeout, better error handling and send callback|
 |0.1.2|2015-01-20|Reorganized code, added code docs and optimized readme|
 |0.1.1|2015-01-17|Added test scripts and optimized repository file list|

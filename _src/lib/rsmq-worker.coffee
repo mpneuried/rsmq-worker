@@ -32,6 +32,8 @@ class RSMQWorker extends require( "mpbasic" )()
 			customExceedCheck: null
 			# **RSMQWorker.timeout** *Number* Message processing timeout in `ms`. If set to `0` it'll wait until infinity.
 			timeout: 3000
+			# **RSMQWorker.alwaysLogErrors** *Boolean* An error will be logged even if an error listener has been attached.
+			alwaysLogErrors: false
 			
 			# **RSMQWorker.rsmq** *RedisSMQ* A allready existing rsmq instance to use instead of creating a new client
 			rsmq: null
@@ -65,10 +67,10 @@ class RSMQWorker extends require( "mpbasic" )()
 
 		# autostart worker on ready
 		if @config.autostart
-			@on "ready", @start 
+			@on "ready", @start
 
 		@debug "config", @config
-		return 
+		return
 
 	###
 	## start
@@ -369,7 +371,8 @@ class RSMQWorker extends require( "mpbasic" )()
 				try
 					@emit "message", msg.message, _fnNext, _id
 				catch _err
-					@error "error", _err
+					if not @listeners( "error" )?.length or @config.alwaysLogErrors
+						@error "error", _err
 					@emit "error", _err, msg
 					_fnNext( false )
 					return
