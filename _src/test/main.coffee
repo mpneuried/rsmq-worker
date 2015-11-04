@@ -89,7 +89,6 @@ describe "----- rsmq-worker TESTS -----", ->
 		
 		it "error throw within message processing - Issue #3 (A)", ( done )->
 			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
-			_start = Date.now()
 			@timeout( 3000 )
 			
 			_testFn = ( msg, next, id )->
@@ -118,7 +117,6 @@ describe "----- rsmq-worker TESTS -----", ->
 		
 		it "code error within message processing - Issue #3 (B)", ( done )->
 			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
-			_start = Date.now()
 			@timeout( 3000 )
 			
 			_testFn = ( msg, next, id )->
@@ -148,6 +146,50 @@ describe "----- rsmq-worker TESTS -----", ->
 				should.not.exist( err )
 				return
 			return
+		
+		_examplemsg2 = utils.randomString( utils.randRange( 4, 99 ), 3 )
+		it "test stop method - Pull #5 stop", ( done )->
+			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
+			@timeout( 6000 )
+			
+			idx = 0
+			_testFn = ( msg, next, id )->
+				idx++
+				if idx <= 1
+					should.equal( msg, _examplemsg )
+					worker.stop()
+					worker.send _examplemsg2, 0, ( err )->
+						should.not.exist( err )
+						return
+					next()
+					return
+				throw new Error( "Got second message" )
+				done()
+				return
+				
+			_endFn = ( err, rawmsg )->
+				worker.removeListener( "message", _testFn )
+				done()
+				return
 
+			
+			worker.on( "message", _testFn )
+			
+			worker.send _examplemsg, 0, ( err )->
+				should.not.exist( err )
+				return
+				
+			setTimeout( _endFn, 5000 )
+			return
+		
+		it "test stop method - Pull #5 start", ( done )->
+			_testFn = ( msg, next, id )->
+				should.equal( msg, _examplemsg2 )
+				done()
+				return
+			
+			worker.on( "message", _testFn )
+			worker.start()
+			return
 		return
 	return
