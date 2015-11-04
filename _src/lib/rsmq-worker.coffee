@@ -6,7 +6,7 @@
 # ### Exports: *Class*
 #
 # Main Module to init the heartbeat to redis
-# 
+#
 
 # **node modules**
 _ = require("lodash")
@@ -14,6 +14,8 @@ async = require("async")
 RSMQ = require("rsmq")
 
 class RSMQWorker extends require( "mpbasic" )()
+	# parameter used for hard stopping the queue
+	stopped: false
 
 	# ## defaults
 	defaults: =>
@@ -34,24 +36,24 @@ class RSMQWorker extends require( "mpbasic" )()
 			timeout: 3000
 			# **RSMQWorker.alwaysLogErrors** *Boolean* An error will be logged even if an error listener has been attached.
 			alwaysLogErrors: false
-			
+
 			# **RSMQWorker.rsmq** *RedisSMQ* A allready existing rsmq instance to use instead of creating a new client
 			rsmq: null
 
-			# **RSMQWorker.redis** *RedisClient* A allready existing redis client instance to use if no `rsmq` instance has been defiend 
+			# **RSMQWorker.redis** *RedisClient* A allready existing redis client instance to use if no `rsmq` instance has been defiend
 			redis: null
 			# **RSMQWorker.redisPrefix** *String* The redis prefix/namespace for rsmq if no `rsmq` instance has been defined. This has th match the `ns` setting of RSMQ.
 			redisPrefix: "rsmq"
-			
-			# **RSMQWorker.host** *String* Host to connect to redis if no `rsmq` or `redis` instance has been defiend 
+
+			# **RSMQWorker.host** *String* Host to connect to redis if no `rsmq` or `redis` instance has been defiend
 			host: "localhost"
-			# **RSMQWorker.host** *Number* Port to connect to redis if no `rsmq` or `redis` instance has been defiend 
+			# **RSMQWorker.host** *Number* Port to connect to redis if no `rsmq` or `redis` instance has been defiend
 			port: 6379
-			# **RSMQWorker.options** *Object* Options to connect to redis if no `rsmq` or `redis` instance has been defiend 
+			# **RSMQWorker.options** *Object* Options to connect to redis if no `rsmq` or `redis` instance has been defiend
 			options: {}
 
-	###	
-	## constructor 
+	###
+	## constructor
 	###
 	constructor: ( @queuename, options )->
 		super( options )
@@ -74,19 +76,20 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## start
-	
+
 	`RSMQWorker.start()`
-	
+
 	Start the worker
 
-	@return { RedisSMQ } A rsmq instance 
+	@return { RedisSMQ } A rsmq instance
 
-	@return { RSMQWorker } The instance itself for chaining. 
+	@return { RSMQWorker } The instance itself for chaining.
 
 	@api public
 	###
 	start: =>
 		if @ready
+			@stopped = false
 			@interval()
 			return
 		@on "ready", @interval
@@ -94,32 +97,33 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## stop
-	
+
 	`RSMQWorker.stop()`
-	
+
 	Stop the worker receiving messages
-	
-	@return { RSMQWorker } The instance itself for chaining. 
-	
+
+	@return { RSMQWorker } The instance itself for chaining.
+
 	@api public
 	###
 	stop: =>
+		@stopped = true
 		clearTimeout( @timeout ) if @timeout?
 		return @
 
 	###
 	## send
-	
+
 	`RSMQWorker.send( msg [, delay] )`
-	
+
 	Helper/Convinience method to send a new message to the queue.
-	
-	@param { String } msg The message content 
+
+	@param { String } msg The message content
 	@param { Number } [delay=0] The message delay to hide this message for the next `x` seconds.
 	@param { Function } [cb] A optional callback to get a secure response for a successful send.
-	
-	@return { RSMQWorker } The instance itself for chaining. 
-	
+
+	@return { RSMQWorker } The instance itself for chaining.
+
 	@api public
 	###
 	send: ( msg, args... )=>
@@ -139,16 +143,16 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## del
-	
+
 	`RSMQWorker.del( id )`
-	
+
 	Delete a messge from queue. This is usually done automatically unless you call `next(false)`
-	
-	@param { String } id The rsmq message id 
+
+	@param { String } id The rsmq message id
 	@param { Function } [cb] A optional callback to get a secure response for a successful delete.
-	
-	@return { RSMQWorker } The instance itself for chaining. 
-	
+
+	@return { RSMQWorker } The instance itself for chaining.
+
 	@api public
 	###
 	del: ( id, cb )=>
@@ -165,15 +169,15 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## changeInterval
-	
+
 	`RSMQWorker.changeInterval( interval )`
-	
+
 	Change the interval timeouts in operation
-	
+
 	@param { Number|Array } interval The new interval
-	
-	@return { RSMQWorker } The instance itself for chaining. 
-	
+
+	@return { RSMQWorker } The instance itself for chaining.
+
 	@api public
 	###
 	changeInterval: ( interval )=>
@@ -182,11 +186,11 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## _initRSMQ
-	
+
 	`RSMQWorker._initRSMQ()`
-	
+
 	Initialize rsmq	and handle disconnects
-	
+
 	@api private
 	###
 	_initRSMQ: =>
@@ -217,20 +221,20 @@ class RSMQWorker extends require( "mpbasic" )()
 			@_initQueue()
 		else
 			@queue.once "connect", @_initQueue
-		
+
 		return
 
 	###
 	## _getRsmq
-	
+
 	`RSMQWorker._getRsmq( [forceInit] )`
-	
+
 	get or init the rsmq instance
-	
+
 	@param { Boolean } [forceInit=false] init rsmq even if it has been allready inited
-	
-	@return { RedisSMQ } A rsmq instance 
-	
+
+	@return { RedisSMQ } A rsmq instance
+
 	@api private
 	###
 	_getRsmq: ( forceInit = false )=>
@@ -240,7 +244,7 @@ class RSMQWorker extends require( "mpbasic" )()
 		if @config.rsmq?.constructor?.name is "RedisSMQ"
 			@debug "use given rsmq client"
 			return @config.rsmq
-			
+
 
 		if @config.redis?.constructor?.name is "RedisClient"
 			return new RSMQ( client: @config.redis, ns: @config.redisPrefix )
@@ -249,11 +253,11 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## _initQueue
-	
+
 	`RSMQWorker._initQueue()`
-	
+
 	check if the given queue exists
-	
+
 	@api private
 	###
 	_initQueue: =>
@@ -281,15 +285,15 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## _send
-	
+
 	`RSMQWorker._send( msg, delay )`
-	
+
 	Internal send method that directly calls `rsmq.sendMessage()` .
-	
-	@param { String } msg The message content 
+
+	@param { String } msg The message content
 	@param { Number } delay The message delay to hide this message for the next `x` seconds.
 	@param { Function } [cb] A optional callback function
-	
+
 	@api private
 	###
 	_send: ( msg, delay, cb )=>
@@ -305,11 +309,11 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## _runOfflineMessages
-	
+
 	`RSMQWorker._runOfflineMessages()`
-	
-	Runn all messages collected by `.send()` while redis has been offline 
-	
+
+	Runn all messages collected by `.send()` while redis has been offline
+
 	@api private
 	###
 	_runOfflineMessages: =>
@@ -327,13 +331,13 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## receive
-	
+
 	`RSMQWorker.receive( _useInterval )`
-	
+
 	Receive a message
-	
-	@param { Boolean } _us Fire a `next` event to call e new receive on the call of `next()` 
-	
+
+	@param { Boolean } _us Fire a `next` event to call e new receive on the call of `next()`
+
 	@api private
 	###
 	receive: ( _useInterval = false )=>
@@ -383,13 +387,13 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## check
-	
+
 	`RSMQWorker.check( msg )`
-	
+
 	Check if a message has been received to often and has to be deleted
-	
-	@param { Object } msg The raw rsmq message 
-	
+
+	@param { Object } msg The raw rsmq message
+
 	@api private
 	###
 	check: ( msg )=>
@@ -404,27 +408,28 @@ class RSMQWorker extends require( "mpbasic" )()
 
 	###
 	## interval
-	
+
 	`RSMQWorker.interval()`
-	
+
 	call receive the intervall
-	
+
 	@api private
 	###
 	interval: =>
 		@debug "run interval"
-		@receive( true )
+		if not @stopped
+			@receive( true )
 		return
 
 	###
 	## next
-	
+
 	`RSMQWorker.next( [wait] )`
-	
+
 	Call the next recieve or wait until the next recieve has to be called
-	
-	@param { Boolean } [wait=false] Tell the next call that the last receive was empty to increase the wait time 
-	
+
+	@param { Boolean } [wait=false] Tell the next call that the last receive was empty to increase the wait time
+
 	@api private
 	###
 	next: ( wait = false )=>
@@ -438,7 +443,7 @@ class RSMQWorker extends require( "mpbasic" )()
 				_timeout = @config.interval
 			else
 				_timeout = 0
-		
+
 		@debug "wait", @waitCount, _timeout * 1000
 		if _timeout >= 0
 			clearTimeout( @timeout ) if @timeout?
