@@ -233,14 +233,24 @@ This is an advanced example showing some features in action.
 	worker.on('error', function( err, msg ){
 	    console.log( "ERROR", err, msg.id );
 	});
-	worker.on('exceeded', function( msg ){
-	    console.log( "EXCEEDED", msg.id );
-	});
 	worker.on('timeout', function( msg ){
 	    console.log( "TIMEOUT", msg.id, msg.rc );
 	});
+	
+	// handle exceeded messages
+	// grab the internal rsmq instance
+	var rsmq = worker._getRsmq();
+	worker.on('exceeded', function( msg ){
+		console.log( "EXCEEDED", msg.id );
+		// NOTE: make sure this queue exists
+		rsmq.sendMessage( "YOUR_EXCEEDED_QUEUE", msq, function( err, resp ){
+			if( err ){
+				console.error( "write-to-exceeded-queue", err )
+			}
+		});
+	});
 
-	//
+	// listen to messages
 	worker.on( "message", function( message, next, id ){
 		
 		console.log( "message", message );
