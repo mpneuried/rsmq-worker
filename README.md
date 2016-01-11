@@ -293,6 +293,7 @@ This is an advanced example showing some features in action.
 
 - MORE tests!
 - Optional parallel execution. To do multiple receives in parallel.
+- Automatic write of exceeded messages to a configured queue.
 
 ## Release History
 |Version|Date|Description|
