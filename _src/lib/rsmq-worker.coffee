@@ -9,7 +9,13 @@
 #
 
 # **node modules**
-_ = require("lodash")
+_isFunction = require( "lodash/isFunction" )
+_once = require( "lodash/once" )
+_isBoolean = require( "lodash/isBoolean" )
+_isArray = require( "lodash/isArray" )
+_last = require( "lodash/last" )
+_delay = require( "lodash/delay" )
+
 async = require("async")
 RSMQ = require("rsmq")
 
@@ -57,6 +63,10 @@ class RSMQWorker extends require( "mpbasic" )()
 	###
 	constructor: ( @queuename, options )->
 		super( options )
+		# hard set of the interval because extend will merge the default with the given elements
+		if options.interval? and _isArray( options.interval )
+			@config.interval = options.interval
+	
 		@ready = false
 
 		@waitCount = 0
@@ -128,7 +138,7 @@ class RSMQWorker extends require( "mpbasic" )()
 	###
 	send: ( msg, args... )=>
 		[ delay, cb ] = args
-		if _.isFunction( delay )
+		if _isFunction( delay )
 			cb = delay
 			delay = null
 
@@ -159,11 +169,11 @@ class RSMQWorker extends require( "mpbasic" )()
 		@queue.deleteMessage qname: @queuename, id: id, ( err, resp )=>
 			if err
 				@error "delete queue message", err
-				cb( err ) if _.isFunction( cb )
+				cb( err ) if _isFunction( cb )
 				return
 			@debug "delete queue message", resp
 			@emit( "deleted", id )
-			cb( null ) if _.isFunction( cb )
+			cb( null ) if _isFunction( cb )
 			return
 		return @
 
@@ -300,10 +310,10 @@ class RSMQWorker extends require( "mpbasic" )()
 		@queue.sendMessage { qname: @queuename, message: msg, delay: delay }, ( err, resp )=>
 			if err
 				@error "send pending queue message", err
-				cb( err ) if cb? and _.isFunction( cb )
+				cb( err ) if cb? and _isFunction( cb )
 				return
 			@emit "new", resp
-			cb( null, resp ) if cb? and _.isFunction( cb )
+			cb( null, resp ) if cb? and _isFunction( cb )
 			return
 		return
 
@@ -362,8 +372,8 @@ class RSMQWorker extends require( "mpbasic" )()
 						return
 					, @config.timeout )
 
-				_fnNext = _.once ( del = true )=>
-					if _.isBoolean( del ) or _.isNumber( del )
+				_fnNext = _once ( del = true )=>
+					if _isBoolean( del ) or _isNumber( del )
 						@del( _id ) if del
 					else if del?
 						# if there is a return value ant it's not a boolean or number i asume it's an error
@@ -436,8 +446,8 @@ class RSMQWorker extends require( "mpbasic" )()
 		if not wait
 			@waitCount = 0
 
-		if _.isArray( @config.interval )
-			_timeout = if @config.interval[ @waitCount ]? then @config.interval[ @waitCount ] else _.last( @config.interval )
+		if _isArray( @config.interval )
+			_timeout = if @config.interval[ @waitCount ]? then @config.interval[ @waitCount ] else _last( @config.interval )
 		else
 			if wait
 				_timeout = @config.interval
@@ -447,7 +457,7 @@ class RSMQWorker extends require( "mpbasic" )()
 		@debug "wait", @waitCount, _timeout * 1000
 		if _timeout >= 0
 			clearTimeout( @timeout ) if @timeout?
-			@timeout = _.delay( @interval, _timeout * 1000 )
+			@timeout = _delay( @interval, _timeout * 1000 )
 			@waitCount++
 		else
 			@interval()

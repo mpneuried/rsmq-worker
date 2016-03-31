@@ -9,7 +9,7 @@ describe "----- rsmq-worker TESTS -----", ->
 	before ( done )->
 
 		RSMQWorker = require( "../." )
-		worker = new RSMQWorker( _queuename, { interval: [ 0, 1 ] } )
+		worker = new RSMQWorker( _queuename, { interval: [ 0, 1, 5 ] } )
 
 		worker.on "ready", ->
 			done()
@@ -25,7 +25,16 @@ describe "----- rsmq-worker TESTS -----", ->
 		return
 
 	describe 'Main Tests', ->
-
+		
+		# Implement tests cases here
+		it "check interval config", ( done )->
+			worker.config.interval.length.should.equal( 3 )
+			worker.config.interval[ 0 ].should.equal( 0 )
+			worker.config.interval[ 1 ].should.equal( 1 )
+			worker.config.interval[ 2 ].should.equal( 5 )
+			done()
+			return
+		
 		# Implement tests cases here
 		it "first test", ( done )->
 			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
@@ -54,9 +63,9 @@ describe "----- rsmq-worker TESTS -----", ->
 
 				should.equal( msg, _examplemsg )
 				next()
+				worker.removeListener( "message", _testFn )
 				_diff = Math.round( ( Date.now() - _start )/1000 )
 				_diff.should.be.above(_delay)
-				worker.removeListener( "message", _testFn )
 				done()
 				return
 
