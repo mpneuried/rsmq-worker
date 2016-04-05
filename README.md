@@ -298,6 +298,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.4.1|2016-04-05|Fixed missing isNumber function|
 |0.4.0|2016-03-30|Updated dependencies (especially lodash to 4.x). Fixed a config bug caused by the array merge from `extend` [Issue#7](https://github.com/mpneuried/rsmq-worker/issues/7). Thanks to [Peter Hanneman](https://github.com/timelessvirtues )|
 |0.3.8|2015-11-04|Fixed stop behavior. [Pull#5](https://github.com/mpneuried/rsmq-worker/pull/5). Thanks to [Exinferis](https://github.com/exinferis)|
 |0.3.7|2015-09-02|Added tests to check the behavior during errors within message processing; Added option `alwaysLogErrors` to prevent console logs if an error event handler was attached. [Issue #3](https://github.com/mpneuried/rsmq-worker/issues/3)|

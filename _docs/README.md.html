@@ -476,14 +476,24 @@ If you do not set a handler for this Event nothing will happen.</p>
     <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">msg</span> <span class="p">){</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
     <span class="p">});</span>
-    <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;exceeded&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">){</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;EXCEEDED&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
-    <span class="p">});</span>
     <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">){</span>
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;TIMEOUT&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">rc</span> <span class="p">);</span>
     <span class="p">});</span>
 
-    <span class="c1">//</span>
+    <span class="c1">// handle exceeded messages</span>
+    <span class="c1">// grab the internal rsmq instance</span>
+    <span class="kd">var</span> <span class="nx">rsmq</span> <span class="o">=</span> <span class="nx">worker</span><span class="p">.</span><span class="nx">_getRsmq</span><span class="p">();</span>
+    <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;exceeded&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">msg</span> <span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;EXCEEDED&quot;</span><span class="p">,</span> <span class="nx">msg</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
+        <span class="c1">// NOTE: make sure this queue exists</span>
+        <span class="nx">rsmq</span><span class="p">.</span><span class="nx">sendMessage</span><span class="p">(</span> <span class="s2">&quot;YOUR_EXCEEDED_QUEUE&quot;</span><span class="p">,</span> <span class="nx">msq</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span> <span class="p">){</span>
+            <span class="k">if</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
+                <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="s2">&quot;write-to-exceeded-queue&quot;</span><span class="p">,</span> <span class="nx">err</span> <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="c1">// listen to messages</span>
     <span class="nx">worker</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">message</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">id</span> <span class="p">){</span>
 
         <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="nx">message</span> <span class="p">);</span>
@@ -536,6 +546,7 @@ If you do not set a handler for this Event nothing will happen.</p>
 <ul>
 <li>MORE tests!</li>
 <li>Optional parallel execution. To do multiple receives in parallel.</li>
+<li>Automatic write of exceeded messages to a configured queue.</li>
 </ul>
 
 
@@ -549,7 +560,9 @@ If you do not set a handler for this Event nothing will happen.</p>
 
 <p>|Version|Date|Description|
 |:--:|:--:|:--|
-|0.3.8|2015-11-04|Fixed stop behaviour. <a href="https://github.com/mpneuried/rsmq-worker/pull/5">Pull#5</a>. Thanks to <a href="https://github.com/exinferis">Exinferis</a>|
+|0.4.1|2016-04-05|Fixed missing isNumber function|
+|0.4.0|2016-03-30|Updated dependencies (especially lodash to 4.x). Fixed a config bug caused by the array merge from <code>extend</code> <a href="https://github.com/mpneuried/rsmq-worker/issues/7">Issue#7</a>. Thanks to <a href="https://github.com/timelessvirtues">Peter Hanneman</a>|
+|0.3.8|2015-11-04|Fixed stop behavior. <a href="https://github.com/mpneuried/rsmq-worker/pull/5">Pull#5</a>. Thanks to <a href="https://github.com/exinferis">Exinferis</a>|
 |0.3.7|2015-09-02|Added tests to check the behavior during errors within message processing; Added option <code>alwaysLogErrors</code> to prevent console logs if an error event handler was attached. <a href="https://github.com/mpneuried/rsmq-worker/issues/3">Issue #3</a>|
 |0.3.6|2015-09-02|Updated dependencies; optimized readme (thanks to <a href="https://github.com/tobli">Tobias Lidskog</a> for the <a href="https://github.com/mpneuried/rsmq-worker/pull/4">pull #4</a>)|
 |0.3.5|2015-04-27|again ... fixed argument dispatch for <code>.send()</code>|

@@ -12,6 +12,7 @@
 _isFunction = require( "lodash/isFunction" )
 _once = require( "lodash/once" )
 _isBoolean = require( "lodash/isBoolean" )
+_isNumber = require( "lodash/isNumber" )
 _isArray = require( "lodash/isArray" )
 _last = require( "lodash/last" )
 _delay = require( "lodash/delay" )
