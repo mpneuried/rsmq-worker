@@ -80,6 +80,11 @@ module.exports = (grunt) ->
 	grunt.registerTask "docs", "docker"
 	grunt.registerTask "clear", [ "clean:base" ]
 	grunt.registerTask "test", [ "build", "mochacli:main" ]
+	
+	# SHORTCUT ALIAS
+	grunt.registerTask "w", "watch"
+	grunt.registerTask "b", "build"
+	grunt.registerTask "t", "test"
 
 	# build the project
 	grunt.registerTask "build", [ "clear", "coffee:base", "includereplace" ]

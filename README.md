@@ -90,7 +90,9 @@ If you haven't defined the config `autostart` to `true` you have to call the `.s
 
 ### `.stop()`
 
-Stop the receive interval.
+Just stop the receive interval.
+This will not cut the connection to rsmq/redis.
+If you want you script to end call `.quit()`
 
 **Return**
 
@@ -134,6 +136,12 @@ Change the interval timeouts in operation.
 **Return**
 
 *( Self )*: The instance itself for chaining.
+
+### `.quit()`
+
+Stop the worker and close the connection.
+After this it's no longer possible to reuse the worker-instance.
+It's just intended to kill all timers and connections so your script will end.
 
 ## Events
 
@@ -298,6 +306,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.4.2|2016-05-06|Added the `.quit()` function [Issue#11](https://github.com/mpneuried/rsmq-worker/issues/11). Thanks to [Sam Fung](https://github.com/5amfung )|
 |0.4.1|2016-04-05|Fixed missing isNumber function|
 |0.4.0|2016-03-30|Updated dependencies (especially lodash to 4.x). Fixed a config bug caused by the array merge from `extend` [Issue#7](https://github.com/mpneuried/rsmq-worker/issues/7). Thanks to [Peter Hanneman](https://github.com/timelessvirtues )|
 |0.3.8|2015-11-04|Fixed stop behavior. [Pull#5](https://github.com/mpneuried/rsmq-worker/pull/5). Thanks to [Exinferis](https://github.com/exinferis)|

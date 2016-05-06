@@ -62,7 +62,7 @@ class RSMQWorker extends require( "mpbasic" )()
 	###
 	## constructor
 	###
-	constructor: ( @queuename, options )->
+	constructor: ( @queuename, options={} )->
 		super( options )
 		# hard set of the interval because extend will merge the default with the given elements
 		if options.interval? and _isArray( options.interval )
@@ -118,9 +118,27 @@ class RSMQWorker extends require( "mpbasic" )()
 	@api public
 	###
 	stop: =>
-		@stopped = true
-		clearTimeout( @timeout ) if @timeout?
+		if not @stopped
+			@stopped = true
+			clearTimeout( @timeout ) if @timeout?
+			@emit( "stopped" )
 		return @
+		
+	###
+	## quit
+
+	`RSMQWorker.quit()`
+
+	Stop the worker and quit the connection
+
+	@api public
+	###
+	quit: =>
+		@stop()
+		if @queue?
+			@queue.quit()
+			@queue = null
+		return
 
 	###
 	## send
