@@ -1,7 +1,8 @@
 ![RSMQ-Worker](https://trello-attachments.s3.amazonaws.com/5481963992d9ba3848568a1b/600x194/61b3b6117eeb0881c919c6996adb2620/rsmq_worker_small.png)
 
 [![Build Status](https://secure.travis-ci.org/mpneuried/rsmq-worker.png?branch=master)](http://travis-ci.org/mpneuried/rsmq-worker)
-[![Build Status](https://david-dm.org/mpneuried/rsmq-worker.png)](https://david-dm.org/mpneuried/rsmq-worker)
+[![Windows Tests](https://img.shields.io/appveyor/ci/BridgeAR/rsmq-worker/master.svg?label=Windows%20Tests)](https://ci.appveyor.com/project/BridgeAR/rsmq-worker/branch/master)
+[![Dependencies Status](https://david-dm.org/mpneuried/rsmq-worker.png)](https://david-dm.org/mpneuried/rsmq-worker)
 [![NPM version](https://badge.fury.io/js/rsmq-worker.png)](http://badge.fury.io/js/rsmq-worker)
 
 [![Join the chat at https://gitter.im/mpneuried/rsmq-worker](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mpneuried/rsmq-worker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
