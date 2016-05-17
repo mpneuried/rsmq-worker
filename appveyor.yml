@@ -26,7 +26,7 @@ install:
   # Typical npm stuff. Use msvs 2013 for the hiredis parser
   - npm install
   - npm install hiredis --msvs_version=2013
-  - npm install grunt-cli
+  - npm install -g grunt-cli
   - grunt build
 
 # Post-install test scripts.
