@@ -30,8 +30,10 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
   var RSMQWorker = require( "rsmq-worker" );
   var worker = new RSMQWorker( "myqueue" );
 
-  worker.on( "message", function( msg, next ){
+  worker.on( "message", function( msg, next, id ){
   	// process your message
+  	console.log("Message id : " + id);
+  	console.log(msg);
   	next()
   });
 
