@@ -228,24 +228,25 @@ class RSMQWorker extends require( "mpbasic" )()
 		@reconnectActive = false
 
 		# handle redis disconnect
-		@queue.on "disconnect", ( err )=>
-			@warning "redis connection lost"
-			_interval = @timeout?
-			if not @reconnectActive
-				@reconnectActive = true
-				@stop() if _interval
+		if @queue.listeners("disconnect").length==0
+			@queue.on "disconnect", ( err )=>
+				@warning "redis connection lost"
+				_interval = @timeout?
+				if not @reconnectActive
+					@reconnectActive = true
+					@stop() if _interval
 
-				# on reconnect
-				@queue.once "connect", =>
-					@waitCount = 0
-					@reconnectActive = false
-					@queue = new @_getRsmq( true )
-					@_runOfflineMessages()
-					@interval() if _interval
-					@warning "redis connection reconnected"
-					return
+					# on reconnect
+					@queue.once "connect", =>
+						@waitCount = 0
+						@reconnectActive = false
+						@queue = new @_getRsmq( true )
+						@_runOfflineMessages()
+						@interval() if _interval
+						@warning "redis connection reconnected"
+						return
 
-			return
+				return
 		if @queue.connected
 			@_initQueue()
 		else
