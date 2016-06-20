@@ -15,6 +15,7 @@ config.json
 config*.json
 deploy.json
 index.js
+test.js
 /node_modules
 /test
 /lib

@@ -309,6 +309,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.4.3|2016-06-20|Optimized event listeners [Issue#15](https://github.com/mpneuried/rsmq-worker/issues/15). Thanks to [Kevin Turner](https://github.com/kpturner )|
 |0.4.2|2016-05-06|Added the `.quit()` function [Issue#11](https://github.com/mpneuried/rsmq-worker/issues/11). Thanks to [Sam Fung](https://github.com/5amfung )|
 |0.4.1|2016-04-05|Fixed missing isNumber function|
 |0.4.0|2016-03-30|Updated dependencies (especially lodash to 4.x). Fixed a config bug caused by the array merge from `extend` [Issue#7](https://github.com/mpneuried/rsmq-worker/issues/7). Thanks to [Peter Hanneman](https://github.com/timelessvirtues )|

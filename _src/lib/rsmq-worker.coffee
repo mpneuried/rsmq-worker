@@ -100,6 +100,13 @@ class RSMQWorker extends require( "mpbasic" )()
 	###
 	start: =>
 		if @ready
+			# reconnect connection listener
+			#console.log "check", @queue.listeners('disconnect')?.indexOf( @_onDisconnect )
+			if @queue.listeners('disconnect')?.indexOf( @_onDisconnect ) < 0
+				@queue.on( "disconnect", @_onDisconnect )
+			
+			#console.log "START", @queue.listeners('disconnect')
+				
 			@stopped = false
 			@interval()
 			return
@@ -120,6 +127,7 @@ class RSMQWorker extends require( "mpbasic" )()
 	stop: =>
 		if not @stopped
 			@stopped = true
+			@queue.removeListener( "disconnect", @_onDisconnect )
 			clearTimeout( @timeout ) if @timeout?
 			@emit( "stopped" )
 		return @
@@ -227,30 +235,51 @@ class RSMQWorker extends require( "mpbasic" )()
 
 		@reconnectActive = false
 
-		# handle redis disconnect
-		@queue.on "disconnect", ( err )=>
-			@warning "redis connection lost"
-			_interval = @timeout?
-			if not @reconnectActive
-				@reconnectActive = true
-				@stop() if _interval
-
-				# on reconnect
-				@queue.once "connect", =>
-					@waitCount = 0
-					@reconnectActive = false
-					@queue = new @_getRsmq( true )
-					@_runOfflineMessages()
-					@interval() if _interval
-					@warning "redis connection reconnected"
-					return
-
-			return
 		if @queue.connected
 			@_initQueue()
 		else
 			@queue.once "connect", @_initQueue
 
+		return
+	
+	###
+	## _onDisconnect
+
+	`RSMQWorker._onDisconnect()`
+
+	internal handler on disconnect
+	
+	@param { Error } the redis connection error
+
+	@api private
+	###
+	_onDisconnect: ( err )=>
+		@warning "redis connection lost", err
+		_interval = @timeout?
+		if not @reconnectActive
+			@reconnectActive = true
+			@stop() if _interval
+
+			# on reconnect
+			@queue.once( "connect", @_onReConnect )
+		return
+	
+	###
+	## _onReConnect
+
+	`RSMQWorker._onReConnect()`
+
+	internal handler on a reconnect
+
+	@api private
+	###
+	_onReConnect: =>
+		@waitCount = 0
+		@reconnectActive = false
+		@queue = @_getRsmq( true )
+		@_runOfflineMessages()
+		@interval() if _interval
+		@warning "redis connection reconnected"
 		return
 
 	###
