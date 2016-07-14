@@ -1,6 +1,6 @@
 {
   "name": "rsmq-worker",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "description": "RSMQ helper to simply implement a worker around the message queue",
   "keywords": [],
   "homepage": "https://github.com/mpneuried/rsmq-worker",
@@ -23,19 +23,20 @@
   },
   "license": "MIT",
   "dependencies": {
-    "async": "1.5.x",
+    "async": "2.0.x",
     "lodash": "4.x",
     "mpbasic": "0.0.x",
     "rsmq": "0.7.x"
   },
   "devDependencies": {
-    "should": "9.x",
     "grunt": "1.x",
-    "grunt-contrib-watch": "1.x",
+    "grunt-contrib-clean": "1.x",
     "grunt-contrib-coffee": "1.x",
+    "grunt-contrib-watch": "1.x",
+    "grunt-docker": "0.x",
     "grunt-include-replace": "4.x",
     "grunt-mocha-cli": "2.x",
-    "grunt-docker": "0.x",
-    "grunt-contrib-clean": "1.x"
+    "randoms": "0.x",
+    "should": "9.x"
   }
 }

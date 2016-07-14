@@ -1,8 +1,10 @@
 should = require( 'should' )
-utils = require( './utils' )
+rand = require( 'randoms' )
+async = require( 'async' )
 
-_queuename = utils.randomString( 10, 1 )
+_queuename = rand.string( 10, 1 )
 worker = null
+_created = null
 
 describe "----- rsmq-worker TESTS -----", ->
 
@@ -10,7 +12,7 @@ describe "----- rsmq-worker TESTS -----", ->
 
 		RSMQWorker = require( "../." )
 		worker = new RSMQWorker( _queuename, { interval: [ 0, 1, 5 ] } )
-
+		_created = Math.round( Date.now() / 1000 )
 		worker.on "ready", ->
 			done()
 			return
@@ -25,7 +27,7 @@ describe "----- rsmq-worker TESTS -----", ->
 		return
 
 	describe 'Main Tests', ->
-		
+		_tRecv = 0
 		# Implement tests cases here
 		it "check interval config", ( done )->
 			worker.config.interval.length.should.equal( 3 )
@@ -37,7 +39,7 @@ describe "----- rsmq-worker TESTS -----", ->
 		
 		# Implement tests cases here
 		it "first test", ( done )->
-			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
+			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
 			
 			_testFn = ( msg, next, id )->
 
@@ -52,10 +54,11 @@ describe "----- rsmq-worker TESTS -----", ->
 
 			
 			worker.send( _examplemsg )
+			_tRecv++
 			return
 
 		it "delay test", ( done )->
-			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
+			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
 			_start = Date.now()
 			_delay = 5
 			@timeout( _delay*1.5*1000 )
@@ -72,10 +75,11 @@ describe "----- rsmq-worker TESTS -----", ->
 			worker.on( "message", _testFn )
 			
 			worker.send( _examplemsg, _delay )
+			_tRecv++
 			return
 
 		it "delay test with callback", ( done )->
-			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
+			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
 			_start = Date.now()
 			_delay = 5
 			@timeout( _delay*1.5*1000 )
@@ -91,13 +95,145 @@ describe "----- rsmq-worker TESTS -----", ->
 
 			worker.on( "message", _testFn )
 			
+			_tRecv++
 			worker.send _examplemsg, _delay, ( err )->
 				should.not.exist( err )
 				return
 			return
 		
+		it "test size method", ( done )->
+			@timeout( 15000 )
+			_COUNT = 10
+			_examplemsgs = []
+			for _x in [1.._COUNT]
+				_examplemsgs.push rand.string( rand.number( 4, 99 ), 3 )
+			
+			_runHiddenSize = ( next )->
+				return ->
+					# check hidden size and go on
+					worker.size true, ( err, size )->
+						throw err if err
+						should.exist( size )
+						size.should.be.a.number
+						size.should.equal( 1 )
+						_idx++
+						next()
+						worker.start()
+						return
+					return
+			
+			_idx = 0
+			_testFn = ( msg, next, id )->
+				should.equal( msg, _examplemsgs[ _idx ] )
+				
+				if _idx is 0
+					# stop and wait to check the hidden size
+					setTimeout( _runHiddenSize( next ), 1000 )
+					worker.stop()
+					return
+				
+				next()
+				
+				_idx++
+				# done if all messages are received
+				if _idx >= _COUNT
+					worker.removeListener( "message", _testFn )
+					done()
+				return
+
+			worker.on( "message", _testFn )
+
+			worker.stop()
+			
+			_fnSend = ( msg, cba )->
+				_tRecv++
+				worker.send( msg, 0, cba )
+				return
+				
+			async.every _examplemsgs, _fnSend, ( err )->
+				throw err if err
+						
+				worker.size ( err, size )->
+					worker.start() # start immediate so the following tests will not fail due to a stopped worker
+					
+					throw err if err
+					should.exist( size )
+					size.should.be.a.number
+					size.should.equal( _COUNT )
+					
+					return
+				return
+			return
+			
+		it "test info method", ( done )->
+			@timeout( 15000 )
+			_COUNT = 10
+			_examplemsgs = []
+			for _x in [1.._COUNT]
+				_examplemsgs.push rand.string( rand.number( 4, 99 ), 3 )
+					
+			_idx = 0
+			_testFn = ( msg, next, id )->
+				should.equal( msg, _examplemsgs[ _idx ] )
+				
+				next()
+				
+				_idx++
+				# done if all messages are received
+				if _idx >= _COUNT
+					worker.removeListener( "message", _testFn )
+					done()
+				return
+
+			worker.on( "message", _testFn )
+
+			worker.stop()
+			
+			_fnSend = ( msg, cba )->
+				_tRecv++
+				worker.send( msg, 0, cba )
+				return
+				
+			async.every _examplemsgs, _fnSend, ( err )->
+				throw err if err
+						
+				worker.info ( err, info )->
+					worker.start() # start immediate so the following tests will not fail due to a stopped worker
+					
+					throw err if err
+					should.exist( info )
+					info.should.have.property( "msgs" )
+						.with.equal( _COUNT )
+						
+					info.should.have.property( "delay" )
+						.with.equal( 0 )
+						
+					info.should.have.property( "vt" )
+						.with.equal( 30 )
+						
+					info.should.have.property( "maxsize" )
+						.with.equal( 65536 )
+					
+					info.should.have.property( "totalsent" )
+						.with.equal( _tRecv )
+						
+					info.should.have.property( "totalrecv" )
+						.with.equal( _tRecv - _COUNT )
+					
+					info.should.have.property( "created" )
+						.with.approximately( _created, 10 )
+						
+					info.should.have.property( "modified" )
+						.with.approximately( _created, 10 )
+					
+						
+					
+					return
+				return
+			return
+		
 		it "error throw within message processing - Issue #3 (A)", ( done )->
-			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
+			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
 			@timeout( 3000 )
 			
 			_testFn = ( msg, next, id )->
@@ -125,7 +261,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			return
 		
 		it "code error within message processing - Issue #3 (B)", ( done )->
-			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
+			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
 			@timeout( 3000 )
 			
 			_testFn = ( msg, next, id )->
@@ -156,9 +292,9 @@ describe "----- rsmq-worker TESTS -----", ->
 				return
 			return
 		
-		_examplemsg2 = utils.randomString( utils.randRange( 4, 99 ), 3 )
+		_examplemsg2 = rand.string( rand.number( 4, 99 ), 3 )
 		it "test stop method - Pull #5 stop", ( done )->
-			_examplemsg = utils.randomString( utils.randRange( 4, 99 ), 3 )
+			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
 			@timeout( 6000 )
 			
 			idx = 0

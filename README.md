@@ -146,6 +146,28 @@ Stop the worker and close the connection.
 After this it's no longer possible to reuse the worker-instance.
 It's just intended to kill all timers and connections so your script will end.
 
+### `.info( cb )`
+
+Get the current queue attributes.
+This is just a shortcut to the [`rsmq.getQueueAttributes`](https://github.com/smrchy/rsmq#getqueueattributes).
+
+**Arguments**
+
+* `cb` : *( `Function` )*: Callback with `( err, attributes )`. See [rsmq-docs](https://github.com/smrchy/rsmq#getqueueattributes) for details.
+
+### `.size( [hidden=false], cb )`
+
+Get the current queue size.
+
+**Arguments**
+
+* `hidden` : *( `Boolean` optional; default = `false` )*: The count of messages including the currently hidden/"in flight" messages.
+* `cb` : *( `Function` optional )*: Callback with `( err, size )`. The `size` is a `Number` and repersents the number of messages in the queue. If `hidden=true` you will receive the numebr of currently hidden messages
+
+**Return**
+
+*( Self )*: The instance itself for chaining.
+
 ## Events
 
 ### `message`
@@ -309,6 +331,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.5.0|2016-07-14|Added methods `.info(cb)` ([Issue#17](https://github.com/mpneuried/rsmq-worker/issues/17)) and `.size( [hidden,] cb )`|
 |0.4.3|2016-06-20|Optimized event listeners [Issue#15](https://github.com/mpneuried/rsmq-worker/issues/15). Thanks to [Kevin Turner](https://github.com/kpturner )|
 |0.4.2|2016-05-06|Added the `.quit()` function [Issue#11](https://github.com/mpneuried/rsmq-worker/issues/11). Thanks to [Sam Fung](https://github.com/5amfung )|
 |0.4.1|2016-04-05|Fixed missing isNumber function|

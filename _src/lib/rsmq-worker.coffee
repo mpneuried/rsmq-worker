@@ -220,7 +220,58 @@ class RSMQWorker extends require( "mpbasic" )()
 	changeInterval: ( interval )=>
 		@config.interval = interval
 		return @
+	
+	###
+	## info
 
+	`RSMQWorker.info( cb )`
+
+	Get the queue attributes
+
+	@param { Function } cb The callback function
+	
+	@return { RSMQWorker } The instance itself for chaining.
+
+	@api public
+	###
+	info: ( cb )=>
+		@queue.getQueueAttributes qname: @queuename, ( err, resp )=>
+			if err
+				@error "queue info", err
+				cb( err )
+				return
+			cb( null, resp )
+			return
+		return @
+		
+	###
+	## size
+
+	`RSMQWorker.size( hidden, cb )`
+
+	Get the queue size.
+	
+	@param { Boolean } [hidden=false] Get the message count of the queue including the currently hidden/"in flight" messages.
+	@param { Function } cb The callback function
+	
+	@return { RSMQWorker } The instance itself for chaining.
+
+	@api public
+	###
+	size: ( [hidden]..., cb )=>
+		@queue.getQueueAttributes qname: @queuename, ( err, resp )=>
+			if err
+				@error "queue size", err
+				cb( err )
+				return
+			
+			_size = resp?.msgs or 0
+			if hidden is true
+				_size = resp.hiddenmsgs or 0
+			cb( null, _size )
+			return
+		return @
+	
 	###
 	## _initRSMQ
 

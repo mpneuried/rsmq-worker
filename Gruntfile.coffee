@@ -36,7 +36,8 @@ module.exports = (grunt) ->
 			options:
 				require: [ "should" ]
 				reporter: "spec"
-				bail: false
+				bail: ( if process.env.BAIL then true else false )
+				grep: process.env.GREP
 				timeout: 3000
 				slow: 3
 
@@ -89,3 +90,4 @@ module.exports = (grunt) ->
 	# build the project
 	grunt.registerTask "build", [ "clear", "coffee:base", "includereplace" ]
 	grunt.registerTask "build-dev", [ "clear", "coffee:base", "docs", "test" ]
+ 
