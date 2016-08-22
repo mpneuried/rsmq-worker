@@ -33,10 +33,9 @@
     "grunt-contrib-clean": "1.x",
     "grunt-contrib-coffee": "1.x",
     "grunt-contrib-watch": "1.x",
-    "grunt-docker": "0.x",
-    "grunt-include-replace": "4.x",
+    "grunt-include-replace": "5.x",
     "grunt-mocha-cli": "2.x",
     "randoms": "0.x",
-    "should": "9.x"
+    "should": "11.x"
   }
 }
