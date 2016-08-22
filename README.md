@@ -1,7 +1,7 @@
 ![RSMQ-Worker](https://trello-attachments.s3.amazonaws.com/5481963992d9ba3848568a1b/600x194/61b3b6117eeb0881c919c6996adb2620/rsmq_worker_small.png)
 
 [![Build Status](https://secure.travis-ci.org/mpneuried/rsmq-worker.png?branch=master)](http://travis-ci.org/mpneuried/rsmq-worker)
-[![Windows Tests](https://img.shields.io/appveyor/ci/mpneuried/rsmq-worker.svg?label=Windows%20Test)]()
+[![Windows Tests](https://img.shields.io/appveyor/ci/mpneuried/rsmq-worker.svg?label=Windows%20Test)](https://ci.appveyor.com/project/mpneuried/rsmq-worker)
 [![Dependencies Status](https://david-dm.org/mpneuried/rsmq-worker.png)](https://david-dm.org/mpneuried/rsmq-worker)
 [![NPM version](https://badge.fury.io/js/rsmq-worker.png)](http://badge.fury.io/js/rsmq-worker)
 
