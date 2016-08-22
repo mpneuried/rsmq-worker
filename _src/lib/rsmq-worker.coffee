@@ -329,7 +329,7 @@ class RSMQWorker extends require( "mpbasic" )()
 		@reconnectActive = false
 		@queue = @_getRsmq( true )
 		@_runOfflineMessages()
-		@interval() if _interval
+		@interval()
 		@warning "redis connection reconnected"
 		return
 
