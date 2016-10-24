@@ -9,9 +9,9 @@
 
 Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https://github.com/smrchy/rsmq).
 
-Note: RSMQ uses the Redis EVAL command (LUA scripts) so the minimum Redis version is 2.6+.
-
 [![NPM](https://nodei.co/npm/rsmq-worker.png?downloads=true&stars=true)](https://nodei.co/npm/rsmq-worker/)
+
+>  :warning: **Note:** RSMQ uses the Redis `EVAL` command (LUA scripts) so the minimum Redis version is `2.6+`.
 
 ## Install
 
@@ -333,6 +333,7 @@ This is an advanced example showing some features in action.
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.5.2|2016-10-24|Optimized README and updated dependencies|
 |0.5.1|2016-08-22|Fixed reconnect error [Issue#20](https://github.com/mpneuried/rsmq-worker/issues/20). Thanks to [mstduff](https://github.com/mstduff ); updated deps; removed generated code docs from repo|
 |0.5.0|2016-07-14|Added methods `.info(cb)` ([Issue#17](https://github.com/mpneuried/rsmq-worker/issues/17)) and `.size( [hidden,] cb )`|
 |0.4.3|2016-06-20|Optimized event listeners [Issue#15](https://github.com/mpneuried/rsmq-worker/issues/15). Thanks to [Kevin Turner](https://github.com/kpturner )|

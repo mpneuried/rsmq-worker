@@ -1,6 +1,6 @@
 {
   "name": "rsmq-worker",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "RSMQ helper to simply implement a worker around the message queue",
   "keywords": [],
   "homepage": "https://github.com/mpneuried/rsmq-worker",
@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "async": "2.0.x",
+    "async": "2.1.x",
     "lodash": "4.x",
     "mpbasic": "0.0.x",
     "rsmq": "0.7.x"
