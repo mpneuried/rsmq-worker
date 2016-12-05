@@ -164,7 +164,7 @@ Get the current queue size.
 **Arguments**
 
 * `hidden` : *( `Boolean` optional; default = `false` )*: The count of messages including the currently hidden/"in flight" messages.
-* `cb` : *( `Function` optional )*: Callback with `( err, size )`. The `size` is a `Number` and repersents the number of messages in the queue. If `hidden=true` you will receive the numebr of currently hidden messages
+* `cb` : *( `Function` optional )*: Callback with `( err, size )`. The `size` is a `Number` and represents the number of messages in the queue. If `hidden=true` you will receive the number of currently hidden messages.
 
 **Return**
 
