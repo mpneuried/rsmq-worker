@@ -16,7 +16,7 @@
     "url": "https://github.com/mpneuried/rsmq-worker.git"
   },
   "scripts": {
-    "test": "COFFEECOV_INIT_ALL=false mocha --compilers coffee:coffee-script/register --require coffee-coverage/register-istanbul _src/test/main.coffee -R spec",
+    "test": "COFFEECOV_INIT_ALL=false mocha --timeout 5000 --compilers coffee:coffee-script/register --require coffee-coverage/register-istanbul _src/test/main.coffee -R spec",
     "test-cov": "npm run test; istanbul report text-summary lcov"
   },
   "engines": {
