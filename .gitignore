@@ -19,3 +19,4 @@ test.js
 /node_modules
 /test
 /lib
+/coverage

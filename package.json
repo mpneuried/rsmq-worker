@@ -16,7 +16,7 @@
     "url": "https://github.com/mpneuried/rsmq-worker.git"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "COFFEECOV_INIT_ALL=false mocha --compilers coffee:coffee-script/register --require coffee-coverage/register-istanbul _src/test/main.coffee -R spec"
   },
   "engines": {
     "node": ">= 0.10.0"
@@ -34,8 +34,13 @@
     "grunt-contrib-coffee": "1.x",
     "grunt-contrib-watch": "1.x",
     "grunt-include-replace": "5.x",
-    "grunt-mocha-cli": "2.x",
+    "grunt-mocha-cli": "3.x",
     "randoms": "0.x",
-    "should": "11.x"
+    "should": "11.x",
+    "coffee-coverage": "1.x",
+    "coffee-script": "1.12.x",
+    "mocha": "3.2.x",
+    "coveralls": "2.11.x",
+    "istanbul": "0.4.x"
   }
 }

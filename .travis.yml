@@ -1,21 +1,25 @@
 os:
   - linux
   - osx
-services:
-  - redis-server
 language: node_js
 node_js:
   - 0.10
   - 0.12
   - 4.0
-  - 4.4
-  - 5.1
+  - 4.1
+  - 4.5
+  - 5.0
   - 5.5
-  - 5.11
-  - 6.0
-  - 6.1
-  - iojs
+  - 5.12
+  - 6
+  - 6.6
+  - 7
   - node
-before_script:
-  - "npm install -g mocha grunt-cli"
-  - "grunt build"
+  - lts/argon
+  - lts/*
+  - iojs
+after_success:
+  - ./node_modules/.bin/istanbul report text-summary lcov
+  - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+services:
+  - redis-server
