@@ -110,7 +110,7 @@ class RSMQWorker extends require( "mpbasic" )()
 			@stopped = false
 			@interval()
 			return
-		@on "ready", @interval
+		@on "ready", @start
 		return @
 
 	###
@@ -328,8 +328,10 @@ class RSMQWorker extends require( "mpbasic" )()
 		@waitCount = 0
 		@reconnectActive = false
 		@queue = @_getRsmq( true )
-		@_runOfflineMessages()
-		@interval()
+		
+		@_initQueue()
+		@once( "ready", @interval )
+
 		@warning "redis connection reconnected"
 		return
 
