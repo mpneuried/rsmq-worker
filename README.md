@@ -18,6 +18,8 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
 
 ## Install
 
+[![Join the chat at https://gitter.im/mpneuried/rsmq-worker](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mpneuried/rsmq-worker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ```sh
   npm install rsmq-worker
 ```
