@@ -60,7 +60,7 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
 
 - **queuename**: *( `String` required )* The queuename to pull the messages
 - **options** *( `Object` optional )* The configuration object
-	- **options.interval**: *( `Number[]` optional; default = `[ 0, 1, 5, 10 ]` )* An Array of increasing wait times in seconds
+	- **options.interval**: *( `Number[]` optional; default = `[ 0, 1, 5, 10 ]` )* An Array of increasing wait times in seconds. _[More details](https://github.com/mpneuried/rsmq-worker/blob/master/README.md#options-interval)_
 	- **options.maxReceiveCount**: *( `Number` optional; default = `10` )* Receive count until a message will be exceeded
 	- **options.invisibletime**: *( `Number` optional; default = `30` )* A time in seconds to hide a message after it has been received.
 	- **options.defaultDelay**: *( `Number` optional; default = `1` )* The default delay in seconds for for sending new messages to the queue.
