@@ -327,6 +327,32 @@ This is an advanced example showing some features in action.
 	worker.send( "createmessages" );
 ```
 
+## Details
+
+### Options `interval`
+
+The option `interval` can:
+
+**A.)**
+be a Number so the worker will poll the queue every `n` seconds  (e.g. `interval: .5` = twice a second second)
+
+**B.)**
+be an Array of Numbers. On start `interval[0]` is the time to poll the queue.
+Everytime the worker receives an empty response _(queue is empty)_ the next `interval` will be used to wait for the next poll _(`interval[+1]`)_ until the last definition `interval[ n ]` was reached. On every received message the wait time will be reset to `interval[0]`.
+
+> E.g: `interval: [ .2, 1, 3 ]`
+> - 1st poll -> no message -> wait `.2s` = `200ms`
+> - 2nd poll -> no message -> wait `1s`
+> - 3rd poll -> no message -> wait `3s`
+> - 4th poll -> no message -> wait `3s`
+> - 5th poll -> 1 message -> wait `.2s`
+> - 6th poll -> no message -> wait `1s`
+> - 7th poll -> 1 message -> wait `.2s`
+> - 8th poll -> 1 message -> wait `.2s`
+> - 9th poll -> no message -> wait `.2s`
+> - 10th poll -> no message -> wait `1s`
+>   ...
+
 ## Todos/Ideas
 
 - MORE tests!
