@@ -63,9 +63,9 @@ Helper to simply implement a worker [RSMQ ( Redis Simple Message Queue )](https:
 	- **options.interval**: *( `Number[]` optional; default = `[ 0, 1, 5, 10 ]` )* An Array of increasing wait times in seconds. _[More details](https://github.com/mpneuried/rsmq-worker/blob/master/README.md#options-interval)_
 	- **options.maxReceiveCount**: *( `Number` optional; default = `10` )* Receive count until a message will be exceeded
 	- **options.invisibletime**: *( `Number` optional; default = `30` )* A time in seconds to hide a message after it has been received.
-	- **options.defaultDelay**: *( `Number` optional; default = `1` )* The default delay in seconds for for sending new messages to the queue.
+	- **options.defaultDelay**: *( `Number` optional; default = `1` )* The default delay in seconds for sending new messages to the queue.
 	- **options.autostart**: *( `Boolean` optional; default = `false` )* Autostart the worker on init
-	- **options.timeout**: *( `Number` optional; default = `3000` )* Message processing timeout in `ms`. So you have to call the `next()` method of `message` at least after e.g. 3000ms. If set to `0` it'll wait until infinity.
+	- **options.timeout**: *( `Number` optional; default = `3000` )* Message processing timeout in `ms`. So you have to call the `next()` method of `message` at least before e.g. 3000ms. If set to `0` it'll wait until infinity.
 	- **options.customExceedCheck**: *( `Function` optional; )* A custom function, with the raw message *(see message format)* as argument to build a custom exceed check. If you return a `true` the message will not exceed. On return `false` the regular check for `maxReceiveCount` will be used.
 	- **options.alwaysLogErrors**: *( `Boolean` optional; default = `false` )* An error will be logged to the console even if an error listener has been attached.
 	- **options.rsmq**: *( `RedisSMQ` optional; default = `null` )* A already existing rsmq instance to use instead of creating a new client
