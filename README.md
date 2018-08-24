@@ -334,7 +334,7 @@ This is an advanced example showing some features in action.
 The option `interval` can:
 
 **A.)**
-be a Number so the worker will poll the queue every `n` seconds  (e.g. `interval: .5` = twice a second second)
+be a Number so the worker will poll the queue every `n` seconds  (e.g. `interval: .5` = twice a second)
 
 **B.)**
 be an Array of Numbers. On start `interval[0]` is the time to poll the queue.
