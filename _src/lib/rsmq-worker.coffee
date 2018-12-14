@@ -1,6 +1,6 @@
 # # RSMQWorker
 
-# ### extends [NPM:MPBasic](https://cdn.rawgit.com/mpneuried/mpbaisc/master/_docs/index.coffee.html)
+# ### extends [NPM:MPBasic](https://cdn.combinatronics.com/mpneuried/mpbaisc/master/_docs/index.coffee.html)
 
 #
 # ### Exports: *Class*
