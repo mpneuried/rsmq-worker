@@ -484,7 +484,7 @@ class RSMQWorker extends require( "mpbasic" )()
 					@emit( "next" ) if _useInterval
 					return
 				try
-					@emit "message", msg.message, _fnNext, _id
+					@emit "message", msg, _fnNext, _id
 				catch _err
 					if not @listeners( "error" )?.length or @config.alwaysLogErrors
 						@error "error", _err

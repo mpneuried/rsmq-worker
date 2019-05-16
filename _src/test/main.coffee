@@ -43,7 +43,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			
 			_testFn = ( msg, next, id )->
 
-				should.equal( msg, _examplemsg )
+				should.equal( msg.message, _examplemsg )
 				next()
 				
 				worker.removeListener( "message", _testFn )
@@ -64,7 +64,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			@timeout( _delay*1.5*1000 )
 			_testFn = ( msg, next, id )->
 
-				should.equal( msg, _examplemsg )
+				should.equal( msg.message, _examplemsg )
 				next()
 				worker.removeListener( "message", _testFn )
 				_diff = Math.round( ( Date.now() - _start )/1000 )
@@ -85,7 +85,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			@timeout( _delay*1.5*1000 )
 			_testFn = ( msg, next, id )->
 
-				should.equal( msg, _examplemsg )
+				should.equal( msg.message, _examplemsg )
 				next()
 				_diff = Math.round( ( Date.now() - _start )/1000 )
 				_diff.should.be.above(_delay)
@@ -124,8 +124,8 @@ describe "----- rsmq-worker TESTS -----", ->
 			
 			_idx = 0
 			_testFn = ( msg, next, id )->
-				should.equal( msg, _examplemsgs[ _idx ] )
-				
+				should.equal( msg.message, _examplemsgs[ _idx ] )
+
 				if _idx is 0
 					# stop and wait to check the hidden size
 					setTimeout( _runHiddenSize( next ), 1000 )
@@ -174,7 +174,7 @@ describe "----- rsmq-worker TESTS -----", ->
 					
 			_idx = 0
 			_testFn = ( msg, next, id )->
-				should.equal( msg, _examplemsgs[ _idx ] )
+				should.equal( msg.message, _examplemsgs[ _idx ] )
 				
 				next()
 				
@@ -301,7 +301,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			_testFn = ( msg, next, id )->
 				idx++
 				if idx <= 1
-					should.equal( msg, _examplemsg )
+					should.equal( msg.message, _examplemsg )
 					worker.stop()
 					worker.send _examplemsg2, 0, ( err )->
 						should.not.exist( err )
@@ -329,7 +329,7 @@ describe "----- rsmq-worker TESTS -----", ->
 		
 		it "test stop method - Pull #5 start", ( done )->
 			_testFn = ( msg, next, id )->
-				should.equal( msg, _examplemsg2 )
+				should.equal( msg.message, _examplemsg2 )
 				done()
 				return
 			
