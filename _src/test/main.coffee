@@ -1,8 +1,9 @@
 should = require( 'should' )
-rand = require( 'randoms' )
+randomString = require( 'randoms/dist/str.js' )
+randomNum = require( 'randoms/dist/num.js' )
 async = require( 'async' )
-
-_queuename = rand.string( 10, 1 )
+randomNum.default()
+_queuename = randomString.alphaNum( 10)
 worker = null
 _created = null
 
@@ -39,7 +40,7 @@ describe "----- rsmq-worker TESTS -----", ->
 		
 		# Implement tests cases here
 		it "first test", ( done )->
-			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
+			_examplemsg = randomString.some(randomNum.default(4,99))
 			
 			_testFn = ( msg, next, id )->
 
@@ -58,7 +59,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			return
 
 		it "delay test", ( done )->
-			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
+			_examplemsg = randomString.some(randomNum.default(4,99))
 			_start = Date.now()
 			_delay = 5
 			@timeout( _delay*1.5*1000 )
@@ -79,7 +80,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			return
 
 		it "delay test with callback", ( done )->
-			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
+			_examplemsg = randomString.some(randomNum.default(4,99))
 			_start = Date.now()
 			_delay = 5
 			@timeout( _delay*1.5*1000 )
@@ -106,7 +107,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			_COUNT = 10
 			_examplemsgs = []
 			for _x in [1.._COUNT]
-				_examplemsgs.push rand.string( rand.number( 4, 99 ), 3 )
+				_examplemsgs.push randomString.some(randomNum.default(4,99))
 			
 			_runHiddenSize = ( next )->
 				return ->
@@ -170,7 +171,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			_COUNT = 10
 			_examplemsgs = []
 			for _x in [1.._COUNT]
-				_examplemsgs.push rand.string( rand.number( 4, 99 ), 3 )
+				_examplemsgs.push randomString.some(randomNum.default(4,99))
 					
 			_idx = 0
 			_testFn = ( msg, next, id )->
@@ -233,7 +234,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			return
 		
 		it "error throw within message processing - Issue #3 (A)", ( done )->
-			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
+			_examplemsg = randomString.some(randomNum.default(4,99))
 			@timeout( 3000 )
 			
 			_testFn = ( msg, next, id )->
@@ -261,7 +262,7 @@ describe "----- rsmq-worker TESTS -----", ->
 			return
 		
 		it "code error within message processing - Issue #3 (B)", ( done )->
-			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
+			_examplemsg = randomString.some(randomNum.default(4,99))
 			@timeout( 3000 )
 			
 			_testFn = ( msg, next, id )->
@@ -292,9 +293,9 @@ describe "----- rsmq-worker TESTS -----", ->
 				return
 			return
 		
-		_examplemsg2 = rand.string( rand.number( 4, 99 ), 3 )
+		_examplemsg2 = randomString.some(randomNum.default(4,99))
 		it "test stop method - Pull #5 stop", ( done )->
-			_examplemsg = rand.string( rand.number( 4, 99 ), 3 )
+			_examplemsg = randomString.some(randomNum.default(4,99))
 			@timeout( 6000 )
 			
 			idx = 0

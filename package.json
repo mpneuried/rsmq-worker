@@ -24,24 +24,24 @@
   },
   "license": "MIT",
   "dependencies": {
-    "async": "2.1.x",
-    "lodash": "4.x",
-    "mpbasic": "0.0.x",
-    "rsmq": "0.7.x"
+    "async": "^3.2.0",
+    "lodash": "^4.17.20",
+    "mpbasic": "^0.0.18",
+    "rsmq": "^0.12.2"
   },
   "devDependencies": {
+    "coffee-coverage": "1.x",
+    "coffee-script": "1.12.x",
+    "coveralls": "2.11.x",
     "grunt": "1.x",
     "grunt-contrib-clean": "1.x",
     "grunt-contrib-coffee": "1.x",
     "grunt-contrib-watch": "1.x",
     "grunt-include-replace": "5.x",
     "grunt-mocha-cli": "3.x",
-    "randoms": "0.x",
-    "should": "11.x",
-    "coffee-coverage": "1.x",
-    "coffee-script": "1.12.x",
+    "istanbul": "0.4.x",
     "mocha": "3.2.x",
-    "coveralls": "2.11.x",
-    "istanbul": "0.4.x"
+    "randoms": "^1.0.1",
+    "should": "11.x"
   }
 }
